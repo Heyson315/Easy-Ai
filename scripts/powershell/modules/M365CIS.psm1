@@ -43,12 +43,6 @@ function Connect-M365CIS {
             Import-Module Microsoft.Graph.Identity.DirectoryManagement -ErrorAction Stop
             Import-Module Microsoft.Graph.Identity.SignIns -ErrorAction Stop
             Connect-MgGraph -Scopes 'User.Read.All','Policy.Read.All','Directory.Read.All','Organization.Read.All' -ErrorAction Stop | Out-Null
-            $sel = Get-Command -Name Select-MgProfile -ErrorAction SilentlyContinue
-            if ($sel) {
-                try { Select-MgProfile -Name 'v1.0' | Out-Null } catch { Write-CISLog "Select-MgProfile failed: $($_.Exception.Message) - continuing with default profile" 'Warn' }
-            } else {
-                Write-CISLog 'Select-MgProfile not available - continuing with default profile' 'Info'
-            }
             Write-CISLog 'Connected to Microsoft Graph.'
         } catch {
             Write-CISLog "Graph connect failed: $($_.Exception.Message)" 'Warn'

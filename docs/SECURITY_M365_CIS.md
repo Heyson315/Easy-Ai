@@ -27,17 +27,17 @@ Important: This toolkit provides technical checks and is not a substitute for a 
 ## Run – Audit (read-only)
 
 ```powershell
-# From the repo root
-pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1
+# From any directory (uses absolute paths internally)
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\HassanRahman\OneDrive - Rahman Finance and Accounting P.L.LLC\share report\scripts\powershell\Invoke-M365CISAudit.ps1"
 
 # Include SharePoint tenant checks by connecting to the SPO admin URL
-pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1 -SPOAdminUrl "https://<tenant>-admin.sharepoint.com"
-
-# Or skip certain services if not available
-pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1 -SkipExchange
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\HassanRahman\OneDrive - Rahman Finance and Accounting P.L.LLC\share report\scripts\powershell\Invoke-M365CISAudit.ps1" -SPOAdminUrl "https://<tenant>-admin.sharepoint.com"
 
 # To generate timestamped outputs (useful for historical tracking)
-pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1 -Timestamped
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\HassanRahman\OneDrive - Rahman Finance and Accounting P.L.LLC\share report\scripts\powershell\Invoke-M365CISAudit.ps1" -Timestamped
+
+# Skip certain services if not available
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\HassanRahman\OneDrive - Rahman Finance and Accounting P.L.LLC\share report\scripts\powershell\Invoke-M365CISAudit.ps1" -SkipExchange
 ```
 
 This generates:
