@@ -30,6 +30,9 @@ Important: This toolkit provides technical checks and is not a substitute for a 
 # From the repo root
 pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1
 
+# Include SharePoint tenant checks by connecting to the SPO admin URL
+pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1 -SPOAdminUrl "https://<tenant>-admin.sharepoint.com"
+
 # Or skip certain services if not available
 pwsh -File scripts/powershell/Invoke-M365CISAudit.ps1 -SkipExchange
 
@@ -66,6 +69,15 @@ It writes: `output/reports/security/m365_cis_audit.xlsx` (or timestamped equival
 **SharePoint Online (SPO):**
 
 - Restrict external sharing at the tenant level
+
+Note: For SPO checks, install the module and connect to your tenant admin URL:
+
+```powershell
+Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser
+Connect-SPOService -Url "https://<tenant>-admin.sharepoint.com"
+```
+
+You can also pass the admin URL to the audit runner using `-SPOAdminUrl` and it will connect automatically if the module is installed.
 
 **Azure AD/Entra ID:**
 

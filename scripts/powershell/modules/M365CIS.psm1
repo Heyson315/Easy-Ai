@@ -15,7 +15,8 @@ function Connect-M365CIS {
     [CmdletBinding()]
     param(
         [switch]$SkipExchange,
-        [switch]$SkipGraph
+        [switch]$SkipGraph,
+        [string]$SPOAdminUrl
     )
     
     # Fix PSModulePath for OneDrive-synced modules
@@ -46,6 +47,27 @@ function Connect-M365CIS {
             Write-CISLog 'Connected to Microsoft Graph.'
         } catch {
             Write-CISLog "Graph connect failed: $($_.Exception.Message)" 'Warn'
+        }
+    }
+
+    # Optional SharePoint Online admin connection (if module is available)
+    if ($SPOAdminUrl) {
+        try {
+            if (Get-Module -ListAvailable Microsoft.Online.SharePoint.PowerShell) {
+                Import-Module Microsoft.Online.SharePoint.PowerShell -ErrorAction Stop
+                Write-CISLog "Connecting to SharePoint Online Admin: $SPOAdminUrl" 'Info'
+                Connect-SPOService -Url $SPOAdminUrl -ErrorAction Stop
+                Write-CISLog 'Connected to SharePoint Online Admin.' 'Info'
+            } else {
+                Write-CISLog 'SPO module not found: Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser' 'Warn'
+            }
+        } catch {
+            Write-CISLog "SharePoint Online connect failed: $($_.Exception.Message)" 'Warn'
+        }
+    } else {
+        # Provide a gentle hint if SPO checks are enabled but no connection was requested
+        if (Get-Module -ListAvailable Microsoft.Online.SharePoint.PowerShell) {
+            Write-CISLog 'SPO module detected. To include SPO tenant checks, provide -SPOAdminUrl https://<tenant>-admin.sharepoint.com' 'Info'
         }
     }
 }
@@ -154,7 +176,9 @@ function Test-CIS-AAD-GlobalAdminCount {
     [CmdletBinding()] param()
     $id='CIS-AAD-1'; $name='Limit Global Administrator role assignments'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; AAD Roles'
     try {
-        if (-not (Get-Module Microsoft.Graph)) { throw 'Not connected to Graph' }
+        $ctx = $null
+        try { $ctx = Get-MgContext } catch { $ctx = $null }
+        if (-not $ctx) { throw 'Not connected to Graph' }
         $ga = Get-MgRoleManagementDirectoryRoleDefinition -Filter "displayName eq 'Global Administrator'" | Select-Object -First 1
         if (-not $ga) { throw 'Global Administrator role definition not found' }
         $assignments = Get-MgRoleManagementDirectoryRoleAssignment -Filter "roleDefinitionId eq '$($ga.Id)'"
@@ -206,7 +230,9 @@ function Test-CIS-CA-MFAEnabled {
     [CmdletBinding()] param()
     $id='CIS-CA-1'; $name='Ensure Conditional Access MFA policy exists for all users'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Conditional Access'
     try {
-        if (-not (Get-Module Microsoft.Graph)) { throw 'Not connected to Graph' }
+        $ctx = $null
+        try { $ctx = Get-MgContext } catch { $ctx = $null }
+        if (-not $ctx) { throw 'Not connected to Graph' }
         $policies = Get-MgIdentityConditionalAccessPolicy -All
         $mfaPolicies = $policies | Where-Object {
             $_.GrantControls.BuiltInControls -contains 'mfa' -and $_.State -eq 'enabled'

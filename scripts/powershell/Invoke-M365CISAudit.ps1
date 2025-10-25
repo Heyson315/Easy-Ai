@@ -3,6 +3,7 @@ param(
   [string]$OutCsv  = "output/reports/security/m365_cis_audit.csv",
   [switch]$SkipExchange,
   [switch]$SkipGraph,
+  [string]$SPOAdminUrl,
   [switch]$Timestamped
 )
 
@@ -17,7 +18,7 @@ if ($Timestamped) {
 Import-Module -Force "$PSScriptRoot/modules/M365CIS.psm1"
 
 Write-Host "[+] Connecting to Microsoft 365 services..."
-Connect-M365CIS -SkipExchange:$SkipExchange -SkipGraph:$SkipGraph
+Connect-M365CIS -SkipExchange:$SkipExchange -SkipGraph:$SkipGraph -SPOAdminUrl $SPOAdminUrl
 
 Write-Host "[+] Running CIS Level 1 audit checks..."
 $results = Invoke-M365CISAudit -OutputJson $OutJson -OutputCsv $OutCsv
