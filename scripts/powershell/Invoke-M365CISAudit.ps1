@@ -14,6 +14,17 @@ if ($Timestamped) {
     $OutCsv  = $OutCsv -replace '\.csv$', "_$ts.csv"
 }
 
+# Resolve output paths relative to repo root (two levels up from this script)
+$repoRoot = (Get-Item $PSScriptRoot).Parent.Parent.FullName
+if (-not [System.IO.Path]::IsPathRooted($OutJson)) { $OutJson = Join-Path $repoRoot $OutJson }
+if (-not [System.IO.Path]::IsPathRooted($OutCsv)) { $OutCsv = Join-Path $repoRoot $OutCsv }
+
+# Ensure output directories exist
+$jsonDir = Split-Path -Parent $OutJson
+$csvDir  = Split-Path -Parent $OutCsv
+if ($jsonDir -and -not (Test-Path $jsonDir)) { New-Item -ItemType Directory -Path $jsonDir -Force | Out-Null }
+if ($csvDir  -and -not (Test-Path $csvDir )) { New-Item -ItemType Directory -Path $csvDir  -Force | Out-Null }
+
 # Import module
 Import-Module -Force "$PSScriptRoot/modules/M365CIS.psm1"
 
