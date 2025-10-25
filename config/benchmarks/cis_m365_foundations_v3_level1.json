@@ -40,6 +40,18 @@
       "reference": "https://learn.microsoft.com/azure/active-directory/roles/security-planning"
     },
     {
+      "id": "CIS-AAD-2",
+      "title": "Ensure Azure AD Identity Protection risk policies are configured",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/azure/active-directory/identity-protection/overview-identity-protection"
+    },
+    {
+      "id": "CIS-AAD-3",
+      "title": "Ensure guest user access restrictions are configured",
+      "severity": "Medium",
+      "reference": "https://learn.microsoft.com/azure/active-directory/external-identities/external-identities-overview"
+    },
+    {
       "id": "CIS-DEF-1",
       "title": "Ensure Safe Links policy is enabled",
       "severity": "High",
@@ -56,6 +68,30 @@
       "title": "Ensure Conditional Access MFA policy exists for all users",
       "severity": "High",
       "reference": "https://learn.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa"
+    },
+    {
+      "id": "CIS-PURVIEW-1",
+      "title": "Ensure DLP policies are enabled for data protection",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/microsoft-365/compliance/dlp-learn-about-dlp"
+    },
+    {
+      "id": "CIS-PURVIEW-2",
+      "title": "Ensure audit logs are retained for compliance (90+ days recommended)",
+      "severity": "Medium",
+      "reference": "https://learn.microsoft.com/microsoft-365/compliance/audit-log-retention-policies"
+    },
+    {
+      "id": "CIS-PURVIEW-3",
+      "title": "Ensure sensitivity labels are published and enforced",
+      "severity": "Medium",
+      "reference": "https://learn.microsoft.com/microsoft-365/compliance/sensitivity-labels"
+    },
+    {
+      "id": "CIS-INTUNE-1",
+      "title": "Ensure Intune device compliance policies exist and are enforced",
+      "severity": "Medium",
+      "reference": "https://learn.microsoft.com/mem/intune/protect/device-compliance-get-started"
     }
   ]
 }
