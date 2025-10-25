@@ -1,0 +1,61 @@
+{
+  "benchmark": "CIS Microsoft 365 Foundations v3.0 - Level 1",
+  "version": "3.0",
+  "level": "L1",
+  "controls": [
+    {
+      "id": "CIS-EXO-1",
+      "title": "Ensure modern auth is enabled and basic auth blocked (EXO)",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/disable-basic-authentication"
+    },
+    {
+      "id": "CIS-EXO-2",
+      "title": "Disable external auto-forwarding (TransportConfig)",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/exchange/security-and-compliance/mail-flow-rules/auto-forwarding"
+    },
+    {
+      "id": "CIS-EXO-3",
+      "title": "Ensure mailbox auditing is enabled",
+      "severity": "Medium",
+      "reference": "https://learn.microsoft.com/microsoft-365/compliance/enable-mailbox-auditing"
+    },
+    {
+      "id": "CIS-EXO-4",
+      "title": "Ensure legacy protocols disabled per mailbox (sample check)",
+      "severity": "Medium",
+      "reference": "https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/pop3-and-imap4/pop3-and-imap4"
+    },
+    {
+      "id": "CIS-SPO-1",
+      "title": "Restrict SharePoint external sharing (Tenant)",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/sharepoint/external-sharing-overview"
+    },
+    {
+      "id": "CIS-AAD-1",
+      "title": "Limit Global Administrator role assignments",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/azure/active-directory/roles/security-planning"
+    },
+    {
+      "id": "CIS-DEF-1",
+      "title": "Ensure Safe Links policy is enabled",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/microsoft-365/security/office-365-security/safe-links"
+    },
+    {
+      "id": "CIS-DEF-2",
+      "title": "Ensure Safe Attachments policy is enabled",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/microsoft-365/security/office-365-security/safe-attachments"
+    },
+    {
+      "id": "CIS-CA-1",
+      "title": "Ensure Conditional Access MFA policy exists for all users",
+      "severity": "High",
+      "reference": "https://learn.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa"
+    }
+  ]
+}

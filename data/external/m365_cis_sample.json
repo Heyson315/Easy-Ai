@@ -1,0 +1,35 @@
+[
+  {
+    "ControlId": "CIS-EXO-1",
+    "Title": "Ensure modern auth is enabled and basic auth blocked (EXO)",
+    "Severity": "High",
+    "Expected": "OAuth2 enabled; All Basic Auth protocols disabled via Authentication Policies",
+    "Actual": "OAuth2ClientProfileEnabled=True; BasicAllowed=False",
+    "Status": "Pass",
+    "Evidence": "Auth policies reviewed",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO Auth Policies",
+    "Timestamp": "2025-10-25T12:00:00"
+  },
+  {
+    "ControlId": "CIS-EXO-2",
+    "Title": "Disable external auto-forwarding (TransportConfig)",
+    "Severity": "High",
+    "Expected": "ExternalClientForwardingDisabled=True",
+    "Actual": "ExternalClientForwardingDisabled=False",
+    "Status": "Fail",
+    "Evidence": "TransportConfig shows disabled=False",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO TransportConfig",
+    "Timestamp": "2025-10-25T12:00:00"
+  },
+  {
+    "ControlId": "CIS-EXO-3",
+    "Title": "Ensure mailbox auditing is enabled",
+    "Severity": "Medium",
+    "Expected": "Organization AuditDisabled=False",
+    "Actual": "AuditDisabled=False",
+    "Status": "Pass",
+    "Evidence": "OrganizationConfig",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO Auditing",
+    "Timestamp": "2025-10-25T12:00:00"
+  }
+]
