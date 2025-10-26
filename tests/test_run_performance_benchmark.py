@@ -1,4 +1,5 @@
 """Tests for the performance benchmark script."""
+
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
@@ -14,7 +15,7 @@ from scripts.run_performance_benchmark import (
     benchmark_cis_report_generation,
     benchmark_sharepoint_processing,
     run_all_benchmarks,
-    save_results
+    save_results,
 )
 
 
@@ -23,12 +24,12 @@ def test_generate_test_csv():
     with TemporaryDirectory() as td:
         td_path = Path(td)
         csv_path = td_path / "test.csv"
-        
+
         generate_test_csv(csv_path, num_rows=50)
-        
+
         assert csv_path.exists()
         content = csv_path.read_text()
-        
+
         # Should have comment line
         assert "# This is a comment line" in content
         # Should have headers
@@ -42,12 +43,12 @@ def test_generate_test_cis_json():
     with TemporaryDirectory() as td:
         td_path = Path(td)
         json_path = td_path / "test.json"
-        
+
         generate_test_cis_json(json_path, num_controls=10)
-        
+
         assert json_path.exists()
         data = json.loads(json_path.read_text())
-        
+
         assert len(data) == 10
         assert "ControlId" in data[0]
         assert "Title" in data[0]
@@ -57,7 +58,7 @@ def test_generate_test_cis_json():
 def test_benchmark_csv_cleaning():
     """Test CSV cleaning benchmark."""
     result = benchmark_csv_cleaning("small")
-    
+
     assert result["operation"] == "csv_cleaning"
     assert result["size"] == "small"
     assert result["rows"] == 100
@@ -70,7 +71,7 @@ def test_benchmark_csv_cleaning():
 def test_benchmark_cis_report_generation():
     """Test CIS report generation benchmark."""
     result = benchmark_cis_report_generation("small")
-    
+
     assert result["operation"] == "cis_report_generation"
     assert result["size"] == "small"
     assert result["controls"] == 15
@@ -83,7 +84,7 @@ def test_benchmark_cis_report_generation():
 def test_benchmark_sharepoint_processing():
     """Test SharePoint processing benchmark."""
     result = benchmark_sharepoint_processing("small")
-    
+
     assert result["operation"] == "sharepoint_processing"
     assert result["size"] == "small"
     assert result["rows"] == 100
@@ -95,7 +96,7 @@ def test_benchmark_sharepoint_processing():
 def test_run_all_benchmarks():
     """Test running all benchmarks."""
     results = run_all_benchmarks(size="small", iterations=1)
-    
+
     assert len(results) == 3
     assert all("benchmark" in r for r in results)
     assert all("avg_elapsed_seconds" in r for r in results)
@@ -108,18 +109,13 @@ def test_save_results():
     with TemporaryDirectory() as td:
         td_path = Path(td)
         output_path = td_path / "results.json"
-        
+
         test_results = [
-            {
-                "benchmark": "Test",
-                "avg_elapsed_seconds": 1.0,
-                "min_elapsed_seconds": 0.9,
-                "max_elapsed_seconds": 1.1
-            }
+            {"benchmark": "Test", "avg_elapsed_seconds": 1.0, "min_elapsed_seconds": 0.9, "max_elapsed_seconds": 1.1}
         ]
-        
+
         save_results(test_results, output_path)
-        
+
         assert output_path.exists()
         saved_data = json.loads(output_path.read_text())
         assert len(saved_data) == 1
