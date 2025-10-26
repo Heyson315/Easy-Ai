@@ -11,6 +11,7 @@ OFFICE_SUPPLIES_BUDGET = 2000
 MARKETING_BUDGET = 5000
 DEVELOPMENT_BUDGET = 3000
 
+
 def create_project_management_workbook(filename=None):
     """
     Create a project management Excel workbook.
@@ -19,7 +20,7 @@ def create_project_management_workbook(filename=None):
         filename (str, optional): Output filename for the workbook. Defaults to 'Project_Management.xlsx'.
     """
     if filename is None:
-        filename = 'Project_Management.xlsx'
+        filename = "Project_Management.xlsx"
     # Create a new workbook
     wb = openpyxl.Workbook()
 
@@ -59,7 +60,14 @@ def create_project_management_workbook(filename=None):
     # Sample transactions
     sample_trans = [
         [datetime.now().strftime("%Y-%m-%d"), "Initial Budget", "Budget", INITIAL_BUDGET, 0, INITIAL_BUDGET],
-        [datetime.now().strftime("%Y-%m-%d"), "Office Supplies", "Expenses", 0, OFFICE_SUPPLIES_EXPENSE, REMAINING_BALANCE]
+        [
+            datetime.now().strftime("%Y-%m-%d"),
+            "Office Supplies",
+            "Expenses",
+            0,
+            OFFICE_SUPPLIES_EXPENSE,
+            REMAINING_BALANCE,
+        ],
     ]
 
     # Add sample data
@@ -70,8 +78,24 @@ def create_project_management_workbook(filename=None):
 
     # Tasks
     sample_tasks = [
-        [1, "Design", datetime.now().strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d"), "In Progress", "Alice", ""],
-        [2, "Development", datetime.now().strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d"), "Not Started", "Bob", ""],
+        [
+            1,
+            "Design",
+            datetime.now().strftime("%Y-%m-%d"),
+            datetime.now().strftime("%Y-%m-%d"),
+            "In Progress",
+            "Alice",
+            "",
+        ],
+        [
+            2,
+            "Development",
+            datetime.now().strftime("%Y-%m-%d"),
+            datetime.now().strftime("%Y-%m-%d"),
+            "Not Started",
+            "Bob",
+            "",
+        ],
     ]
     for row, data in enumerate(sample_tasks, 2):
         for col, value in enumerate(data, 1):
@@ -81,7 +105,7 @@ def create_project_management_workbook(filename=None):
     sample_budget = [
         ["Office Supplies", OFFICE_SUPPLIES_BUDGET, OFFICE_SUPPLIES_EXPENSE, "=B2-C2", "=C2/B2*100"],
         ["Marketing", MARKETING_BUDGET, 0, "=B3-C3", "=C3/B3*100"],
-        ["Development", DEVELOPMENT_BUDGET, 0, "=B4-C4", "=C4/B4*100"]
+        ["Development", DEVELOPMENT_BUDGET, 0, "=B4-C4", "=C4/B4*100"],
     ]
     for row, data in enumerate(sample_budget, 2):
         for col, value in enumerate(data, 1):
@@ -90,6 +114,7 @@ def create_project_management_workbook(filename=None):
     # Save the workbook
     wb.save(filename)
     return wb
+
 
 # Example usage:
 # create_project_management_workbook('Project_Management.xlsx')

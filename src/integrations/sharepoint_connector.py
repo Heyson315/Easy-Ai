@@ -9,6 +9,7 @@ Usage (PowerShell):
     --input "data/processed/sharepoint_permissions_clean.csv" \
     --output "output/reports/business/sharepoint_permissions_report.xlsx"
 """
+
 from __future__ import annotations
 import argparse
 from pathlib import Path
@@ -55,16 +56,22 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     if "User Email" in df.columns:
         summaries["top_users"] = (
             df[df["User Email"].str.len() > 0]
-            .groupby(["User Email", "User Name"]).size().reset_index(name="Count")
-            .sort_values("Count", ascending=False).head(25)
+            .groupby(["User Email", "User Name"])
+            .size()
+            .reset_index(name="Count")
+            .sort_values("Count", ascending=False)
+            .head(25)
         )
 
     # 4) Top resources by occurrences
     if "Resource Path" in df.columns:
         summaries["top_resources"] = (
             df[df["Resource Path"].str.len() > 0]
-            .groupby("Resource Path").size().reset_index(name="Count")
-            .sort_values("Count", ascending=False).head(25)
+            .groupby("Resource Path")
+            .size()
+            .reset_index(name="Count")
+            .sort_values("Count", ascending=False)
+            .head(25)
         )
 
     return summaries
@@ -78,11 +85,13 @@ def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) ->
         # Overview sheet
         overview_rows = []
         for key, df in summaries.items():
-            overview_rows.append({
-                "Summary": key,
-                "Rows": len(df),
-                "Columns": len(df.columns),
-            })
+            overview_rows.append(
+                {
+                    "Summary": key,
+                    "Rows": len(df),
+                    "Columns": len(df.columns),
+                }
+            )
         pd.DataFrame(overview_rows).to_excel(writer, sheet_name="Overview", index=False)
 
         # Individual sheets
