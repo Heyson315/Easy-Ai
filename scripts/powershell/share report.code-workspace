@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"testing.coverageBarThresholds": {
+
+			"red": 0,
+			"yellow": 60,
+			"green": 90
+		},
+		"github.copilot.chat.agent.thinkingTool": false,
+		"github.copilot.chat.virtualTools.threshold": 0,
+		"extensions.experimental.issueQuickAccess": false,
+		"extensions.ignoreRecommendations": false,
+		"workbench.editor.alwaysShowEditorActions": true,
+		"workbench.editor.centeredLayoutFixedWidth": true,
+		"window.density.editorTabHeight": "compact",
+		"terminal.integrated.accessibleViewFocusOnCommandExecution": true,
+		"terminal.integrated.accessibleViewPreserveCursorPosition": true,
+		"gitlens.ai.generateCommits.customInstructions": "@id:gitlens.ai.generateCommits.customInstructions"
+	}
+}
