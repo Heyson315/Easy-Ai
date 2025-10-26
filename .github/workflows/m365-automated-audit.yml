@@ -110,7 +110,7 @@ jobs:
         ./scripts/powershell/PostRemediateM365CIS.ps1 -WhatIf
 
     - name: Upload audit artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: m365-audit-results-${{ github.run_number }}
         path: |
