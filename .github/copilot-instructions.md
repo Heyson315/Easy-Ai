@@ -5,9 +5,9 @@
 This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditing and SharePoint permissions analysis. The project follows a domain-driven structure with distinct workflows:
 
 ### Data Flow Pipeline
-1. **PowerShell** → M365 services (EXO, Graph, SPO) → Raw JSON/CSV (`output/reports/security/`)
+1. **PowerShell** → M365 services (EXO, Graph, SPO, Purview, Intune) → Raw JSON/CSV (`output/reports/security/`)
 2. **Python scripts** → CSV cleaning/transformation → Processed data (`data/processed/`)
-3. **Python modules** (`src/`) → Excel report generation (`output/reports/business/`)
+3. **Python modules** (`src/`) → Excel report generation + **Interactive HTML dashboards** (`output/reports/business/`)
 
 ### Directory Structure
 - `scripts/` - Standalone utilities (Python CSV cleaners, PowerShell audit runners)
@@ -19,6 +19,7 @@ This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditi
 - `tests/` - pytest-based tests using tempfiles and pandas validation
 - `docs/` - Workflow documentation (`SECURITY_M365_CIS.md`, `USAGE_SHAREPOINT.md`)
 - `config/benchmarks/` - CIS control metadata (JSON)
+- `config/audit_config.json` - Tenant configuration template (NEW v1.0.0)
 
 ## Critical Workflows
 
@@ -33,11 +34,32 @@ python -m src.integrations.sharepoint_connector --input "data/processed/sharepoi
 
 ### M365 CIS Security Audit Workflow
 ```powershell
-# Run audit (connects to EXO, Graph, optionally SPO)
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1" [-SPOAdminUrl "https://tenant-admin.sharepoint.com"] [-Timestamped]
+# Run audit (connects to EXO, Graph, optionally SPO/Purview/Intune)
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1" [-SPOAdminUrl "https://tenant-admin.sharepoint.com"] [-Timestamped] [-SkipPurview]
 
 # Convert JSON to Excel
 python scripts/m365_cis_report.py [--input "output/reports/security/m365_cis_audit.json"]
+
+# Generate Interactive HTML Dashboard (NEW)
+python scripts/generate_security_dashboard.py [--input "output/reports/security/m365_cis_audit.json"] [--output "output/reports/security/dashboard.html"]
+```
+
+### Safe Remediation Workflow (NEW v1.0.0)
+```powershell
+# Preview remediation actions (safe mode)
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -WhatIf
+
+# Apply remediation actions 
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -Force
+```
+
+### Audit Comparison & Trending (NEW v1.0.0)
+```powershell
+# Compare before/after audit results
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Compare-M365CISResults.ps1" -BeforeFile "before.json" -AfterFile "after.json" -OutputHtml "comparison.html"
+
+# Setup automated scheduling
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Setup-ScheduledAudit.ps1" -Schedule Weekly -DayOfWeek Monday -Time "09:00"
 ```
 
 ## Project-Specific Conventions
@@ -71,6 +93,29 @@ python scripts/m365_cis_report.py [--input "output/reports/security/m365_cis_aud
 - Use `pandas` for data aggregation before writing (e.g., `groupby().size().reset_index()`)
 - Apply styles: `Font(bold=True)`, `PatternFill(start_color='...')`, `Alignment(horizontal='center')`
 - Auto-size columns: iterate `get_column_letter()` and set `column_dimensions[].width`
+
+### Error Handling Pattern (NEW v1.0.0)
+**Problem**: Generic `Exception` handlers make debugging difficult.
+
+**Solution**: Use specific exception types with detailed error messages:
+```python
+try:
+    data = json.loads(json_path.read_text(encoding='utf-8-sig'))
+except json.JSONDecodeError as e:
+    print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
+    sys.exit(1)
+except (PermissionError, UnicodeDecodeError) as e:
+    print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
+    sys.exit(1)
+```
+Applied to: `scripts/m365_cis_report.py`, `scripts/generate_security_dashboard.py`
+
+### Dashboard Generation Pattern (NEW v1.0.0)
+**HTML Dashboard** (`scripts/generate_security_dashboard.py`):
+- Zero external dependencies (uses CDN for Chart.js)
+- Historical trend analysis from timestamped audit files
+- Responsive design with filtering/sorting
+- Security summary cards and control status table
 
 ### Testing Pattern
 - Use `TemporaryDirectory()` from tempfile for file I/O tests
@@ -126,3 +171,5 @@ Always call `.parent.mkdir(parents=True, exist_ok=True)` before writing files to
 - ✅ **Do** run PowerShell scripts with absolute paths (use full path to `.ps1` file)
 - ✅ **Do** use `-Timestamped` flag for audit evidence versioning
 - ✅ **Do** validate JSON structure before Excel conversion (`inspect_cis_report.py`)
+- ✅ **Do** use `-WhatIf` for safe remediation previews before applying changes
+- ✅ **Do** leverage historical trending with multiple timestamped audit runs
