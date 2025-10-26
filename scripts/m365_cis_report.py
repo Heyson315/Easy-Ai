@@ -1,20 +1,34 @@
 import json
+import sys
 import argparse
 from pathlib import Path
 import pandas as pd
 
 DEFAULT_JSON = Path('output/reports/security/m365_cis_audit.json')
 
-def build_report(json_path: Path, xlsx_path: Path = None):
+def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     if xlsx_path is None:
         # Auto-name Excel based on JSON filename
         xlsx_path = json_path.with_suffix('.xlsx')
     json_path = Path(json_path)
     xlsx_path = Path(xlsx_path)
+    
+    # Validate input file exists
+    if not json_path.exists():
+        print(f'ERROR: Input file not found: {json_path}', file=sys.stderr)
+        sys.exit(1)
+    
     xlsx_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Handle potential UTF-8 BOM from PowerShell's UTF8 encoding
-    data = json.loads(json_path.read_text(encoding='utf-8-sig'))
+    try:
+        data = json.loads(json_path.read_text(encoding='utf-8-sig'))
+    except json.JSONDecodeError as e:
+        print(f'ERROR: Invalid JSON in {json_path}: {e}', file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f'ERROR: Could not read {json_path}: {e}', file=sys.stderr)
+        sys.exit(1)
     if isinstance(data, dict):
         # In case it's a single object
         rows = [data]

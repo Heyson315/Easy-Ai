@@ -87,8 +87,11 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
                         })
                     except ValueError:
                         continue
-        except Exception as e:
+        except (json.JSONDecodeError, FileNotFoundError) as e:
             print(f"Warning: Could not process {json_file}: {e}", file=sys.stderr)
+            continue
+        except Exception as e:
+            print(f"Warning: Unexpected error processing {json_file}: {e}", file=sys.stderr)
             continue
     
     return historical[-10:]  # Return last 10 data points
