@@ -222,7 +222,7 @@ function Test-CIS-AAD-GlobalAdminCount {
     }
 }
 
-function Test-CIS-Defender-SafeLinks {
+function Test-CIS-Defender-SafeLink {
     [CmdletBinding()] param()
     $id='CIS-DEF-1'; $name='Ensure Safe Links policy is enabled'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Defender for Office'
     try {
@@ -265,7 +265,7 @@ function Test-CIS-Defender-SafeLinks {
     }
 }
 
-function Test-CIS-Defender-SafeAttachments {
+function Test-CIS-Defender-SafeAttachment {
     [CmdletBinding()] param()
     $id='CIS-DEF-2'; $name='Ensure Safe Attachments policy is enabled'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Defender for Office'
     try {
@@ -362,7 +362,7 @@ function Test-CIS-AAD-RiskPoliciesEnabled {
     }
 }
 
-function Test-CIS-Intune-CompliancePolicies {
+function Test-CIS-Intune-CompliancePolicy {
     [CmdletBinding()] param()
     $id='CIS-INTUNE-1'; $name='Ensure Intune device compliance policies exist and are enforced'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; Intune MDM'
     try {
@@ -387,7 +387,7 @@ function Test-CIS-Intune-CompliancePolicies {
     }
 }
 
-function Test-CIS-AAD-GuestUserRestrictions {
+function Test-CIS-AAD-GuestUserRestriction {
     [CmdletBinding()] param()
     $id='CIS-AAD-3'; $name='Ensure guest user access restrictions are configured'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; AAD Guest Access'
     try {
@@ -462,8 +462,8 @@ function Invoke-M365CISAudit {
     $results += Test-CIS-EXO-LegacyProtocolsPerMailbox
     $results += Test-CIS-SPO-ExternalSharingPolicy
     $results += Test-CIS-AAD-GlobalAdminCount
-    $results += Test-CIS-Defender-SafeLinks
-    $results += Test-CIS-Defender-SafeAttachments
+    $results += Test-CIS-Defender-SafeLink
+    $results += Test-CIS-Defender-SafeAttachment
     $results += Test-CIS-CA-MFAEnabled
     
     # New enhanced controls (6)
