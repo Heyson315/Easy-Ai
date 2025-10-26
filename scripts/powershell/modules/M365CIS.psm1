@@ -16,7 +16,8 @@ function Connect-M365CIS {
     param(
         [switch]$SkipExchange,
         [switch]$SkipGraph,
-        [string]$SPOAdminUrl
+        [string]$SPOAdminUrl,
+        [switch]$SkipPurview
     )
     
     # Fix PSModulePath for OneDrive-synced modules
@@ -68,6 +69,36 @@ function Connect-M365CIS {
         if (Get-Module -ListAvailable Microsoft.Online.SharePoint.PowerShell) {
             Write-CISLog 'SPO module detected. To include SPO tenant checks, provide -SPOAdminUrl https://<tenant>-admin.sharepoint.com' 'Info'
         }
+    }
+
+    # Optional Purview Compliance connection (if module is available)
+    if (-not $SkipPurview) {
+        try {
+            Connect-PurviewCompliance
+        } catch {
+            Write-CISLog "Purview Compliance connect failed: $($_.Exception.Message)" 'Warn'
+        }
+    }
+}
+
+function Connect-PurviewCompliance {
+    [CmdletBinding()]
+    param()
+    
+    try {
+        # Check if ExchangeOnlineManagement module is available (provides Security & Compliance cmdlets)
+        if (Get-Module -ListAvailable ExchangeOnlineManagement) {
+            Write-CISLog 'Connecting to Purview Compliance (Security & Compliance PowerShell)...' 'Info'
+            Import-Module ExchangeOnlineManagement -ErrorAction Stop
+            # Connect-IPPSSession is for Security & Compliance Center
+            Connect-IPPSSession -ErrorAction Stop | Out-Null
+            Write-CISLog 'Connected to Purview Compliance.' 'Info'
+        } else {
+            Write-CISLog 'ExchangeOnlineManagement module not found. Install-Module ExchangeOnlineManagement -Scope CurrentUser' 'Warn'
+        }
+    } catch {
+        Write-CISLog "Purview Compliance connection not available or failed: $($_.Exception.Message)" 'Warn'
+        Write-CISLog 'Purview-related checks will fall back to Manual status.' 'Info'
     }
 }
 
@@ -291,6 +322,132 @@ function Test-CIS-EXO-LegacyProtocolsPerMailbox {
     }
 }
 
+function Test-CIS-Purview-DLPPoliciesEnabled {
+    [CmdletBinding()] param()
+    $id='CIS-PURVIEW-1'; $name='Ensure DLP policies are enabled for data protection'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Purview DLP'
+    try {
+        # Requires ExchangeOnlineManagement (Connect-IPPSSession)
+        $policies = @()
+        try { $policies = Get-DlpCompliancePolicy -ErrorAction Stop } catch { throw 'Not connected to Purview or DLP cmdlets unavailable' }
+        if (-not $policies) { throw 'No DLP policies found' }
+        $enabled = ($policies | Where-Object { $_.Enabled -eq $true } | Measure-Object).Count
+        $expected = 'At least one DLP policy enabled'
+        $actual = "EnabledPolicies=$enabled"
+        $status = if ($enabled -gt 0) { 'Pass' } else { 'Fail' }
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($policies | Select-Object Name,Enabled | Out-String) -Reference $ref
+    } catch {
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'DLP policies enabled' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
+    }
+}
+
+function Test-CIS-AAD-RiskPoliciesEnabled {
+    [CmdletBinding()] param()
+    $id='CIS-AAD-2'; $name='Ensure Azure AD Identity Protection risk policies are configured'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; AAD Identity Protection'
+    try {
+        $ctx = $null
+        try { $ctx = Get-MgContext } catch { $ctx = $null }
+        if (-not $ctx) { throw 'Not connected to Graph' }
+        # Check for Conditional Access policies that use risk-based conditions
+        $policies = Get-MgIdentityConditionalAccessPolicy -All
+        $riskPolicies = $policies | Where-Object {
+            ($_.Conditions.UserRiskLevels -or $_.Conditions.SignInRiskLevels) -and $_.State -eq 'enabled'
+        }
+        $count = ($riskPolicies | Measure-Object).Count
+        $expected = 'At least one risk-based CA policy enabled (user or sign-in risk)'
+        $actual = "RiskBasedPolicies=$count"
+        $status = if ($count -gt 0) { 'Pass' } else { 'Fail' }
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($riskPolicies | Select-Object DisplayName,State | Out-String) -Reference $ref
+    } catch {
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'Risk policies enabled' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
+    }
+}
+
+function Test-CIS-Intune-CompliancePolicies {
+    [CmdletBinding()] param()
+    $id='CIS-INTUNE-1'; $name='Ensure Intune device compliance policies exist and are enforced'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; Intune MDM'
+    try {
+        $ctx = $null
+        try { $ctx = Get-MgContext } catch { $ctx = $null }
+        if (-not $ctx) { throw 'Not connected to Graph' }
+        # Check for device compliance policies via Graph
+        $policies = @()
+        try {
+            Import-Module Microsoft.Graph.DeviceManagement -ErrorAction Stop
+            $policies = Get-MgDeviceManagementDeviceCompliancePolicy -ErrorAction Stop
+        } catch {
+            throw 'Intune cmdlets unavailable or insufficient permissions'
+        }
+        $count = ($policies | Measure-Object).Count
+        $expected = 'At least one device compliance policy configured'
+        $actual = "CompliancePolicies=$count"
+        $status = if ($count -gt 0) { 'Pass' } else { 'Fail' }
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($policies | Select-Object DisplayName,Id | Out-String) -Reference $ref
+    } catch {
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'Compliance policies configured' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
+    }
+}
+
+function Test-CIS-AAD-GuestUserRestrictions {
+    [CmdletBinding()] param()
+    $id='CIS-AAD-3'; $name='Ensure guest user access restrictions are configured'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; AAD Guest Access'
+    try {
+        $ctx = $null
+        try { $ctx = Get-MgContext } catch { $ctx = $null }
+        if (-not $ctx) { throw 'Not connected to Graph' }
+        # Check Authorization Policy for guest user settings
+        $authPolicy = Get-MgPolicyAuthorizationPolicy
+        $guestUserRole = $authPolicy.GuestUserRoleId
+        # Recommended: guestUserRole should be restrictive (e.g., not Member role)
+        # GuestUserRoleId: 10dae51f-b6af-4016-8d66-8c2a99b929b3 is Guest role (restrictive)
+        # GuestUserRoleId: a0b1b346-4d3e-4e8b-98f8-753987be4970 is Member role (less restrictive)
+        $expected = 'Guest user role is restrictive (not Member role)'
+        $actual = "GuestUserRoleId=$guestUserRole"
+        $isRestrictive = $guestUserRole -eq '10dae51f-b6af-4016-8d66-8c2a99b929b3'
+        $status = if ($isRestrictive) { 'Pass' } else { 'Fail' }
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($authPolicy | Out-String) -Reference $ref
+    } catch {
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'Guest access restrictive' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
+    }
+}
+
+function Test-CIS-Purview-AuditLogRetention {
+    [CmdletBinding()] param()
+    $id='CIS-PURVIEW-2'; $name='Ensure audit logs are retained for compliance (90+ days recommended)'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; Purview Auditing'
+    try {
+        # Check unified audit log retention policy
+        $policies = @()
+        try { $policies = Get-UnifiedAuditLogRetentionPolicy -ErrorAction Stop } catch { throw 'Not connected to Purview or audit cmdlets unavailable' }
+        if (-not $policies) { throw 'No audit log retention policies found' }
+        # Check for policies with RetentionDuration >= 90 days
+        $compliantPolicies = $policies | Where-Object { $_.RetentionDuration -ge 90 }
+        $count = ($compliantPolicies | Measure-Object).Count
+        $expected = 'At least one audit log retention policy with 90+ days'
+        $actual = "CompliantPolicies=$count"
+        $status = if ($count -gt 0) { 'Pass' } else { 'Fail' }
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($policies | Select-Object Name,RetentionDuration | Out-String) -Reference $ref
+    } catch {
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'Audit log retention 90+ days' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
+    }
+}
+
+function Test-CIS-Purview-SensitivityLabelsPublished {
+    [CmdletBinding()] param()
+    $id='CIS-PURVIEW-3'; $name='Ensure sensitivity labels are published and enforced'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; Purview Information Protection'
+    try {
+        # Check for published sensitivity label policies
+        $policies = @()
+        try { $policies = Get-LabelPolicy -ErrorAction Stop } catch { throw 'Not connected to Purview or label cmdlets unavailable' }
+        if (-not $policies) { throw 'No sensitivity label policies found' }
+        $enabled = ($policies | Where-Object { $_.Enabled -eq $true } | Measure-Object).Count
+        $expected = 'At least one sensitivity label policy published'
+        $actual = "PublishedPolicies=$enabled"
+        $status = if ($enabled -gt 0) { 'Pass' } else { 'Fail' }
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($policies | Select-Object Name,Enabled | Out-String) -Reference $ref
+    } catch {
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'Sensitivity labels published' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
+    }
+}
+
 function Invoke-M365CISAudit {
     [CmdletBinding()]
     param(
@@ -298,6 +455,7 @@ function Invoke-M365CISAudit {
         [string]$OutputCsv
     )
     $results = @()
+    # Original controls (9)
     $results += Test-CIS-EXO-BasicAuthDisabled
     $results += Test-CIS-EXO-ExternalForwardingDisabled
     $results += Test-CIS-EXO-MailboxAuditingEnabled
@@ -307,6 +465,14 @@ function Invoke-M365CISAudit {
     $results += Test-CIS-Defender-SafeLinks
     $results += Test-CIS-Defender-SafeAttachments
     $results += Test-CIS-CA-MFAEnabled
+    
+    # New enhanced controls (6)
+    $results += Test-CIS-Purview-DLPPoliciesEnabled
+    $results += Test-CIS-AAD-RiskPoliciesEnabled
+    $results += Test-CIS-Intune-CompliancePolicies
+    $results += Test-CIS-AAD-GuestUserRestrictions
+    $results += Test-CIS-Purview-AuditLogRetention
+    $results += Test-CIS-Purview-SensitivityLabelsPublished
 
     if ($OutputJson) { $results | ConvertTo-Json -Depth 5 | Out-File -Encoding utf8 $OutputJson }
     if ($OutputCsv)  { $results | Export-Csv -Path $OutputCsv -NoTypeInformation -Encoding utf8 }

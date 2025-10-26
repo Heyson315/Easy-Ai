@@ -1,0 +1,30 @@
+{
+  "tenantConfig": {
+    "spoAdminUrl": "https://tenant-admin.sharepoint.com",
+    "scheduleFrequency": "Weekly",
+    "scheduleDay": "Monday",
+    "scheduleTime": "09:00"
+  },
+  "notificationConfig": {
+    "enabled": false,
+    "smtpServer": "",
+    "smtpPort": 587,
+    "smtpFrom": "",
+    "smtpUsername": "",
+    "recipients": []
+  },
+  "controlsConfig": {
+    "skipExchange": false,
+    "skipGraph": false,
+    "skipPurview": false,
+    "skipSharePoint": false,
+    "includeIntune": true,
+    "includeAzureAD": true,
+    "includeDefender": true
+  },
+  "outputConfig": {
+    "timestampedOutputs": true,
+    "retentionDays": 90,
+    "generateDashboard": true
+  }
+}

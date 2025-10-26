@@ -4,6 +4,7 @@ param(
   [switch]$SkipExchange,
   [switch]$SkipGraph,
   [string]$SPOAdminUrl,
+  [switch]$SkipPurview,
   [switch]$Timestamped
 )
 
@@ -27,7 +28,7 @@ if ($Timestamped) {
 Import-Module -Force "$PSScriptRoot/modules/M365CIS.psm1"
 
 Write-Host "[+] Connecting to Microsoft 365 services..."
-Connect-M365CIS -SkipExchange:$SkipExchange -SkipGraph:$SkipGraph -SPOAdminUrl $SPOAdminUrl
+Connect-M365CIS -SkipExchange:$SkipExchange -SkipGraph:$SkipGraph -SPOAdminUrl $SPOAdminUrl -SkipPurview:$SkipPurview
 
 Write-Host "[+] Running CIS Level 1 audit checks..."
 $results = Invoke-M365CISAudit -OutputJson $OutJson -OutputCsv $OutCsv

@@ -34,3 +34,9 @@ output/reports/security/**
 
 # Keep Excel out of Git to avoid repo bloat; use Git LFS if needed
 output/reports/security/*.xlsx
+
+# Exclude test audit files
+output/reports/security/test_*.json
+output/reports/security/test_*.html
+output/reports/security/test_*.csv
+
