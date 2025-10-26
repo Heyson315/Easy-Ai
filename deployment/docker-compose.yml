@@ -1,0 +1,218 @@
+# M365 Security Toolkit - Docker Compose Configuration
+# Production deployment configuration for containerized M365 security auditing
+
+version: '3.8'
+
+services:
+  m365-security-toolkit:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE:-}
+        VCS_REF: ${VCS_REF:-}
+        VERSION: ${VERSION:-1.0.0}
+    
+    image: m365-security-toolkit:${VERSION:-latest}
+    
+    container_name: m365-toolkit-${ENVIRONMENT:-prod}
+    
+    restart: unless-stopped
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    
+    # Environment configuration
+    environment:
+      - M365_TOOLKIT_ENV=${ENVIRONMENT:-production}
+      - M365_TOOLKIT_LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - TZ=${TIMEZONE:-UTC}
+      
+      # Azure configuration (from Key Vault or environment)
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID:-}
+      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET:-}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID:-}
+      - AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID:-}
+      
+      # M365 configuration
+      - M365_TENANT_ID=${M365_TENANT_ID:-}
+      - M365_CLIENT_ID=${M365_CLIENT_ID:-}
+      - M365_CLIENT_SECRET=${M365_CLIENT_SECRET:-}
+      
+      # Audit configuration
+      - AUDIT_SCHEDULE_ENABLED=${AUDIT_SCHEDULE_ENABLED:-false}
+      - AUDIT_INTERVAL_HOURS=${AUDIT_INTERVAL_HOURS:-24}
+      - AUDIT_INCLUDE_SPO=${AUDIT_INCLUDE_SPO:-true}
+      - AUDIT_SKIP_PURVIEW=${AUDIT_SKIP_PURVIEW:-false}
+      
+      # Storage configuration
+      - STORAGE_ACCOUNT_NAME=${STORAGE_ACCOUNT_NAME:-}
+      - STORAGE_ACCOUNT_KEY=${STORAGE_ACCOUNT_KEY:-}
+      - STORAGE_CONTAINER_NAME=${STORAGE_CONTAINER_NAME:-m365-audit-reports}
+      
+      # Key Vault configuration
+      - KEY_VAULT_NAME=${KEY_VAULT_NAME:-}
+      - KEY_VAULT_URI=${KEY_VAULT_URI:-}
+      
+      # Monitoring configuration
+      - APPLICATION_INSIGHTS_KEY=${APPLICATION_INSIGHTS_KEY:-}
+      - LOG_ANALYTICS_WORKSPACE_ID=${LOG_ANALYTICS_WORKSPACE_ID:-}
+      
+    # Volume mounts for persistent data
+    volumes:
+      # Application data
+      - m365-data:/app/data
+      - m365-logs:/app/logs
+      - m365-output:/app/output
+      - m365-temp:/app/temp
+      
+      # Configuration override (optional)
+      - ${CONFIG_OVERRIDE_PATH:-./config/production_config.json}:/app/config/production_config.json:ro
+      
+      # Certificate store for Windows authentication
+      - type: bind
+        source: ${CERT_STORE_PATH:-C:\ProgramData\M365Toolkit\certs}
+        target: C:\app\certs
+        read_only: true
+        bind:
+          create_host_path: true
+    
+    # Network configuration
+    networks:
+      - m365-network
+    
+    # Health check configuration
+    healthcheck:
+      test: ["CMD", "powershell.exe", "-File", "C:\\app\\deployment\\docker\\healthcheck.ps1"]
+      interval: 5m
+      timeout: 30s
+      retries: 3
+      start_period: 2m
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+        labels: "service,environment,version"
+    
+    # Labels for monitoring and management
+    labels:
+      - "com.rahmanfinance.service=m365-security-toolkit"
+      - "com.rahmanfinance.environment=${ENVIRONMENT:-production}"
+      - "com.rahmanfinance.version=${VERSION:-1.0.0}"
+      - "com.rahmanfinance.team=security"
+      - "com.rahmanfinance.project=m365-compliance"
+      
+      # Prometheus monitoring labels
+      - "prometheus.io/scrape=true"
+      - "prometheus.io/port=8080"
+      - "prometheus.io/path=/metrics"
+      
+      # Backup labels
+      - "backup.data=true"
+      - "backup.logs=true"
+      - "backup.retention=30d"
+
+  # Optional: Nginx reverse proxy for web dashboard access
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: m365-toolkit-proxy-${ENVIRONMENT:-prod}
+    restart: unless-stopped
+    
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+      - "${HTTPS_PORT:-8443}:443"
+    
+    environment:
+      - NGINX_HOST=${NGINX_HOST:-localhost}
+      - NGINX_PORT=${HTTP_PORT:-8080}
+    
+    volumes:
+      - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deployment/nginx/ssl:/etc/nginx/ssl:ro
+      - m365-output:/usr/share/nginx/html/reports:ro
+    
+    networks:
+      - m365-network
+    
+    depends_on:
+      - m365-security-toolkit
+    
+    labels:
+      - "com.rahmanfinance.service=m365-toolkit-proxy"
+      - "com.rahmanfinance.environment=${ENVIRONMENT:-production}"
+    
+    profiles:
+      - web-access
+
+  # Optional: Redis for caching and session management
+  redis-cache:
+    image: redis:alpine
+    container_name: m365-toolkit-redis-${ENVIRONMENT:-prod}
+    restart: unless-stopped
+    
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    
+    volumes:
+      - m365-redis:/data
+    
+    networks:
+      - m365-network
+    
+    labels:
+      - "com.rahmanfinance.service=m365-toolkit-redis"
+      - "com.rahmanfinance.environment=${ENVIRONMENT:-production}"
+    
+    profiles:
+      - caching
+
+# Named volumes for persistent data
+volumes:
+  m365-data:
+    driver: local
+    labels:
+      - "com.rahmanfinance.volume=data"
+      - "backup=true"
+      
+  m365-logs:
+    driver: local
+    labels:
+      - "com.rahmanfinance.volume=logs"
+      - "backup=true"
+      
+  m365-output:
+    driver: local
+    labels:
+      - "com.rahmanfinance.volume=output"
+      - "backup=true"
+      
+  m365-temp:
+    driver: local
+    labels:
+      - "com.rahmanfinance.volume=temp"
+      - "backup=false"
+      
+  m365-redis:
+    driver: local
+    labels:
+      - "com.rahmanfinance.volume=redis"
+      - "backup=true"
+
+# Network configuration
+networks:
+  m365-network:
+    driver: bridge
+    labels:
+      - "com.rahmanfinance.network=m365-toolkit"
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

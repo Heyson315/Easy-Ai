@@ -1,0 +1,35 @@
+{
+  "timeout": "20s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackHTTPStatus": 200,
+  "aliveStatusCodes": [200, 206],
+  "ignorePatterns": [
+    {
+      "pattern": "^https://localhost"
+    },
+    {
+      "pattern": "^https://.*\\.local"
+    },
+    {
+      "pattern": "^https://example\\."
+    },
+    {
+      "pattern": "^mailto:"
+    }
+  ],
+  "replacementPatterns": [
+    {
+      "pattern": "^/",
+      "replacement": "https://github.com/Heyson315/share-report/blob/main/"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": ["https://github.com", "https://api.github.com"],
+      "headers": {
+        "Accept-Encoding": "zstd, br, gzip, deflate"
+      }
+    }
+  ]
+}

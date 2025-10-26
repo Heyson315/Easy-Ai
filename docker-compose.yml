@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  m365-security-toolkit:
+    build: .
+    container_name: m365-security-toolkit
+    environment:
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
+      - KEY_VAULT_URL=${KEY_VAULT_URL}
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./config:/app/config:ro
+    networks:
+      - m365-network
+    restart: unless-stopped
+    
+  # Optional: Add a monitoring container
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: m365-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - m365-network
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+
+networks:
+  m365-network:
+    driver: bridge

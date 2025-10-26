@@ -1,0 +1,46 @@
+{
+  "default": {
+    "extends": "markdownlint/style/all",
+    "ul-indent": {
+      "indent": 2
+    },
+    "no-hard-tabs": false,
+    "line-length": {
+      "line_length": 120,
+      "heading_line_length": 120,
+      "code_block_line_length": 120
+    },
+    "no-inline-html": {
+      "allowed_elements": [
+        "br",
+        "pre",
+        "code",
+        "kbd",
+        "details",
+        "summary"
+      ]
+    },
+    "no-duplicate-heading": {
+      "siblings_only": true
+    },
+    "no-trailing-punctuation": {
+      "punctuation": ".,;:"
+    },
+    "proper-names": {
+      "names": [
+        "GitHub",
+        "PowerShell",
+        "Python",
+        "M365",
+        "CIS",
+        "JSON",
+        "CSV",
+        "Excel",
+        "HTML",
+        "SharePoint",
+        "Azure",
+        "Microsoft"
+      ]
+    }
+  }
+}

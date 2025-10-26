@@ -1,0 +1,326 @@
+{
+  "production": {
+    "metadata": {
+      "environment": "production",
+      "version": "1.0.0",
+      "created": "2025-10-26",
+      "description": "Production configuration for M365 Security Toolkit"
+    },
+    "azure": {
+      "subscription": {
+        "id": "${AZURE_SUBSCRIPTION_ID}",
+        "tenantId": "${AZURE_TENANT_ID}"
+      },
+      "keyVault": {
+        "name": "${KEY_VAULT_NAME}",
+        "resourceGroup": "${RESOURCE_GROUP_NAME}",
+        "secrets": {
+          "m365TenantId": "M365-TenantId",
+          "m365ApplicationId": "M365-ApplicationId", 
+          "m365ClientSecret": "M365-ClientSecret",
+          "storageAccountName": "StorageAccount-Name",
+          "storageAccountKey": "StorageAccount-Key",
+          "appInsightsKey": "AppInsights-InstrumentationKey",
+          "appInsightsConnectionString": "AppInsights-ConnectionString",
+          "logAnalyticsWorkspaceId": "LogAnalytics-WorkspaceId"
+        }
+      },
+      "storage": {
+        "accountName": "${STORAGE_ACCOUNT_NAME}",
+        "containers": {
+          "auditReports": "audit-reports",
+          "sharepointReports": "sharepoint-reports",
+          "dashboards": "security-dashboards",
+          "logs": "logs",
+          "backups": "backups"
+        },
+        "retentionPolicy": {
+          "auditReports": "365 days",
+          "sharepointReports": "180 days",
+          "dashboards": "90 days",
+          "logs": "90 days",
+          "backups": "2555 days"
+        }
+      },
+      "monitoring": {
+        "logAnalyticsWorkspace": "${LOG_ANALYTICS_WORKSPACE_NAME}",
+        "applicationInsights": "${APPLICATION_INSIGHTS_NAME}",
+        "alerting": {
+          "enabled": true,
+          "severity": {
+            "critical": 0,
+            "high": 1,
+            "medium": 2,
+            "low": 3
+          }
+        }
+      },
+      "containerRegistry": {
+        "name": "${CONTAINER_REGISTRY_NAME}",
+        "loginServer": "${CONTAINER_REGISTRY_LOGIN_SERVER}"
+      }
+    },
+    "m365": {
+      "authentication": {
+        "method": "ServicePrincipal",
+        "scopes": [
+          "https://graph.microsoft.com/.default"
+        ]
+      },
+      "endpoints": {
+        "exchangeOnline": "https://outlook.office365.com/powershell-liveid/",
+        "microsoftGraph": "https://graph.microsoft.com/",
+        "sharepointAdmin": "${SHAREPOINT_ADMIN_URL}",
+        "securityCenter": "https://protection.office.com/powershell-liveid/",
+        "complianceCenter": "https://ps.compliance.protection.outlook.com/powershell-liveid/"
+      },
+      "permissions": {
+        "required": [
+          "User.Read.All",
+          "Policy.Read.All", 
+          "Directory.Read.All",
+          "Organization.Read.All",
+          "AuditLog.Read.All",
+          "SecurityEvents.Read.All",
+          "Sites.Read.All"
+        ],
+        "optional": [
+          "Sites.FullControl.All",
+          "Policy.ReadWrite.All",
+          "Directory.ReadWrite.All"
+        ]
+      }
+    },
+    "audit": {
+      "scheduling": {
+        "daily": {
+          "enabled": true,
+          "time": "07:00",
+          "timezone": "UTC"
+        },
+        "weekly": {
+          "enabled": true,
+          "day": "Sunday",
+          "time": "02:00",
+          "timezone": "UTC"
+        },
+        "monthly": {
+          "enabled": true,
+          "day": 1,
+          "time": "01:00",
+          "timezone": "UTC"
+        }
+      },
+      "controls": {
+        "cisFramework": "v3.0.0",
+        "enabledControls": [
+          "1.1.1", "1.1.2", "1.1.3", "1.2.1", "1.2.2", "1.3.1", "1.3.2", "1.3.3",
+          "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.1.8",
+          "3.1.1", "3.1.2", "3.1.3", "3.1.4", "3.2.1", "3.2.2", "3.2.3", "3.2.4",
+          "4.1.1", "4.1.2", "4.1.3", "4.2.1", "4.2.2", "4.2.3", "4.2.4", "4.2.5",
+          "5.1.1", "5.1.2", "5.1.3", "5.1.4", "5.1.5", "5.2.1", "5.2.2", "5.2.3"
+        ],
+        "severityFilters": ["Critical", "High", "Medium", "Low"],
+        "includeEvidence": true,
+        "includeRemediation": true
+      },
+      "output": {
+        "formats": ["JSON", "Excel", "HTML"],
+        "compression": true,
+        "encryption": false,
+        "timestamped": true
+      }
+    },
+    "sharepoint": {
+      "analysis": {
+        "includeSiteCollections": true,
+        "includeSubsites": true,
+        "includePermissionInheritance": true,
+        "includeExternalSharing": true,
+        "maxSitesToProcess": 10000,
+        "batchSize": 100
+      },
+      "reporting": {
+        "summaryReports": true,
+        "detailedReports": true,
+        "permissionMatrix": true,
+        "externalSharingReport": true
+      }
+    },
+    "security": {
+      "encryption": {
+        "atRest": true,
+        "inTransit": true,
+        "keyManagement": "AzureKeyVault"
+      },
+      "access": {
+        "authentication": "ServicePrincipal",
+        "authorization": "RBAC",
+        "auditLogging": true
+      },
+      "dataProtection": {
+        "sensitiveDataMasking": true,
+        "piiDetection": true,
+        "dataClassification": true
+      }
+    },
+    "performance": {
+      "thresholds": {
+        "executionTime": {
+          "warning": 30,
+          "critical": 120
+        },
+        "memoryUsage": {
+          "warning": 500,
+          "critical": 1000
+        },
+        "processingRate": {
+          "minimum": 10
+        }
+      },
+      "optimization": {
+        "parallelProcessing": true,
+        "caching": true,
+        "streamingData": true,
+        "compressionEnabled": true
+      }
+    },
+    "notifications": {
+      "email": {
+        "enabled": true,
+        "recipients": [
+          "${NOTIFICATION_EMAIL_RECIPIENTS}"
+        ],
+        "severityFilter": ["Critical", "High"],
+        "includeAttachments": true
+      },
+      "teams": {
+        "enabled": true,
+        "webhookUrl": "${TEAMS_WEBHOOK_URL}",
+        "severityFilter": ["Critical", "High", "Medium"],
+        "mentionUsers": true
+      },
+      "sms": {
+        "enabled": false,
+        "recipients": [],
+        "severityFilter": ["Critical"]
+      }
+    },
+    "backup": {
+      "enabled": true,
+      "schedule": {
+        "frequency": "Daily",
+        "time": "23:00",
+        "timezone": "UTC"
+      },
+      "retention": {
+        "daily": 30,
+        "weekly": 12,
+        "monthly": 12,
+        "yearly": 7
+      },
+      "destinations": [
+        {
+          "type": "AzureStorage",
+          "container": "backups",
+          "encryption": true
+        }
+      ]
+    },
+    "logging": {
+      "level": "Information",
+      "destinations": [
+        {
+          "type": "AzureLogAnalytics",
+          "workspaceId": "${LOG_ANALYTICS_WORKSPACE_ID}"
+        },
+        {
+          "type": "AzureStorage",
+          "container": "logs"
+        },
+        {
+          "type": "ApplicationInsights",
+          "instrumentationKey": "${APPLICATION_INSIGHTS_KEY}"
+        }
+      ],
+      "retention": {
+        "logAnalytics": "90 days",
+        "storage": "365 days",
+        "applicationInsights": "90 days"
+      },
+      "structured": true,
+      "includeStackTrace": true,
+      "sanitizeSensitiveData": true
+    },
+    "compliance": {
+      "frameworks": [
+        {
+          "name": "CIS Microsoft 365 Foundations",
+          "version": "v3.0.0",
+          "enabled": true
+        }
+      ],
+      "reportGeneration": {
+        "automated": true,
+        "schedule": "Monthly",
+        "recipients": ["${COMPLIANCE_REPORT_RECIPIENTS}"],
+        "includeEvidence": true,
+        "digitallySigned": false
+      },
+      "auditTrail": {
+        "enabled": true,
+        "immutable": true,
+        "retention": "7 years"
+      }
+    },
+    "maintenance": {
+      "updates": {
+        "automated": true,
+        "schedule": "Weekly",
+        "testingRequired": true,
+        "rollbackPlan": true
+      },
+      "healthChecks": {
+        "frequency": "Daily",
+        "automated": true,
+        "alertOnFailure": true
+      },
+      "cleanup": {
+        "temporaryFiles": true,
+        "oldReports": true,
+        "expiredLogs": true,
+        "schedule": "Daily"
+      }
+    }
+  },
+  "development": {
+    "extends": "production",
+    "overrides": {
+      "azure.keyVault.name": "${KEY_VAULT_NAME_DEV}",
+      "azure.storage.accountName": "${STORAGE_ACCOUNT_NAME_DEV}",
+      "audit.scheduling.daily.enabled": false,
+      "audit.scheduling.weekly.enabled": false,
+      "audit.scheduling.monthly.enabled": false,
+      "logging.level": "Debug",
+      "performance.thresholds.executionTime.warning": 60,
+      "performance.thresholds.executionTime.critical": 300,
+      "backup.enabled": false,
+      "notifications.email.enabled": false,
+      "notifications.teams.enabled": false
+    }
+  },
+  "test": {
+    "extends": "production", 
+    "overrides": {
+      "azure.keyVault.name": "${KEY_VAULT_NAME_TEST}",
+      "azure.storage.accountName": "${STORAGE_ACCOUNT_NAME_TEST}",
+      "audit.scheduling.daily.enabled": true,
+      "audit.scheduling.weekly.enabled": false,
+      "audit.scheduling.monthly.enabled": false,
+      "logging.level": "Debug",
+      "backup.enabled": false,
+      "notifications.email.severityFilter": ["Critical"],
+      "notifications.teams.severityFilter": ["Critical"]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+"""UserPrincipalName""","""Role""","""Permissions""","""Site"""
+"""user1@contoso.com""","""Owner""","""Full Control""","""https://contoso.sharepoint.com/sites/team1"""
+"""user2@contoso.com""","""Member""","""Edit""","""https://contoso.sharepoint.com/sites/team1"""
+"""user3@contoso.com""","""Visitor""","""Read""","""https://contoso.sharepoint.com/sites/team2"""

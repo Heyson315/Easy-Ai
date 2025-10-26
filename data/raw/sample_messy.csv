@@ -1,0 +1,9 @@
+# Sample CSV with issues that need cleaning
+"UserPrincipalName","Role","Permissions","Site"
+# This is a comment that should be removed
+"user1@contoso.com","Owner","Full Control","https://contoso.sharepoint.com/sites/team1"
+
+"user2@contoso.com","Member","Edit","https://contoso.sharepoint.com/sites/team1"
+# Another comment
+"UserPrincipalName","Role","Permissions","Site"
+"user3@contoso.com","Visitor","Read","https://contoso.sharepoint.com/sites/team2"

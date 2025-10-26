@@ -1,0 +1,32 @@
+[
+    {
+        "ControlId": "CIS-1.1",
+        "Title": "Ensure multifactor authentication is enabled for all users",
+        "Severity": "High",
+        "Status": "Pass",
+        "Expected": "MFA enabled for all users",
+        "Actual": "MFA enabled for 95% of users",
+        "Evidence": "5 users without MFA",
+        "Timestamp": "2025-10-26T02:50:00Z"
+    },
+    {
+        "ControlId": "CIS-1.2", 
+        "Title": "Ensure guest access is restricted",
+        "Severity": "Medium",
+        "Status": "Fail",
+        "Expected": "Guest access disabled",
+        "Actual": "Guest access enabled",
+        "Evidence": "External sharing enabled in SharePoint",
+        "Timestamp": "2025-10-26T02:50:00Z"
+    },
+    {
+        "ControlId": "CIS-2.1",
+        "Title": "Ensure modern authentication is enabled",
+        "Severity": "High", 
+        "Status": "Pass",
+        "Expected": "Legacy auth disabled",
+        "Actual": "Legacy auth disabled",
+        "Evidence": "Modern authentication enforced",
+        "Timestamp": "2025-10-26T02:50:00Z"
+    }
+]

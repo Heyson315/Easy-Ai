@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-10-26T00:33:20.605724",
+  "system_info": {
+    "python_version": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "cpu_count": 16,
+    "total_memory_gb": 31.683326721191406
+  },
+  "results": {
+    "100": {
+      "json": {
+        "records": 100,
+        "generation_time": 0.00031495094299316406,
+        "json_write_time": 0.004839658737182617,
+        "json_read_time": 0.016159772872924805,
+        "total_time": 0.021737098693847656,
+        "memory_used_mb": 0.05859375,
+        "peak_memory_mb": 0.6171875,
+        "records_per_second": 4600.429956565612
+      },
+      "csv": {
+        "records": 100,
+        "csv_write_time": 0.002602100372314453,
+        "csv_read_time": 0.03190946578979492,
+        "total_time": 0.034980058670043945,
+        "peak_memory_mb": 0.03125,
+        "records_per_second": 2858.7716488205183
+      },
+      "excel": {
+        "records": 100,
+        "data_processing_time": 0.00011348724365234375,
+        "excel_generation_time": 0.0030841827392578125,
+        "total_time": 0.003552675247192383,
+        "peak_memory_mb": 0.01953125,
+        "categories_created": 10,
+        "records_per_second": 28147.802160928797
+      }
+    },
+    "1000": {
+      "json": {
+        "records": 1000,
+        "generation_time": 0.002843618392944336,
+        "json_write_time": 0.01729893684387207,
+        "json_read_time": 0.026410341262817383,
+        "total_time": 0.04725933074951172,
+        "memory_used_mb": 0.51171875,
+        "peak_memory_mb": 1.140625,
+        "records_per_second": 21159.842599132277
+      },
+      "csv": {
+        "records": 1000,
+        "csv_write_time": 0.003164529800415039,
+        "csv_read_time": 0.03444623947143555,
+        "total_time": 0.03801560401916504,
+        "peak_memory_mb": 0.0078125,
+        "records_per_second": 26304.98780174225
+      },
+      "excel": {
+        "records": 1000,
+        "data_processing_time": 0.0003871917724609375,
+        "excel_generation_time": 0.011133193969726562,
+        "total_time": 0.01203465461730957,
+        "peak_memory_mb": 0.140625,
+        "categories_created": 10,
+        "records_per_second": 83093.36925728549
+      }
+    },
+    "5000": {
+      "json": {
+        "records": 5000,
+        "generation_time": 0.014435768127441406,
+        "json_write_time": 0.06636786460876465,
+        "json_read_time": 0.030745983123779297,
+        "total_time": 0.11243820190429688,
+        "memory_used_mb": 1.953125,
+        "peak_memory_mb": 2.6953125,
+        "records_per_second": 44468.87192536047
+      },
+      "csv": {
+        "records": 5000,
+        "csv_write_time": 0.0182187557220459,
+        "csv_read_time": 0.0404665470123291,
+        "total_time": 0.059328556060791016,
+        "peak_memory_mb": 0.03515625,
+        "records_per_second": 84276.44850949598
+      },
+      "excel": {
+        "records": 5000,
+        "data_processing_time": 0.0025577545166015625,
+        "excel_generation_time": 0.05439019203186035,
+        "total_time": 0.057656049728393555,
+        "peak_memory_mb": 0.0078125,
+        "categories_created": 10,
+        "records_per_second": 86721.16843859453
+      }
+    }
+  }
+}

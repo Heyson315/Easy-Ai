@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Data files (exclude sensitive data)
+data/raw/sharepoint/*.csv
+data/external/
+*.xlsx
+*.xls
+
+# Output files (generated content)
+output/automated/
+output/dashboards/*.png
+output/reports/*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/

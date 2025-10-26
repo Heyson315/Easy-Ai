@@ -1,0 +1,73 @@
+{
+  "performance_testing": {
+    "description": "Configuration for M365 Security Toolkit performance testing",
+    "version": "1.0.0",
+    "test_datasets": {
+      "small": {
+        "description": "Small dataset for quick validation testing",
+        "cis_controls": 25,
+        "cis_historical_days": 7,
+        "sharepoint_sites": 50,
+        "sharepoint_permissions_per_site": 15,
+        "expected_processing_time_seconds": 5,
+        "max_memory_usage_mb": 100
+      },
+      "medium": {
+        "description": "Medium dataset for typical production workloads",
+        "cis_controls": 50,
+        "cis_historical_days": 30,
+        "sharepoint_sites": 200,
+        "sharepoint_permissions_per_site": 25,
+        "expected_processing_time_seconds": 15,
+        "max_memory_usage_mb": 250
+      },
+      "large": {
+        "description": "Large dataset for stress testing",
+        "cis_controls": 100,
+        "cis_historical_days": 90,
+        "sharepoint_sites": 1000,
+        "sharepoint_permissions_per_site": 50,
+        "expected_processing_time_seconds": 60,
+        "max_memory_usage_mb": 500
+      },
+      "xlarge": {
+        "description": "Extra large dataset for maximum capacity testing",
+        "cis_controls": 200,
+        "cis_historical_days": 180,
+        "sharepoint_sites": 5000,
+        "sharepoint_permissions_per_site": 100,
+        "expected_processing_time_seconds": 300,
+        "max_memory_usage_mb": 1000
+      }
+    },
+    "performance_thresholds": {
+      "execution_time": {
+        "warning_seconds": 30,
+        "critical_seconds": 120
+      },
+      "memory_usage": {
+        "warning_mb": 500,
+        "critical_mb": 1000
+      },
+      "processing_rate": {
+        "minimum_records_per_second": 10
+      },
+      "success_rate": {
+        "minimum_percentage": 95
+      }
+    },
+    "monitoring": {
+      "sample_interval_seconds": 1,
+      "enable_cpu_monitoring": true,
+      "enable_memory_monitoring": true,
+      "enable_disk_io_monitoring": false
+    },
+    "output_settings": {
+      "generate_charts": true,
+      "export_csv": true,
+      "export_json": true,
+      "export_html_report": true,
+      "retention_days": 30
+    }
+  }
+}

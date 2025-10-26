@@ -1,0 +1,44 @@
+# M365 Security Toolkit - Python-focused Container
+FROM python:3.11-slim
+
+LABEL maintainer="M365 Security Toolkit Team"
+LABEL version="1.0.0"
+LABEL description="M365 Security and SharePoint Analysis Toolkit (Python Components)"
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better layer caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+COPY config/ ./config/
+
+# Create necessary directories
+RUN mkdir -p /app/data/raw /app/data/processed /app/data/archive \
+    /app/output/reports/security /app/output/reports/business \
+    /app/output/reports/academic /app/output/reports/financial \
+    /app/output/dashboards /app/output/presentations /app/output/automated
+
+# Create non-root user
+RUN useradd -m -u 1000 m365user && chown -R m365user:m365user /app
+USER m365user
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)"
+
+# Default command - show available Copilot-optimized commands
+CMD ["python", "-c", "print('🤖 M365 Security Toolkit with Copilot Integration'); print('=' * 50); print('Available commands:'); print('- python scripts/clean_csv.py --help'); print('- python scripts/m365_cis_report.py --help'); print('- python scripts/generate_security_dashboard.py --help'); print('- python scripts/copilot_formatter.py --help'); print('- python scripts/auto_copilot_reports.py --help'); print('- python -m src.integrations.sharepoint_connector --help'); print(); print('🚀 Copilot Integration:'); print('- Optimized data formats for Excel, Word, PowerPoint Copilot'); print('- Ready-to-use prompt library in docs/COPILOT_PROMPTS.md'); print('- Automated report generation for Copilot consumption'); print(); print('💡 Quick Start:'); print('1. Run audit: docker run -v data:/app/data -v output:/app/output m365-security-toolkit python scripts/auto_copilot_reports.py --input /app/data/audit.json'); print('2. Open generated Excel file in M365'); print('3. Ask Copilot: \"Analyze this security data and create executive summary\"')"]

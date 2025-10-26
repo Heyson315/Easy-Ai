@@ -1,0 +1,12 @@
+{
+    "data_root": "data/",
+    "output_root": "output/",
+    "template_root": "templates/",
+    "src_root": "src/",
+    "sharepoint_data": "data/raw/sharepoint/",
+    "financial_data": "data/raw/financial/",
+    "academic_data": "data/raw/academic/",
+    "processed_data": "data/processed/",
+    "reports_output": "output/reports/",
+    "dashboards_output": "output/dashboards/"
+}

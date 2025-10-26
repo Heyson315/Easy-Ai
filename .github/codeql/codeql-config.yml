@@ -1,0 +1,21 @@
+name: "M365 Security Toolkit CodeQL Config"
+
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+
+paths-ignore:
+  - "**/*.md"
+  - "**/docs/**"
+  - "**/templates/**"
+  - "**/__pycache__/**"
+  - "**/test_*"
+
+paths:
+  - "scripts/"
+  - "src/"
+
+# Custom query pack for specific security patterns
+packs:
+  - "codeql/python-queries"
+  - "codeql/python-security-extended-queries"
