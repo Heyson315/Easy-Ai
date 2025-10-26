@@ -1,0 +1,32 @@
+[MASTER]
+# Maximum line length
+max-line-length=120
+
+# Allow TODO comments
+notes=TODO,FIXME,XXX
+
+[MESSAGES CONTROL]
+# Disable specific messages that may not apply
+disable=
+    C0111,  # missing-docstring (we have some utility scripts)
+    R0913,  # too-many-arguments
+    R0914,  # too-many-locals
+    W0703,  # broad-except (sometimes needed for robustness)
+
+[FORMAT]
+# Maximum number of characters on a single line
+max-line-length=120
+
+# Allow snake_case for variable names
+variable-rgx=[a-z_][a-z0-9_]{2,30}$
+
+[DESIGN]
+# Minimum number of public methods for a class
+min-public-methods=0
+
+# Maximum number of attributes for a class
+max-attributes=10
+
+[BASIC]
+# Good variable names
+good-names=i,j,k,df,ap,f,e,td,ts

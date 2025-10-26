@@ -17,98 +17,116 @@ from datetime import datetime
 from typing import Dict, List, Any
 import argparse
 
+
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate summary statistics from audit results."""
     stats = {
-        'total': len(results),
-        'pass': 0,
-        'fail': 0,
-        'manual': 0,
-        'error': 0,
-        'by_severity': {'High': 0, 'Medium': 0, 'Low': 0},
-        'failed_by_severity': {'High': 0, 'Medium': 0, 'Low': 0}
+        "total": len(results),
+        "pass": 0,
+        "fail": 0,
+        "manual": 0,
+        "error": 0,
+        "by_severity": {"High": 0, "Medium": 0, "Low": 0},
+        "failed_by_severity": {"High": 0, "Medium": 0, "Low": 0},
     }
-    
+
     for result in results:
-        status = result.get('Status', 'Unknown')
-        severity = result.get('Severity', 'Unknown')
-        
-        if status == 'Pass':
-            stats['pass'] += 1
-        elif status == 'Fail':
-            stats['fail'] += 1
-            if severity in stats['failed_by_severity']:
-                stats['failed_by_severity'][severity] += 1
-        elif status == 'Manual':
-            stats['manual'] += 1
-        elif status == 'Error':
-            stats['error'] += 1
-        
-        if severity in stats['by_severity']:
-            stats['by_severity'][severity] += 1
-    
-    stats['pass_rate'] = round((stats['pass'] / stats['total']) * 100, 2) if stats['total'] > 0 else 0
-    stats['fail_rate'] = round((stats['fail'] / stats['total']) * 100, 2) if stats['total'] > 0 else 0
-    
+        status = result.get("Status", "Unknown")
+        severity = result.get("Severity", "Unknown")
+
+        if status == "Pass":
+            stats["pass"] += 1
+        elif status == "Fail":
+            stats["fail"] += 1
+            if severity in stats["failed_by_severity"]:
+                stats["failed_by_severity"][severity] += 1
+        elif status == "Manual":
+            stats["manual"] += 1
+        elif status == "Error":
+            stats["error"] += 1
+
+        if severity in stats["by_severity"]:
+            stats["by_severity"][severity] += 1
+
+    stats["pass_rate"] = round((stats["pass"] / stats["total"]) * 100, 2) if stats["total"] > 0 else 0
+    stats["fail_rate"] = round((stats["fail"] / stats["total"]) * 100, 2) if stats["total"] > 0 else 0
+
     return stats
+
 
 def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
     """Load historical audit data for trend analysis."""
     historical = []
-    
+
     # Look for timestamped JSON files
-    json_files = sorted(reports_dir.glob('m365_cis_audit_*.json'))
-    
+    json_files = sorted(reports_dir.glob("m365_cis_audit_*.json"))
+
     for json_file in json_files:
         try:
             results = load_audit_results(json_file)
             stats = calculate_statistics(results)
-            
+
             # Extract timestamp from filename (format: m365_cis_audit_YYYYMMDD_HHMMSS.json)
             filename = json_file.stem
-            if '_' in filename:
-                parts = filename.split('_')
+            if "_" in filename:
+                parts = filename.split("_")
                 if len(parts) >= 5:
                     date_str = parts[3]
-                    time_str = parts[4] if len(parts) > 4 else '000000'
+                    time_str = parts[4] if len(parts) > 4 else "000000"
                     try:
                         timestamp = datetime.strptime(f"{date_str}_{time_str}", "%Y%m%d_%H%M%S")
-                        historical.append({
-                            'timestamp': timestamp.strftime('%Y-%m-%d %H:%M'),
-                            'pass_rate': stats['pass_rate'],
-                            'pass': stats['pass'],
-                            'fail': stats['fail'],
-                            'manual': stats['manual']
-                        })
-                    except ValueError:
+                        historical.append(
+                            {
+                                "timestamp": timestamp.strftime("%Y-%m-%d %H:%M"),
+                                "pass_rate": stats["pass_rate"],
+                                "pass": stats["pass"],
+                                "fail": stats["fail"],
+                                "manual": stats["manual"],
+                            }
+                        )
+                    except ValueError as e:
+                        print(f"Warning: Could not parse timestamp from {json_file.name}: {e}", file=sys.stderr)
                         continue
-        except Exception as e:
-            print(f"Warning: Could not process {json_file}: {e}", file=sys.stderr)
+        except json.JSONDecodeError as e:
+            print(f"Warning: Invalid JSON in {json_file.name}: {e}", file=sys.stderr)
             continue
-    
+        except FileNotFoundError:
+            print(f"Warning: File disappeared during processing: {json_file.name}", file=sys.stderr)
+            continue
+        except (KeyError, TypeError) as e:
+            print(f"Warning: Unexpected data structure in {json_file.name}: {e}", file=sys.stderr)
+            continue
+        except Exception as e:
+            print(f"Warning: Unexpected error processing {json_file.name}: {type(e).__name__}: {e}", file=sys.stderr)
+            continue
+
     return historical[-10:]  # Return last 10 data points
 
-def generate_html_dashboard(results: List[Dict[str, Any]], stats: Dict[str, Any], 
-                            historical: List[Dict[str, Any]], output_path: Path):
+
+def generate_html_dashboard(
+    results: List[Dict[str, Any]], stats: Dict[str, Any], historical: List[Dict[str, Any]], output_path: Path
+):
     """Generate interactive HTML dashboard."""
-    
+
     # Prepare data for charts
-    trend_labels = [h['timestamp'] for h in historical]
-    trend_pass_rates = [h['pass_rate'] for h in historical]
-    
+    trend_labels = [h["timestamp"] for h in historical]
+    trend_pass_rates = [h["pass_rate"] for h in historical]
+
     # Sort results by severity and status
-    severity_order = {'High': 0, 'Medium': 1, 'Low': 2}
-    status_order = {'Fail': 0, 'Error': 1, 'Manual': 2, 'Pass': 3}
-    
-    sorted_results = sorted(results, 
-                           key=lambda x: (severity_order.get(x.get('Severity', 'Low'), 3),
-                                        status_order.get(x.get('Status', 'Pass'), 3)))
-    
+    severity_order = {"High": 0, "Medium": 1, "Low": 2}
+    status_order = {"Fail": 0, "Error": 1, "Manual": 2, "Pass": 3}
+
+    sorted_results = sorted(
+        results,
+        key=lambda x: (severity_order.get(x.get("Severity", "Low"), 3), status_order.get(x.get("Status", "Pass"), 3)),
+    )
+
     # Generate HTML
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -333,18 +351,18 @@ def generate_html_dashboard(results: List[Dict[str, Any]], stats: Dict[str, Any]
                 </thead>
                 <tbody>
 """
-    
+
     # Add table rows
     for result in sorted_results:
-        control_id = result.get('ControlId', 'N/A')
-        title = result.get('Title', 'N/A')
-        severity = result.get('Severity', 'Unknown')
-        status = result.get('Status', 'Unknown')
-        actual = result.get('Actual', 'N/A')
-        
+        control_id = result.get("ControlId", "N/A")
+        title = result.get("Title", "N/A")
+        severity = result.get("Severity", "Unknown")
+        status = result.get("Status", "Unknown")
+        actual = result.get("Actual", "N/A")
+
         status_class = f"status-{status.lower()}"
         severity_class = f"severity-{severity.lower()}"
-        
+
         html_content += f"""
                     <tr data-status="{status.lower()}" data-severity="{severity.lower()}">
                         <td><strong>{control_id}</strong></td>
@@ -354,7 +372,7 @@ def generate_html_dashboard(results: List[Dict[str, Any]], stats: Dict[str, Any]
                         <td>{actual}</td>
                     </tr>
 """
-    
+
     html_content += f"""
                 </tbody>
             </table>
@@ -432,65 +450,65 @@ def generate_html_dashboard(results: List[Dict[str, Any]], stats: Dict[str, Any]
 </body>
 </html>
 """
-    
+
     # Write HTML to file
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 
+
 def main():
-    parser = argparse.ArgumentParser(description='Generate M365 CIS Security Dashboard')
+    parser = argparse.ArgumentParser(description="Generate M365 CIS Security Dashboard")
     parser.add_argument(
-        '--input',
-        type=Path,
-        help='Path to audit JSON file (default: latest in output/reports/security/)'
+        "--input", type=Path, help="Path to audit JSON file (default: latest in output/reports/security/)"
     )
     parser.add_argument(
-        '--output',
+        "--output",
         type=Path,
-        default=Path('output/reports/security/dashboard.html'),
-        help='Output HTML file path (default: output/reports/security/dashboard.html)'
+        default=Path("output/reports/security/dashboard.html"),
+        help="Output HTML file path (default: output/reports/security/dashboard.html)",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Find input file
     if args.input:
         input_path = args.input
     else:
         # Look for latest audit file
-        reports_dir = Path('output/reports/security')
-        json_files = list(reports_dir.glob('m365_cis_audit*.json'))
+        reports_dir = Path("output/reports/security")
+        json_files = list(reports_dir.glob("m365_cis_audit*.json"))
         if not json_files:
             print("ERROR: No audit JSON files found in output/reports/security/", file=sys.stderr)
             print("Run Invoke-M365CISAudit.ps1 first to generate audit data.", file=sys.stderr)
             sys.exit(1)
         input_path = max(json_files, key=lambda p: p.stat().st_mtime)
         print(f"Using latest audit file: {input_path}")
-    
+
     if not input_path.exists():
         print(f"ERROR: Input file not found: {input_path}", file=sys.stderr)
         sys.exit(1)
-    
+
     # Load and process data
     print(f"Loading audit results from {input_path}...")
     results = load_audit_results(input_path)
     stats = calculate_statistics(results)
-    
+
     print(f"Calculating statistics: {stats['total']} controls, {stats['pass_rate']}% pass rate")
-    
+
     # Load historical data
     reports_dir = input_path.parent
     historical = load_historical_data(reports_dir)
     if historical:
         print(f"Found {len(historical)} historical data points for trend analysis")
-    
+
     # Generate dashboard
     print(f"Generating HTML dashboard: {args.output}")
     generate_html_dashboard(results, stats, historical, args.output)
-    
+
     print(f"✅ Dashboard generated successfully: {args.output}")
     print(f"   Open in browser to view: file://{args.output.absolute()}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
