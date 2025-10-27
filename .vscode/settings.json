@@ -57,5 +57,9 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.aiHoverSummaries": true,
+  "python.analysis.displayEnglishDiagnostics": false,
+  "python.analysis.enablePerfTelemetry": true
 }
