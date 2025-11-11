@@ -45,6 +45,7 @@ $script:SkippedCount = 0
 $script:PreviewCount = 0
 
 function Write-RemediationLog {
+    [CmdletBinding()]
     param(
         [string]$Message,
         [ValidateSet('Preview','Applied','Error','Info')]

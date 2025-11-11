@@ -47,6 +47,7 @@ param(
 )
 
 function Write-ColorOutput {
+    [CmdletBinding()]
     param(
         [string]$Message,
         [ConsoleColor]$Color = 'White'
