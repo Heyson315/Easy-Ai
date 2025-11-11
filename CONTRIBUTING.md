@@ -6,8 +6,20 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 
 **For AI coding agents**: Please read [`.github/copilot-instructions.md`](.github/copilot-instructions.md) first for comprehensive project context, architecture patterns, and development workflows specific to this hybrid Python/PowerShell enterprise security toolkit.
 
+## 🌳 Git Branch Strategy
+
+**Before contributing**: Read [`docs/GIT_BRANCH_STRATEGY.md`](docs/GIT_BRANCH_STRATEGY.md) to understand our Git Flow workflow.
+
+**Quick Reference**:
+- Start features from `develop` branch
+- Use `feature/*` naming for new features
+- Use `copilot/*` naming for AI-generated code
+- Create PRs to `develop` branch (not `main`)
+- `main` branch is for production releases only
+
 ## Table of Contents
 - [AI-Assisted Development](#ai-assisted-development)
+- [Git Branch Strategy](#git-branch-strategy)
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Code Style Guidelines](#code-style-guidelines)
@@ -28,6 +40,13 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    ```bash
    git clone https://github.com/Heyson315/share-report.git
    cd share-report
+   ```
+
+2. **Checkout develop branch**
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
    ```
 
 2. **Install Python dependencies**

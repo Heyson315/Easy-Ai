@@ -7,6 +7,7 @@
 - **🏢 Development environment**: [docs/CPA_DEVELOPMENT_ENVIRONMENT.md](docs/CPA_DEVELOPMENT_ENVIRONMENT.md)
 - **🚀 Set up development**: [PROJECT_OUTLINE.md](PROJECT_OUTLINE.md)
 - **👥 Contribute code**: [CONTRIBUTING.md](CONTRIBUTING.md)
+- **🌳 Git workflow**: [docs/GIT_BRANCH_STRATEGY.md](docs/GIT_BRANCH_STRATEGY.md)
 
 ### **AI Development**
 - **🧠 AI agent development**: [.github/copilot-instructions.md](.github/copilot-instructions.md) ⭐ **START HERE**
