@@ -72,7 +72,7 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "🔍 Analyzing PowerShell scripts..."
-        $results = Invoke-ScriptAnalyzer -Path "scripts/powershell/" -Recurse -Severity Warning,Error
+        $results = Invoke-ScriptAnalyzer -Path "scripts/powershell/" -Settings ".PSScriptAnalyzerSettings.psd1" -Recurse
         if ($results) {
           $results | Format-Table -AutoSize
           Write-Host "❌ PowerShell script analysis found issues"

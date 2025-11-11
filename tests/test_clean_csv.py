@@ -11,6 +11,7 @@ Resource Path,Item Type,Permission,User Name,User Email,User Or Group Type,Link 
 another/path,docx,Contribute,Jane Doe,jane@example.com,Internal,,,
 """
 
+
 def test_clean_csv_basic():
     with TemporaryDirectory() as td:
         td = Path(td)
@@ -26,8 +27,16 @@ def test_clean_csv_basic():
 
         df = pd.read_csv(out)
         assert list(df.columns) == [
-            'Resource Path','Item Type','Permission','User Name','User Email','User Or Group Type','Link ID','Link Type','AccessViaLinkID'
+            "Resource Path",
+            "Item Type",
+            "Permission",
+            "User Name",
+            "User Email",
+            "User Or Group Type",
+            "Link ID",
+            "Link Type",
+            "AccessViaLinkID",
         ]
         assert df.shape == (2, 9)
         # Quoted comma should be preserved as a single field
-        assert df.iloc[0]['Resource Path'] == 'parent/path,with,comma'
+        assert df.iloc[0]["Resource Path"] == "parent/path,with,comma"

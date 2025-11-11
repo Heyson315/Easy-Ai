@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
 
 # Virtual environment
 .venv/
@@ -39,4 +43,7 @@ output/reports/security/*.xlsx
 output/reports/security/test_*.json
 output/reports/security/test_*.html
 output/reports/security/test_*.csv
+
+# Test data
+data/test/
 
