@@ -187,15 +187,15 @@ jobs:
                             LatestVersion = $online.Version
                             UpdateAvailable = $true
                         }
-                        Write-Host "📦 $module`: $($installed.Version) → $($online.Version)" -ForegroundColor Yellow
+                        Write-Host "📦 $module : $($installed.Version) → $($online.Version)" -ForegroundColor Yellow
                     } else {
-                        Write-Host "✅ $module`: $($installed.Version) (current)" -ForegroundColor Green
+                        Write-Host "✅ $module : $($installed.Version) (current)" -ForegroundColor Green
                     }
                 } else {
-                    Write-Host "⚠️ $module`: Not installed or not found" -ForegroundColor Red
+                    Write-Host "⚠️ $module : Not installed or not found" -ForegroundColor Red
                 }
             } catch {
-                Write-Host "❌ Error checking $module`: $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "❌ Error checking $module : $($_.Exception.Message)" -ForegroundColor Red
             }
         }
         
