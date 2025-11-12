@@ -17,11 +17,10 @@ Created: November 2025
 """
 
 import json
-import os
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 
 class GPT5CostTracker:
@@ -205,21 +204,21 @@ class GPT5CostTracker:
         print("\n" + "=" * 80)
         print("  GPT-5 Cost Tracker - Session Summary")
         print("=" * 80)
-        print(f"\n📊 Session Statistics:")
+        print("\n📊 Session Statistics:")
         print(f"   Requests: {len(self.session_costs)}")
         print(f"   Input tokens: {self.total_tokens['input']:,}")
         print(f"   Cached tokens: {self.total_tokens['cached_input']:,}")
         print(f"   Output tokens: {self.total_tokens['output']:,}")
         print(f"   Total tokens: {sum(self.total_tokens.values()):,}")
         print(f"\n💰 Session Cost: ${self.total_cost:.4f}")
-        print(f"\n📅 Period Costs:")
+        print("\n📅 Period Costs:")
         print(f"   Today: ${self.get_daily_cost():.4f}")
         print(f"   This week: ${self.get_weekly_cost():.4f}")
         print(f"   This month: ${self.get_monthly_cost():.4f}")
 
         if self.budget_limit:
             remaining = self.budget_limit - self.get_daily_cost()
-            print(f"\n🎯 Budget Status:")
+            print("\n🎯 Budget Status:")
             print(f"   Daily limit: ${self.budget_limit:.2f}")
             print(f"   Remaining: ${max(0, remaining):.2f}")
 

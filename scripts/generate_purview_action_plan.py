@@ -3,10 +3,8 @@
 from datetime import datetime
 from pathlib import Path
 
-import pandas as pd
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment, Font, PatternFill
 
 
 def create_purview_action_plan():
@@ -89,7 +87,11 @@ def create_purview_action_plan():
             "Step": 1,
             "Action": "Access Purview Compliance Portal",
             "Method": "Portal (Recommended)",
-            "Instructions": "1. Navigate to https://compliance.microsoft.com\n2. Sign in with Hassan@hhr-cpa.us\n3. Go to Solutions > Audit > Audit retention policies",
+            "Instructions": (
+                "1. Navigate to https://compliance.microsoft.com\n"
+                "2. Sign in with Hassan@hhr-cpa.us\n"
+                "3. Go to Solutions > Audit > Audit retention policies"
+            ),
             "Time Required": "5 minutes",
             "Prerequisites": "Global Admin or Compliance Admin role",
             "Status": "Not Started",
@@ -98,7 +100,15 @@ def create_purview_action_plan():
             "Step": 2,
             "Action": "Create Audit Retention Policy",
             "Method": "Portal",
-            "Instructions": "1. Click '+ Create audit retention policy'\n2. Name: 'CPA Firm Audit Retention - 3 Years'\n3. Description: 'Retain audit logs for 3 years per IRS requirements'\n4. Duration: 1095 days (3 years)\n5. Record types: Select all or minimum (Exchange, SharePoint, OneDrive, Azure AD)\n6. Users: All users\n7. Priority: 1",
+            "Instructions": (
+                "1. Click '+ Create audit retention policy'\n"
+                "2. Name: 'CPA Firm Audit Retention - 3 Years'\n"
+                "3. Description: 'Retain audit logs for 3 years per IRS requirements'\n"
+                "4. Duration: 1095 days (3 years)\n"
+                "5. Record types: Select all or minimum (Exchange, SharePoint, OneDrive, Azure AD)\n"
+                "6. Users: All users\n"
+                "7. Priority: 1"
+            ),
             "Time Required": "10 minutes",
             "Prerequisites": "Step 1 completed",
             "Status": "Not Started",
@@ -107,7 +117,13 @@ def create_purview_action_plan():
             "Step": 3,
             "Action": "Verify Policy Configuration",
             "Method": "Portal",
-            "Instructions": "1. Return to Audit retention policies page\n2. Confirm policy appears in list\n3. Check Status = 'On'\n4. Verify Duration = 1095 days\n5. Note the Policy ID for documentation",
+            "Instructions": (
+                "1. Return to Audit retention policies page\n"
+                "2. Confirm policy appears in list\n"
+                "3. Check Status = 'On'\n"
+                "4. Verify Duration = 1095 days\n"
+                "5. Note the Policy ID for documentation"
+            ),
             "Time Required": "5 minutes",
             "Prerequisites": "Step 2 completed",
             "Status": "Not Started",
@@ -116,7 +132,12 @@ def create_purview_action_plan():
             "Step": 4,
             "Action": "Test Audit Log Search",
             "Method": "Portal",
-            "Instructions": "1. Go to Solutions > Audit > Audit log search\n2. Search for recent activities (last 7 days)\n3. Verify results appear\n4. Confirm retention warning shows 3 years",
+            "Instructions": (
+                "1. Go to Solutions > Audit > Audit log search\n"
+                "2. Search for recent activities (last 7 days)\n"
+                "3. Verify results appear\n"
+                "4. Confirm retention warning shows 3 years"
+            ),
             "Time Required": "5 minutes",
             "Prerequisites": "Step 3 completed",
             "Status": "Not Started",
@@ -125,7 +146,12 @@ def create_purview_action_plan():
             "Step": 5,
             "Action": "Document Configuration",
             "Method": "Internal Documentation",
-            "Instructions": "1. Screenshot the retention policy settings\n2. Update IT documentation with policy details\n3. Note configuration date and administrator\n4. Add to compliance documentation for SOC 2",
+            "Instructions": (
+                "1. Screenshot the retention policy settings\n"
+                "2. Update IT documentation with policy details\n"
+                "3. Note configuration date and administrator\n"
+                "4. Add to compliance documentation for SOC 2"
+            ),
             "Time Required": "15 minutes",
             "Prerequisites": "Steps 1-4 completed",
             "Status": "Not Started",
@@ -134,7 +160,12 @@ def create_purview_action_plan():
             "Step": 6,
             "Action": "Re-run M365 CIS Audit",
             "Method": "PowerShell",
-            "Instructions": "1. Open PowerShell in share-report directory\n2. Run: .\\scripts\\powershell\\Invoke-M365CISAudit.ps1 -Timestamped\n3. Verify CIS-PURVIEW-2 now shows 'Pass' or updated evidence\n4. Generate Excel report with: python scripts/m365_cis_report.py",
+            "Instructions": (
+                "1. Open PowerShell in share-report directory\n"
+                "2. Run: .\\scripts\\powershell\\Invoke-M365CISAudit.ps1 -Timestamped\n"
+                "3. Verify CIS-PURVIEW-2 now shows 'Pass' or updated evidence\n"
+                "4. Generate Excel report with: python scripts/m365_cis_report.py"
+            ),
             "Time Required": "10 minutes",
             "Prerequisites": "Step 5 completed",
             "Status": "Not Started",
@@ -218,7 +249,8 @@ def create_purview_action_plan():
         [""],
         ["Important Notes:"],
         [
-            "• RetentionDuration accepts: ThreeDays, SevenDays, FourteenDays, OneMonth, ThreeMonths, SixMonths, NineMonths, TwelveMonths, TenYears"
+            "• RetentionDuration accepts: ThreeDays, SevenDays, FourteenDays, OneMonth, "
+            "ThreeMonths, SixMonths, NineMonths, TwelveMonths, TenYears"
         ],
         ["• For 3 years (1095 days), you may need to use custom duration or portal method"],
         ["• Policy changes take effect within 24 hours"],
