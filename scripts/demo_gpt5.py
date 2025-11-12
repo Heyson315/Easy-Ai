@@ -327,7 +327,7 @@ def main():
         return
 
     print(f"\n✅ Azure OpenAI Endpoint: {endpoint}")
-    print("✅ API Key: ***" + ("*" * 20) + api_key[-4:] if api_key else "Not set")
+    print("✅ API Key: [SET]" if api_key else "✅ API Key: [NOT SET]")
     print("\nRunning demos...\n")
 
     # Run demos
