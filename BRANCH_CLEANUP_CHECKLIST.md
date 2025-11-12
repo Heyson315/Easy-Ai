@@ -165,4 +165,4 @@ git log origin/branch-name -1 --format="%ar"
 ---
 
 **Generated:** November 12, 2025  
-**See also:** BRANCH_ANOMALY_REPORT.md for detailed analysis
+**See also:** [BRANCH_ANOMALY_REPORT.md](BRANCH_ANOMALY_REPORT.md) for detailed analysis
