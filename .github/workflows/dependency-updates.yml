@@ -138,6 +138,7 @@ jobs:
     - name: 💾 Upload dependency artifacts
       if: steps.check-updates.outputs.updates-available == 'true'
       uses: actions/upload-artifact@v4
+      id: upload-python-dependencies
       with:
         name: python-dependency-updates
         path: |
@@ -145,6 +146,15 @@ jobs:
           safety-report.json
           requirements-*.txt
         retention-days: 30
+
+    - name: Attest Python dependency artifacts
+      if: steps.check-updates.outputs.updates-available == 'true'
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: |
+          dependency-update-summary.md
+          safety-report.json
+          requirements-*.txt
 
     outputs:
       updates-available: ${{ steps.check-updates.outputs.updates-available }}
@@ -253,12 +263,21 @@ jobs:
     - name: 💾 Upload PowerShell artifacts
       if: steps.check-ps-updates.outputs.updates-available == 'true'
       uses: actions/upload-artifact@v4
+      id: upload-powershell-updates
       with:
         name: powershell-module-updates
         path: |
           powershell-update-summary.md
           powershell-updates.json
         retention-days: 30
+
+    - name: Attest PowerShell update artifacts
+      if: steps.check-ps-updates.outputs.updates-available == 'true'
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: |
+          powershell-update-summary.md
+          powershell-updates.json
 
   security-audit:
     name: 🛡️ Security Audit
@@ -300,10 +319,16 @@ jobs:
 
     - name: 💾 Upload security report
       uses: actions/upload-artifact@v4
+      id: upload-security-report
       with:
         name: security-audit-report
         path: security-report.md
         retention-days: 90
+
+    - name: Attest security report
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: security-report.md
 
   create-update-pr:
     name: 📝 Create Update Pull Request
