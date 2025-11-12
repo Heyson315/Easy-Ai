@@ -4,7 +4,8 @@ Clean a CSV file by removing comment lines (# ...), blank lines, and repeated he
 Also normalizes whitespace around commas and trims field whitespace.
 
 Usage (PowerShell):
-  python scripts/clean_csv.py --input "data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv" --output "data/processed/sharepoint_permissions_clean.csv"
+  python scripts/clean_csv.py --input "data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv" \\
+    --output "data/processed/sharepoint_permissions_clean.csv"
 
 If --input/--output are omitted, defaults will be used for the SharePoint CSV.
 """

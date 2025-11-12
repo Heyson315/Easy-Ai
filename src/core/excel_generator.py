@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 # Constants for sample data

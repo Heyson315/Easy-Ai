@@ -4,9 +4,7 @@ Simple Performance Benchmark Script
 Tests key functionality with timing and memory monitoring
 """
 
-import json
 import sys
-import time
 
 
 def run_performance_benchmarks():

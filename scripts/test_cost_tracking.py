@@ -11,11 +11,12 @@ Usage:
 import sys
 from pathlib import Path
 
-# Add project root to path
+# Add project root to path (must be before src imports)
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.core.cost_tracker import GPT5CostTracker
+# pylint: disable=wrong-import-position
+from src.core.cost_tracker import GPT5CostTracker  # noqa: E402
 
 
 def demo_cost_tracking():
@@ -218,13 +219,11 @@ def demo_model_comparison():
 
     # Calculate savings
     baseline = results["gpt-5"]
-    print(f"\n💰 Savings vs gpt-5:")
-    print(
-        f"   gpt-5-mini: ${baseline - results['gpt-5-mini']:.6f} ({((baseline - results['gpt-5-mini']) / baseline * 100):.1f}% cheaper)"
-    )
-    print(
-        f"   gpt-5-nano: ${baseline - results['gpt-5-nano']:.6f} ({((baseline - results['gpt-5-nano']) / baseline * 100):.1f}% cheaper)"
-    )
+    print("\n💰 Savings vs gpt-5:")
+    savings_mini = baseline - results["gpt-5-mini"]
+    savings_nano = baseline - results["gpt-5-nano"]
+    print(f"   gpt-5-mini: ${savings_mini:.6f} " f"({(savings_mini / baseline * 100):.1f}% cheaper)")
+    print(f"   gpt-5-nano: ${savings_nano:.6f} " f"({(savings_nano / baseline * 100):.1f}% cheaper)")
 
     print("\n💡 Recommendation:")
     print("   Use gpt-5-mini for most CPA tasks (2-3x cheaper)")

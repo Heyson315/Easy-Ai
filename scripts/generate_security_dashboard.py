@@ -379,7 +379,8 @@ def generate_html_dashboard(
         </div>
 
         <div class="footer">
-            <p><strong>Next Audit Recommended:</strong> {(datetime.now()).strftime('%Y-%m-%d')} (7 days from last audit)</p>
+            <p><strong>Next Audit Recommended:</strong> {(datetime.now()).strftime('%Y-%m-%d')}
+            (7 days from last audit)</p>
             <p>For remediation guidance, see PostRemediateM365CIS.ps1 with -WhatIf parameter</p>
         </div>
     </div>

@@ -23,11 +23,12 @@ import os
 import sys
 from pathlib import Path
 
-# Add src directory to path
+# Add src directory to path (must be before src imports)
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.integrations.openai_gpt5 import GPT5Client, analyze_with_reasoning, quick_chat
+# pylint: disable=wrong-import-position
+from src.integrations.openai_gpt5 import GPT5Client, analyze_with_reasoning, quick_chat  # noqa: E402
 
 
 def print_header(title: str):

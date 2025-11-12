@@ -1,5 +1,4 @@
 import json
-import sys
 
 data = json.load(open("output/reports/security/m365_cis_audit_20251111_121220.json", "r", encoding="utf-8-sig"))
 statuses = [c["Status"] for c in data]

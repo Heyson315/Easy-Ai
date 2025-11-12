@@ -23,7 +23,7 @@ import os
 from typing import Dict, List, Literal, Optional
 
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
-from openai import AzureOpenAI, OpenAI
+from openai import OpenAI
 
 # Import cost tracking
 try:
