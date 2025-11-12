@@ -1,5 +1,7 @@
 # Copilot Instructions: M365 Security & SharePoint Analysis Toolkit
 
+> 🤖 **Quick Start for AI Agents**: New to this project? Start with [AI Agent Quick Start Guide](AI_AGENT_QUICKSTART.md) for fast onboarding!
+
 ## Architecture Overview
 
 This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditing and SharePoint permissions analysis. The project follows a domain-driven structure with distinct workflows:
@@ -201,3 +203,16 @@ Always call `.parent.mkdir(parents=True, exist_ok=True)` before writing files to
 - ✅ **Do** leverage historical trending with multiple timestamped audit runs
 - ✅ **Do** configure development tools via `pyproject.toml` (Black 120 chars, pytest coverage)
 - ✅ **Do** use `TemporaryDirectory()` for all file I/O tests to avoid cleanup issues
+
+## AI Development Resources
+
+**Essential Guides for AI Coding Agents**:
+- **[AI Agent Quick Start](AI_AGENT_QUICKSTART.md)** - 15-minute onboarding guide with common task patterns
+- **[AI Workflow Testing](AI_WORKFLOW_TESTING.md)** - Comprehensive testing patterns and automation strategies
+- **[MCP Tool Patterns](MCP_TOOL_PATTERNS.md)** - Model Context Protocol tool development patterns
+
+**When to Use Each Guide**:
+- 📘 **Starting new task?** → Read [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
+- 🧪 **Writing tests?** → Reference [AI Workflow Testing](AI_WORKFLOW_TESTING.md)
+- 🤖 **Building MCP tools?** → Follow [MCP Tool Patterns](MCP_TOOL_PATTERNS.md)
+- 🏗️ **Understanding architecture?** → Continue reading this document
