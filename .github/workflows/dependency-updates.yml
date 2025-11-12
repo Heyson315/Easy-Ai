@@ -21,6 +21,8 @@ permissions:
   contents: write
   pull-requests: write
   security-events: write
+  id-token: write
+  attestations: write
 
 jobs:
   python-dependency-updates:
