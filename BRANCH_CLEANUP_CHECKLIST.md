@@ -33,6 +33,7 @@ git push origin main
 # Or create PR if you prefer
 ```
 
+> **Note:** After merging the above PRs, delete the source branches (`copilot/implement-performance-benchmark`, `feature/enterprise-docs`, `develop`) either immediately or as part of the cleanup commands in Step 6 below.
 ### ✅ Step 2: Delete Exact Duplicates
 
 ```bash
