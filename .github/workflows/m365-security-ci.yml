@@ -7,6 +7,11 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
 jobs:
   python-quality-checks:
     name: Python Code Quality & Testing
@@ -145,10 +150,19 @@ jobs:
 
     - name: Upload security reports
       uses: actions/upload-artifact@v4
+      id: upload-security-reports
       if: always()
       with:
         name: security-reports
         path: |
+          safety-report.json
+          bandit-report.json
+
+    - name: Attest security reports
+      uses: actions/attest-build-provenance@v2
+      if: always()
+      with:
+        subject-path: |
           safety-report.json
           bandit-report.json
 
@@ -257,6 +271,12 @@ jobs:
 
     - name: Upload build summary
       uses: actions/upload-artifact@v4
+      id: upload-build-summary
       with:
         name: build-summary
         path: build-summary.md
+
+    - name: Attest build summary
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: build-summary.md

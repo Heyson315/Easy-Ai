@@ -15,6 +15,7 @@ This guide explains how to configure GitHub Actions for your M365 Security & Sha
 - ✅ Performance benchmarking
 - ✅ Documentation linting
 - ✅ Integration testing pipeline
+- 🔐 Build provenance attestation for all artifacts
 
 ### 2. **Automated M365 Security Audit** (`m365-automated-audit.yml`)
 **Triggers:** Monthly schedule, manual dispatch  
@@ -26,10 +27,18 @@ This guide explains how to configure GitHub Actions for your M365 Security & Sha
 - 🔧 Remediation preview (dry-run)
 - 📋 Automatic issue creation with results
 - 📁 Artifact retention (90 days)
+- 🔐 Build provenance attestation for audit results
 
 ### 3. **Dependency Updates** (`dependency-updates.yml`)
 **Triggers:** Weekly schedule  
 **Purpose:** Keep dependencies secure and updated
+
+**Features:**
+- 📦 Automated Python dependency updates
+- 🔧 PowerShell module version tracking
+- 🛡️ Security vulnerability scanning
+- 📝 Automated pull request creation
+- 🔐 Build provenance attestation for security reports
 
 ## ⚙️ Configuration Required
 
@@ -60,6 +69,24 @@ This script will:
 
 ## 🔒 Security Permissions
 
+### Build Provenance Attestation
+All workflows include cryptographically signed attestations for artifacts using GitHub's `attest-build-provenance` action. This provides:
+- **Supply Chain Security**: Verifiable proof of artifact origin
+- **Integrity Verification**: Cryptographic signatures for all artifacts
+- **Audit Trail**: Complete provenance metadata for compliance
+- **Zero Configuration**: Automatically enabled for all artifacts
+
+Attestations are generated for:
+- Security scan reports (JSON, text)
+- M365 audit results (JSON, CSV, Excel, HTML)
+- Dependency update summaries
+- Build summaries and reports
+
+To verify an artifact's attestation:
+```bash
+gh attestation verify <artifact-path> --owner Heyson315 --repo share-report
+```
+
 ### Required Microsoft 365 Permissions
 The service principal needs these Microsoft Graph permissions:
 - `Organization.Read.All`
@@ -80,12 +107,14 @@ The service principal needs these Microsoft Graph permissions:
 - **Build Summary**: Overall build status and validation results
 - **Security Reports**: Vulnerability scan results (safety, bandit)
 - **Coverage Reports**: Python test coverage data
+- **Provenance Attestations**: Cryptographic signatures for all artifacts
 
 ### Audit Artifacts
 - **Excel Reports**: Detailed CIS compliance reports
 - **HTML Dashboards**: Interactive security dashboards  
 - **JSON Data**: Raw audit results for analysis
 - **Remediation Plans**: Suggested fixes for failed controls
+- **Provenance Attestations**: Cryptographic signatures for audit results
 
 ## 🎯 Customization Options
 

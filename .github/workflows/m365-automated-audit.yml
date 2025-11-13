@@ -22,6 +22,12 @@ on:
         default: true
         type: boolean
 
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  issues: write
+
 jobs:
   m365-security-audit:
     name: M365 CIS Security Audit
@@ -111,11 +117,17 @@ jobs:
 
     - name: Upload audit artifacts
       uses: actions/upload-artifact@v4
+      id: upload-audit-artifacts
       with:
         name: m365-audit-results-${{ github.run_number }}
         path: |
           output/reports/security/
         retention-days: 90
+
+    - name: Attest audit artifacts
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: output/reports/security/*
 
     - name: Create audit summary issue
       uses: actions/github-script@v6
