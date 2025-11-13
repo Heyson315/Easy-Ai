@@ -191,11 +191,54 @@ This index provides a complete navigation guide for all AI development resources
 
 ### Filing Enhancement Requests
 
-Use the enhanced [AI Development Issue Template](ISSUE_TEMPLATE/ai_development.md) which includes:
-- Guide selection checklist
-- Impact assessment
-- Testing strategy
-- Success criteria
+Use the comprehensive [AI Development Issue Template](ISSUE_TEMPLATE/ai_development.md) to propose improvements.
+
+**✅ Good Enhancement Issues Include:**
+- Specific problem statement with measurable impact
+- Clear proposed solution with examples
+- Success criteria (time saved, errors prevented)
+- References to existing documentation
+
+**❌ Issues That Will Be Closed:**
+- Empty templates without required fields filled
+- Vague requests like "improve docs" without specifics
+- Duplicate issues (search existing issues first)
+- Issues better suited for bug reports or feature requests
+
+**📋 Required Sections** (see template for details):
+- Type of AI Enhancement (check at least one)
+- Current AI Agent Experience (specific pain point)
+- Proposed Enhancement (actionable solution)
+- Which Guide(s) Should Be Updated
+- Success Criteria
+
+**💡 Tips for Writing Effective Enhancement Issues:**
+1. **Be Specific**: "Add error handling pattern for JSON files" not "improve Python docs"
+2. **Quantify Impact**: "Reduces time from 10min to 2min" or "Prevents 90% of common errors"
+3. **Provide Examples**: Include code snippets, screenshots, or before/after comparisons
+4. **Test First**: Try the enhancement idea yourself to validate it works
+5. **Reference Existing Work**: Link to related patterns already in the guides
+
+**Example of a Good Enhancement Issue:**
+```markdown
+**Title**: [AI] Add asyncio pattern for MCP tools
+
+**Current Experience**: AI agents creating MCP tools don't have guidance 
+on async/await patterns, leading to blocking code that hangs the server.
+Takes 30+ minutes to debug and fix.
+
+**Proposed Enhancement**: Add "Async/Await Pattern" section to 
+MCP_TOOL_PATTERNS.md with:
+- Template showing proper async function structure
+- Common pitfalls (calling sync functions from async)
+- Testing pattern for async MCP tools
+
+**Success Criteria**: 
+- AI agents create working async MCP tools in <5 minutes
+- Zero sync-in-async bugs in new tool PRs
+```
+
+For detailed guidance, see [AI Development Issue Template Guide](ISSUE_TEMPLATE/ai_development.md#-writing-effective-ai-enhancement-issues).
 
 ---
 

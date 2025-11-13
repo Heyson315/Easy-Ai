@@ -9,13 +9,16 @@ assignees: ''
 
 ## 🧠 AI Development Enhancement
 
-> 📚 **Before filing**: Review existing AI development guides:
-> - [AI Agent Quick Start](.github/AI_AGENT_QUICKSTART.md)
-> - [AI Workflow Testing](.github/AI_WORKFLOW_TESTING.md)
-> - [MCP Tool Patterns](.github/MCP_TOOL_PATTERNS.md)
-> - [Copilot Instructions](.github/copilot-instructions.md)
+> ⚠️ **IMPORTANT**: Do not file this issue template without completing ALL required sections below. Empty or incomplete enhancement requests will be closed.
 
-**Type of AI Enhancement**
+> 📚 **Before filing**: Review existing AI development guides:
+> - [AI Agent Quick Start](../AI_AGENT_QUICKSTART.md)
+> - [AI Workflow Testing](../AI_WORKFLOW_TESTING.md)
+> - [MCP Tool Patterns](../MCP_TOOL_PATTERNS.md)
+> - [Copilot Instructions](../copilot-instructions.md)
+> - [AI Development Index](../AI_DEVELOPMENT_INDEX.md) - Complete navigation guide
+
+**Type of AI Enhancement** (check at least one - REQUIRED)
 - [ ] Copilot instructions improvement
 - [ ] MCP server functionality
 - [ ] AI agent workflow optimization
@@ -23,15 +26,17 @@ assignees: ''
 - [ ] Testing automation for AI workflows
 - [ ] Documentation improvements
 
-**Current AI Agent Experience**
-Describe how AI agents currently interact with this area of the codebase.
+**Current AI Agent Experience** (REQUIRED - delete example and describe actual issue)
 
-Example: "When adding a new Python script, AI agents need to manually look up the standard file structure and testing patterns."
+*Describe how AI agents currently interact with this area of the codebase. Be specific about the friction point or missing capability.*
 
-**Proposed Enhancement**
-Clear description of how to improve the AI development experience.
+Example: "When adding a new Python script, AI agents need to manually look up the standard file structure and testing patterns in multiple documents, which takes 10+ minutes and leads to inconsistent patterns."
 
-Example: "Add a 'New Script Template' section to AI_AGENT_QUICKSTART.md with copy-paste ready template."
+**Proposed Enhancement** (REQUIRED - delete example and provide specific solution)
+
+*Clear, actionable description of how to improve the AI development experience.*
+
+Example: "Add a 'New Script Template' section to AI_AGENT_QUICKSTART.md with copy-paste ready template including: file header, imports, constants, main function, and error handling pattern."
 
 **Which Guide(s) Should Be Updated?**
 - [ ] `.github/copilot-instructions.md` - Master architecture and patterns reference
@@ -83,3 +88,29 @@ Example:
 
 **Additional Context**
 Any other information about the enhancement (screenshots, examples, benchmarks, etc.)
+
+---
+
+## 📝 Writing Effective AI Enhancement Issues
+
+### Required Elements Checklist
+- [ ] Specific problem statement (not "improve docs" but "agents can't find X pattern")
+- [ ] Measurable current state (e.g., "takes 10 minutes", "requires checking 3 files")
+- [ ] Concrete proposed solution (e.g., "add section to guide Y with template Z")
+- [ ] Clear success criteria (e.g., "agents complete task in <2 minutes")
+
+### Quality Guidelines
+- **Be Specific**: Instead of "improve Python docs", say "add error handling pattern for JSON file reading"
+- **Show Impact**: Quantify time saved or errors prevented
+- **Reference Existing Work**: Link to related sections in current guides
+- **Provide Examples**: Include code snippets, screenshots, or mock-ups
+- **Consider AI Agents**: Think about how an AI would discover and use this enhancement
+
+### Common Enhancement Categories
+1. **Missing Patterns**: Code patterns used in project but not documented
+2. **Broken Workflows**: Multi-step processes that are error-prone
+3. **Unclear Instructions**: Existing docs that confuse AI agents
+4. **Missing Cross-References**: Related information in separate docs
+5. **Outdated Examples**: Docs don't reflect current codebase
+
+> 💡 **Tip**: Test your enhancement idea by asking "Would this help an AI agent complete task X faster/better?" If yes, file the issue!
