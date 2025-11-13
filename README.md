@@ -212,6 +212,7 @@ python scripts/run_performance_benchmark.py --validate-against-baseline
 - **Automated Testing**: Unit tests, integration tests, performance validation
 - **Monthly Audits**: Scheduled M365 security assessments with artifact preservation
 - **Dependency Updates**: Automated dependency scanning and updates
+- **Build Provenance**: Cryptographically signed attestations for all artifacts
 
 ### Service Principal Authentication
 
@@ -284,6 +285,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 - **Audit logging** for all script executions
 - **Access control** with role-based permissions
 - **Secure credential storage** using PowerShell SecureString
+- **Build provenance attestation** for supply chain security
 
 ## 🚀 Production Deployment
 
