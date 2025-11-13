@@ -39,10 +39,13 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 - **[AI Agent Quick Start](.github/AI_AGENT_QUICKSTART.md)** - 15-minute onboarding with common task patterns
 - **[AI Workflow Testing](.github/AI_WORKFLOW_TESTING.md)** - Comprehensive testing strategies and automation
 - **[MCP Tool Patterns](.github/MCP_TOOL_PATTERNS.md)** - Model Context Protocol tool development patterns
+- **[AI Development Index](.github/AI_DEVELOPMENT_INDEX.md)** - Complete navigation hub for all AI resources
 
 🎯 **Perfect for**: GitHub Copilot, Claude, ChatGPT, and other AI coding assistants to immediately understand and contribute to this enterprise security toolkit.
 
-> 📚 **Quick Documentation Access**: See [DOCS.md](DOCS.md) for instant navigation to any guide
+> 📚 **New to AI Development?** Start with [.github/README.md](.github/README.md) for a quick overview and learning paths!
+> 
+> 📖 **Need Specific Info?** See [DOCS.md](DOCS.md) for instant navigation to any guide
 
 ## 🚀 Quick Start
 
