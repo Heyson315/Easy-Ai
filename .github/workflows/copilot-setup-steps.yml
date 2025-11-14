@@ -1,0 +1,169 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-instructions:
+    name: Repository Setup Instructions
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Display Welcome Message
+        shell: bash
+        run: |
+          echo "=================================================="
+          echo "M365 Security & SharePoint Analysis Toolkit Setup"
+          echo "=================================================="
+          echo ""
+          echo "This workflow will guide you through setting up the development environment."
+          echo ""
+      
+      - name: Check Python Version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Display Python Setup Instructions
+        shell: bash
+        run: |
+          echo "📦 Step 1: Python Environment Setup"
+          echo "-----------------------------------"
+          echo "1. Install Python 3.11 or higher from https://www.python.org/downloads/"
+          echo "2. Create a virtual environment:"
+          echo "   python -m venv .venv"
+          echo ""
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "3. Activate the virtual environment (Windows):"
+            echo "   .venv\\Scripts\\activate"
+          else
+            echo "3. Activate the virtual environment (Linux/Mac):"
+            echo "   source .venv/bin/activate"
+          fi
+          echo ""
+          
+      - name: Display Dependencies Installation
+        shell: bash
+        run: |
+          echo "📦 Step 2: Install Python Dependencies"
+          echo "---------------------------------------"
+          echo "1. Install core dependencies (required):"
+          echo "   pip install -r requirements.txt"
+          echo ""
+          echo "2. Install development dependencies:"
+          echo "   pip install -r requirements-dev.txt"
+          echo ""
+          echo "3. Optional: Install extensions (MCP server, GPT-5 integration):"
+          echo "   pip install -r requirements-extensions.txt"
+          echo ""
+      
+      - name: Display PowerShell Setup Instructions (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Write-Host "📦 Step 3: PowerShell Modules Setup" -ForegroundColor Cyan
+          Write-Host "------------------------------------"
+          Write-Host "Install required PowerShell modules:"
+          Write-Host ""
+          Write-Host "Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force"
+          Write-Host "Install-Module -Name Microsoft.Graph.Authentication -Scope CurrentUser -Force"
+          Write-Host "Install-Module -Name Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser -Force"
+          Write-Host "Install-Module -Name Microsoft.Graph.Identity.SignIns -Scope CurrentUser -Force"
+          Write-Host "Install-Module -Name Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser -Force"
+          Write-Host "Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force"
+          Write-Host "Install-Module -Name Pester -Scope CurrentUser -SkipPublisherCheck -Force"
+          Write-Host ""
+      
+      - name: Display PowerShell Setup Instructions (Linux)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          echo "📦 Step 3: PowerShell Setup (Optional on Linux)"
+          echo "------------------------------------------------"
+          echo "Note: Full M365 functionality requires Windows PowerShell."
+          echo "For PowerShell Core on Linux:"
+          echo "1. Install PowerShell: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux"
+          echo "2. Some M365 modules may have limited Linux support"
+          echo ""
+      
+      - name: Display M365 Prerequisites
+        shell: bash
+        run: |
+          echo "🔐 Step 4: Microsoft 365 Prerequisites"
+          echo "---------------------------------------"
+          echo "You will need:"
+          echo "- Microsoft 365 tenant with admin access"
+          echo "- Required admin roles:"
+          echo "  • Global Reader or Security Reader"
+          echo "  • Exchange Administrator"
+          echo "  • SharePoint Administrator (for SPO audits)"
+          echo ""
+          echo "📖 See docs/M365_SERVICE_PRINCIPAL_SETUP.md for automation setup"
+          echo ""
+      
+      - name: Display Configuration Steps
+        shell: bash
+        run: |
+          echo "⚙️  Step 5: Configuration"
+          echo "------------------------"
+          echo "1. Review config/audit_config.json for audit settings"
+          echo "2. Create .env file from .env.template if using service principal"
+          echo "3. Configure tenant-specific settings"
+          echo ""
+      
+      - name: Display Validation Steps
+        shell: bash
+        run: |
+          echo "✅ Step 6: Validate Installation"
+          echo "---------------------------------"
+          echo "Run these commands to verify setup:"
+          echo ""
+          echo "# Test Python installation:"
+          echo "python -m pytest tests/ -v"
+          echo ""
+          echo "# Check code quality:"
+          echo "black --check scripts/ src/ tests/"
+          echo "flake8 scripts/ src/ tests/"
+          echo ""
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "# Test PowerShell module (Windows):"
+            echo "Import-Module ./scripts/powershell/modules/M365CIS.psm1"
+            echo "Get-Command -Module M365CIS"
+          fi
+          echo ""
+      
+      - name: Display Next Steps
+        shell: bash
+        run: |
+          echo "🚀 Step 7: Getting Started"
+          echo "--------------------------"
+          echo "Ready to use the toolkit! Check out:"
+          echo ""
+          echo "📚 Documentation:"
+          echo "  • README.md - Project overview and quick start"
+          echo "  • .github/AI_AGENT_QUICKSTART.md - 15-min AI agent onboarding"
+          echo "  • .github/copilot-instructions.md - Complete development guide"
+          echo "  • docs/SECURITY_M365_CIS.md - M365 security audit workflow"
+          echo "  • docs/USAGE_SHAREPOINT.md - SharePoint analysis guide"
+          echo ""
+          echo "🤖 AI Development:"
+          echo "  • Optimized for GitHub Copilot, Claude, ChatGPT"
+          echo "  • See .github/AI_DEVELOPMENT_INDEX.md for complete guide"
+          echo ""
+          echo "🔧 Basic Usage:"
+          echo "  # Run M365 security audit:"
+          echo "  powershell.exe -File scripts/powershell/Invoke-M365CISAudit.ps1 -Timestamped"
+          echo ""
+          echo "  # Generate reports:"
+          echo "  python scripts/m365_cis_report.py"
+          echo "  python scripts/generate_security_dashboard.py"
+          echo ""
+          echo "=================================================="
+          echo "Setup Complete! Happy coding! 🎉"
+          echo "=================================================="
