@@ -19,11 +19,25 @@ def create_project_management_workbook(filename=None):
 
     Args:
         filename (str, optional): Output filename for the workbook. Defaults to 'Project_Management.xlsx'.
+        
+    Returns:
+        openpyxl.Workbook: The created workbook object
+        
+    Raises:
+        PermissionError: If the file cannot be written (e.g., file is open)
+        ValueError: If filename is invalid
     """
     if filename is None:
         filename = "Project_Management.xlsx"
+    
+    if not filename:
+        raise ValueError("Filename cannot be empty")
+    
     # Create a new workbook
-    wb = openpyxl.Workbook()
+    try:
+        wb = openpyxl.Workbook()
+    except Exception as e:
+        raise RuntimeError(f"Failed to create workbook: {e}") from e
 
     # Financial Transactions Sheet
     trans_sheet = wb.active
@@ -113,7 +127,16 @@ def create_project_management_workbook(filename=None):
             budget_sheet.cell(row=row, column=col).value = value
 
     # Save the workbook
-    wb.save(filename)
+    try:
+        wb.save(filename)
+        print(f"✓ Workbook created successfully: {filename}")
+    except PermissionError as e:
+        raise PermissionError(
+            f"Cannot write to {filename}. Please close the file if it's open."
+        ) from e
+    except Exception as e:
+        raise RuntimeError(f"Failed to save workbook: {e}") from e
+    
     return wb
 
 
