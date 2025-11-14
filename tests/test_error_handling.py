@@ -1,7 +1,6 @@
 """
 Test error handling and edge cases in enhanced modules.
 """
-import json
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
