@@ -21,6 +21,7 @@ Enterprise-ready Microsoft 365 security auditing and SharePoint permissions anal
 - 🧠 **AI-Assisted Development**: Comprehensive GitHub Copilot instructions for immediate productivity
 - 📈 **Performance Monitoring**: Built-in benchmarking and validation
 - 📱 **Interactive Dashboards**: HTML security scorecards with trend analysis
+- 🎨 **Modern Web Design**: Professional templates for SharePoint and custom domains
 - 🔧 **Service Principal Ready**: Unattended automation support
 - 🐍 **Hybrid Architecture**: PowerShell + Python for optimal performance
 
@@ -120,7 +121,8 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 │   ├── M365_SERVICE_PRINCIPAL_SETUP.md   # Automation setup guide
 │   ├── PRODUCTION_DEPLOYMENT.md          # Enterprise deployment
 │   ├── SECURITY_M365_CIS.md              # Security audit workflow
-│   └── USAGE_SHAREPOINT.md               # SharePoint analysis guide
+│   ├── USAGE_SHAREPOINT.md               # SharePoint analysis guide
+│   └── WEB_DESIGN_GUIDE.md               # 🆕 Web design patterns
 ├── 📂 output/reports/             # Generated reports
 │   ├── security/                  # JSON/CSV audit results
 │   └── business/                  # Excel/HTML reports
@@ -140,14 +142,19 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 │           ├── setup.py           # Setup wizard
 │           ├── tools/             # MCP tool definitions
 │           └── README.md          # Extension documentation
+├── 📂 web-templates/              # 🆕 Web design templates
+│   ├── 📂 common/                 # Shared CSS/JS for both platforms
+│   │   ├── css/                   # Base styles & dashboard CSS
+│   │   ├── js/                    # Common JavaScript
+│   │   └── images/                # Shared assets
+│   ├── 📂 sharepoint/             # SharePoint-specific templates
+│   │   └── examples/              # Ready-to-use SharePoint pages
+│   └── 📂 godaddy/                # Custom domain templates
+│       └── examples/              # Static HTML sites
+├── 📂 tests/                      # Automated testing
 ├── requirements.txt               # Core dependencies (required)
 ├── requirements-extensions.txt    # 🆕 Optional extensions (MCP, GPT-5)
 └── requirements-dev.txt           # Development tools
-```
-├── 📂 src/                        # Core toolkit modules
-│   ├── core/                      # Excel generation
-│   └── integrations/              # SharePoint connector
-└── 📂 tests/                      # Automated testing
 ```
 
 ## 🧠 AI Development Workflows
@@ -195,7 +202,29 @@ python -m src.integrations.sharepoint_connector --input "data/processed/sharepoi
 
 **Output**: Detailed Excel reports with user access summaries, permission inheritance analysis, and security recommendations
 
-### 3. Performance Benchmarking
+### 3. Web Design & Dashboard Creation
+
+```bash
+# Use provided templates for SharePoint
+# Copy from: web-templates/sharepoint/examples/security-dashboard.html
+# Deploy to: SharePoint Online modern page
+
+# Use provided templates for custom domain (GoDaddy)
+# Copy from: web-templates/godaddy/examples/security-landing-page.html
+# Upload to: public_html directory via FTP
+
+# Generate custom dashboard from audit data
+python scripts/generate_security_dashboard.py --input "output/reports/security/m365_cis_audit.json"
+```
+
+**Features**:
+- **SharePoint**: Modern UI with Fluent Design, mobile-responsive, ready to embed
+- **GoDaddy**: Static HTML with gradient backgrounds, interactive charts, SEO-optimized
+- **Both**: Professional styling, accessibility compliant, print-friendly
+
+**Documentation**: See [`docs/WEB_DESIGN_GUIDE.md`](docs/WEB_DESIGN_GUIDE.md) for complete design patterns and deployment instructions
+
+### 4. Performance Benchmarking
 
 ```python
 # Run performance validation

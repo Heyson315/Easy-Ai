@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="M365 Security Compliance Dashboard - Enterprise security auditing and compliance reporting">
+    <meta name="keywords" content="M365, Security, Compliance, CIS Benchmark, Audit">
+    <meta name="author" content="M365 Security Toolkit">
+    <title>M365 Security Dashboard | Enterprise Compliance Reporting</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="M365 Security Dashboard">
+    <meta property="og:description" content="Enterprise security auditing and compliance reporting">
+    <meta property="og:type" content="website">
+    
+    <!-- External Libraries (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #0078d4;
+            --primary-dark: #005a9e;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --gray-100: #f8f9fa;
+            --gray-600: #6c757d;
+            --gray-900: #212529;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .navbar-nav a {
+            color: var(--gray-900);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .navbar-nav a:hover {
+            color: var(--primary);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin: 2rem auto;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hero .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 0 0.5rem;
+        }
+        
+        .hero .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .hero .btn-secondary {
+            background: var(--gray-600);
+        }
+        
+        /* Statistics Grid */
+        .stats-section {
+            margin: 2rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card h3 {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value.pass { color: var(--success); }
+        .stat-value.fail { color: var(--danger); }
+        .stat-value.manual { color: var(--gray-600); }
+        
+        .stat-subtitle {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .chart-section h2 {
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Features Grid */
+        .features-section {
+            margin: 3rem 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--gray-600);
+            line-height: 1.8;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none; /* Consider mobile menu for production */
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-100);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .mt-3 { margin-top: 2rem; }
+        .mb-3 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">🛡️ M365 Security</a>
+            <ul class="navbar-nav">
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#reports">Reports</a></li>
+                <li><a href="#documentation">Docs</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <div class="container">
+        <div class="hero" id="dashboard">
+            <h1>🛡️ Enterprise Security Dashboard</h1>
+            <p>Comprehensive Microsoft 365 security auditing and compliance reporting</p>
+            <a href="#reports" class="btn">View Full Report</a>
+            <a href="#documentation" class="btn btn-secondary">Documentation</a>
+        </div>
+        
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Passed Controls</h3>
+                    <div class="stat-value pass" id="passCount">85</div>
+                    <div class="stat-subtitle"><span id="passRate">92%</span> Pass Rate</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Failed Controls</h3>
+                    <div class="stat-value fail" id="failCount">7</div>
+                    <div class="stat-subtitle">Critical Issues</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Manual Review</h3>
+                    <div class="stat-value manual" id="manualCount">12</div>
+                    <div class="stat-subtitle">Needs Attention</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Total Controls</h3>
+                    <div class="stat-value" id="totalCount">104</div>
+                    <div class="stat-subtitle">CIS Benchmark v3.0.0</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chart Section -->
+        <div class="chart-section" id="reports">
+            <h2>📈 Compliance Trend (Last 6 Months)</h2>
+            <canvas id="complianceTrendChart"></canvas>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="features-section" id="documentation">
+            <h2 class="text-center mb-3">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔐 CIS Compliance</h3>
+                    <p>Automated assessment against CIS Microsoft 365 Foundations Benchmark v3.0.0 covering Exchange Online, Azure AD, SharePoint, and more.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📊 Interactive Reports</h3>
+                    <p>Beautiful, interactive HTML dashboards with historical trend analysis, filtering, and detailed drill-down capabilities.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🤖 Automation</h3>
+                    <p>GitHub Actions CI/CD integration with scheduled monthly audits, automated notifications, and artifact preservation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📱 Responsive Design</h3>
+                    <p>Mobile-friendly dashboards that work seamlessly on all devices - desktop, tablet, and smartphone.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔧 Remediation</h3>
+                    <p>Guided remediation workflows with safe preview mode and step-by-step instructions for fixing security issues.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🧠 AI-Powered</h3>
+                    <p>GitHub Copilot integration for rapid development, comprehensive documentation, and AI-assisted troubleshooting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer id="about">
+        <div class="container">
+            <p><strong>M365 Security & SharePoint Analysis Toolkit</strong></p>
+            <p>Enterprise-ready security auditing and compliance reporting</p>
+            <p><a href="https://github.com/Heyson315/share-report">View on GitHub</a> | 
+               <a href="/docs">Documentation</a> | 
+               <a href="/contact">Contact</a></p>
+            <p style="margin-top: 1rem; font-size: 0.875rem;">
+                Last Audit: <span id="lastAuditDate">2024-11-14</span> | 
+                Next Audit: <span id="nextAuditDate">2024-12-14</span>
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('complianceTrendChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jun 2024', 'Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024'],
+                        datasets: [{
+                            label: 'Pass Rate (%)',
+                            data: [85, 87, 89, 90, 91, 92],
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Failed Controls',
+                            data: [15, 13, 11, 10, 9, 7],
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Update dates dynamically
+            const today = new Date();
+            const nextMonth = new Date(today);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            
+            document.getElementById('lastAuditDate').textContent = today.toISOString().split('T')[0];
+            document.getElementById('nextAuditDate').textContent = nextMonth.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
