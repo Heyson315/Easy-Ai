@@ -113,7 +113,20 @@ class GPT5Client:
 
         Returns:
             Dict with response data including choices, usage, model info
+            
+        Raises:
+            ValueError: If parameters are invalid
+            RuntimeError: If API request fails
         """
+        if not prompt or not prompt.strip():
+            raise ValueError("Prompt cannot be empty")
+        
+        if max_tokens < 1:
+            raise ValueError("max_tokens must be positive")
+        
+        if temperature is not None and not (0.0 <= temperature <= 2.0):
+            raise ValueError("temperature must be between 0.0 and 2.0")
+        
         messages = []
         if system_message:
             messages.append({"role": "developer", "content": system_message})
@@ -127,8 +140,11 @@ class GPT5Client:
         if temperature is not None:
             kwargs["temperature"] = temperature
 
-        response = self.client.chat.completions.create(**kwargs)
-        result = response.model_dump()
+        try:
+            response = self.client.chat.completions.create(**kwargs)
+            result = response.model_dump()
+        except Exception as e:
+            raise RuntimeError(f"GPT-5 API request failed: {e}") from e
 
         # Track costs if enabled
         if COST_TRACKING_ENABLED and "usage" in result:
@@ -167,7 +183,23 @@ class GPT5Client:
 
         Returns:
             Dict with response data including output, reasoning, usage
+            
+        Raises:
+            ValueError: If parameters are invalid
+            RuntimeError: If API request fails
         """
+        if not prompt or not prompt.strip():
+            raise ValueError("Prompt cannot be empty")
+        
+        if reasoning_effort not in ["low", "medium", "high"]:
+            raise ValueError("reasoning_effort must be 'low', 'medium', or 'high'")
+        
+        if reasoning_summary not in ["auto", "detailed"]:
+            raise ValueError("reasoning_summary must be 'auto' or 'detailed'")
+        
+        if text_verbosity not in ["low", "medium", "high"]:
+            raise ValueError("text_verbosity must be 'low', 'medium', or 'high'")
+        
         request_params = {
             "input": prompt,
             "model": self.model,
@@ -183,8 +215,11 @@ class GPT5Client:
         if tools:
             request_params["tools"] = tools
 
-        response = self.client.responses.create(**request_params)
-        result = response.model_dump()
+        try:
+            response = self.client.responses.create(**request_params)
+            result = response.model_dump()
+        except Exception as e:
+            raise RuntimeError(f"GPT-5 Reasoning API request failed: {e}") from e
 
         # Track costs if enabled
         if COST_TRACKING_ENABLED and "usage" in result:

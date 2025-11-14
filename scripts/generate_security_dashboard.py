@@ -20,8 +20,28 @@ from typing import Any, Dict, List
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(json_path, "r", encoding="utf-8-sig") as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except (PermissionError, FileNotFoundError) as e:
+        print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"ERROR: Unexpected error reading {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    
+    # Validate data is a list
+    if not isinstance(data, list):
+        print(f"ERROR: Expected JSON array, got {type(data).__name__}", file=sys.stderr)
+        sys.exit(1)
+    
+    if not data:
+        print(f"WARNING: No audit results found in {json_path}", file=sys.stderr)
+    
+    return data
 
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
