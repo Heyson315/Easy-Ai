@@ -206,15 +206,149 @@ Always call `.parent.mkdir(parents=True, exist_ok=True)` before writing files to
 - ✅ **Do** configure development tools via `pyproject.toml` (Black 120 chars, pytest coverage)
 - ✅ **Do** use `TemporaryDirectory()` for all file I/O tests to avoid cleanup issues
 
+## Web Design Patterns
+
+### Overview
+The toolkit supports web design for **two platforms**:
+1. **SharePoint Online** - Microsoft 365 SharePoint sites for internal security dashboards
+2. **GoDaddy Custom Domain** - Self-hosted websites for external reporting and public documentation
+
+### Web Design Workflow
+
+**HTML Dashboard Generation** (`scripts/generate_security_dashboard.py`):
+```python
+# Generate interactive HTML dashboard from audit results
+python scripts/generate_security_dashboard.py [--input "audit.json"] [--output "dashboard.html"]
+```
+
+**Key Features**:
+- Zero external dependencies (uses CDN for Chart.js)
+- Responsive design (mobile-first approach)
+- Interactive filtering and sorting
+- Historical trend analysis
+- Print-friendly styling
+
+### CSS Architecture
+
+**Base CSS** (`web-templates/common/css/base.css`):
+- CSS custom properties (variables) for theming
+- Responsive grid system
+- Reusable components (cards, buttons, badges, tables)
+- Utility classes for spacing, colors, alignment
+- Accessibility features (focus states, screen reader support)
+- Print styles
+
+**Dashboard CSS** (`web-templates/common/css/dashboard.css`):
+- Dashboard-specific layouts
+- Statistics cards with hover effects
+- Chart containers
+- Filter controls
+- Data tables with sorting/filtering
+- Status indicators and badges
+
+### HTML Generation Pattern
+
+**Python HTML Generation** (from `generate_security_dashboard.py`):
+```python
+def generate_html_dashboard(results, stats, historical, output_path):
+    """Generate interactive HTML dashboard."""
+    # Use f-strings for template generation
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Title</title>
+    <style>{embedded_css}</style>
+</head>
+<body>
+    <!-- Dashboard content -->
+</body>
+</html>
+"""
+    # Write to file with UTF-8 encoding
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+```
+
+### Web Design Best Practices
+
+**For SharePoint**:
+- Use SharePoint-compatible CSS (avoid unsupported properties)
+- Leverage modern SharePoint web parts before custom solutions
+- Apply custom themes via Site Settings
+- Test on SharePoint mobile app
+- Use SPFx (SharePoint Framework) for advanced customizations
+
+**For GoDaddy/Custom Domain**:
+- Static HTML/CSS/JS for performance
+- Minify CSS/JS for production
+- Use CDN for third-party libraries
+- Configure proper cache headers
+- Always use HTTPS with valid SSL
+
+### Copilot-Assisted Web Design
+
+**HTML Structure**:
+```html
+<!-- Dashboard header with navigation -->
+<!-- Copilot will generate semantic HTML -->
+<header class="dashboard-header">
+    <h1>M365 Security Dashboard</h1>
+    <nav><!-- navigation links --></nav>
+</header>
+```
+
+**CSS Styling**:
+```css
+/* Modern card component with hover effects */
+.card {
+    /* Copilot will suggest modern CSS properties */
+}
+```
+
+**JavaScript Interactivity**:
+```javascript
+// Filter table by status and severity
+// Copilot will implement filter logic
+function filterControls(filterType, filterValue) {
+    // Implementation here
+}
+```
+
+### Design Resources
+
+**Templates**: `web-templates/` directory contains:
+- `common/css/` - Shared CSS for both platforms
+- `sharepoint/` - SharePoint-specific templates and examples
+- `godaddy/` - Custom domain templates and examples
+
+**Documentation**: 
+- `docs/WEB_DESIGN_GUIDE.md` - Comprehensive web design guide
+- Platform-specific guidelines and best practices
+- Example layouts and components
+
+### Web Design Conventions
+
+- **CSS Variables**: Use CSS custom properties for theming (`--primary-color`, `--spacing-md`, etc.)
+- **BEM Naming**: Use Block-Element-Modifier naming for CSS classes (`.card__header`, `.btn--primary`)
+- **Mobile-First**: Write CSS for mobile first, then add media queries for larger screens
+- **Accessibility**: Include ARIA labels, focus states, keyboard navigation
+- **Performance**: Minimize CSS/JS, lazy load images, use system fonts
+- **Testing**: Validate HTML/CSS, test on multiple browsers/devices, run Lighthouse audits
+
 ## AI Development Resources
 
 **Essential Guides for AI Coding Agents**:
 - **[AI Agent Quick Start](AI_AGENT_QUICKSTART.md)** - 15-minute onboarding guide with common task patterns
 - **[AI Workflow Testing](AI_WORKFLOW_TESTING.md)** - Comprehensive testing patterns and automation strategies
 - **[MCP Tool Patterns](MCP_TOOL_PATTERNS.md)** - Model Context Protocol tool development patterns
+- **[Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)** - Complete web design patterns for SharePoint and GoDaddy
 
 **When to Use Each Guide**:
 - 📘 **Starting new task?** → Read [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
 - 🧪 **Writing tests?** → Reference [AI Workflow Testing](AI_WORKFLOW_TESTING.md)
 - 🤖 **Building MCP tools?** → Follow [MCP Tool Patterns](MCP_TOOL_PATTERNS.md)
+- 🎨 **Designing web interfaces?** → Follow [Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)
 - 🏗️ **Understanding architecture?** → Continue reading this document

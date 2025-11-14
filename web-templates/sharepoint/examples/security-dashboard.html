@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M365 Security Dashboard - SharePoint Template</title>
+    <style>
+        /* SharePoint-compatible CSS 
+           Note: In production, embed this in a SharePoint page or SPFx web part */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #323130;
+            background: #faf9f8;
+        }
+        
+        .sp-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .sp-header {
+            background: linear-gradient(90deg, #0078d4 0%, #106ebe 100%);
+            color: white;
+            padding: 32px 24px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .sp-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .sp-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .sp-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .sp-stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #0078d4;
+        }
+        
+        .sp-stat-card h3 {
+            color: #605e5c;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .sp-stat-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .sp-stat-value.pass { color: #107c10; }
+        .sp-stat-value.fail { color: #d13438; }
+        .sp-stat-value.manual { color: #605e5c; }
+        
+        .sp-stat-label {
+            color: #8a8886;
+            font-size: 0.875rem;
+        }
+        
+        .sp-section {
+            background: white;
+            padding: 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .sp-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #edebe9;
+        }
+        
+        .sp-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .sp-table thead {
+            background: #f3f2f1;
+        }
+        
+        .sp-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #323130;
+            border-bottom: 2px solid #edebe9;
+        }
+        
+        .sp-table td {
+            padding: 12px;
+            border-bottom: 1px solid #edebe9;
+        }
+        
+        .sp-table tbody tr:hover {
+            background: #f3f2f1;
+        }
+        
+        .sp-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .sp-badge.pass {
+            background: #dff6dd;
+            color: #107c10;
+        }
+        
+        .sp-badge.fail {
+            background: #fde7e9;
+            color: #d13438;
+        }
+        
+        .sp-badge.manual {
+            background: #f3f2f1;
+            color: #605e5c;
+        }
+        
+        .sp-footer {
+            text-align: center;
+            padding: 24px;
+            color: #8a8886;
+            font-size: 0.875rem;
+        }
+        
+        /* Responsive design for SharePoint mobile */
+        @media (max-width: 768px) {
+            .sp-container {
+                padding: 16px;
+            }
+            
+            .sp-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sp-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .sp-stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sp-container">
+        <!-- Header Section -->
+        <div class="sp-header">
+            <h1>🛡️ M365 Security Compliance Dashboard</h1>
+            <p>CIS Microsoft 365 Foundations Benchmark v3.0.0</p>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="sp-stats-grid">
+            <div class="sp-stat-card">
+                <h3>Passed Controls</h3>
+                <div class="sp-stat-value pass">85</div>
+                <div class="sp-stat-label">92% Pass Rate</div>
+            </div>
+            
+            <div class="sp-stat-card">
+                <h3>Failed Controls</h3>
+                <div class="sp-stat-value fail">7</div>
+                <div class="sp-stat-label">7.6% of Total</div>
+            </div>
+            
+            <div class="sp-stat-card">
+                <h3>Manual Review</h3>
+                <div class="sp-stat-value manual">12</div>
+                <div class="sp-stat-label">Requires Investigation</div>
+            </div>
+            
+            <div class="sp-stat-card">
+                <h3>High Severity</h3>
+                <div class="sp-stat-value fail">3</div>
+                <div class="sp-stat-label">Critical Issues</div>
+            </div>
+        </div>
+        
+        <!-- Recent Audit Results -->
+        <div class="sp-section">
+            <h2>📊 Recent Audit Results</h2>
+            <table class="sp-table">
+                <thead>
+                    <tr>
+                        <th>Control ID</th>
+                        <th>Title</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1.1.1</strong></td>
+                        <td>Ensure modern authentication for Exchange Online is enabled</td>
+                        <td>High</td>
+                        <td><span class="sp-badge pass">Pass</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>1.1.3</strong></td>
+                        <td>Ensure the admin consent workflow is enabled</td>
+                        <td>Medium</td>
+                        <td><span class="sp-badge fail">Fail</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2.1.1</strong></td>
+                        <td>Ensure Security Defaults is enabled</td>
+                        <td>High</td>
+                        <td><span class="sp-badge pass">Pass</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3.1.1</strong></td>
+                        <td>Ensure DLP policies are enabled for Microsoft Teams</td>
+                        <td>Medium</td>
+                        <td><span class="sp-badge manual">Manual</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>5.1.2</strong></td>
+                        <td>Ensure external sharing of calendars is not enabled</td>
+                        <td>Low</td>
+                        <td><span class="sp-badge pass">Pass</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Quick Links Section -->
+        <div class="sp-section">
+            <h2>🔗 Quick Actions</h2>
+            <p><strong>View Full Report:</strong> <a href="#">Download Complete Audit Report (Excel)</a></p>
+            <p><strong>Remediation Guide:</strong> <a href="#">View Step-by-Step Remediation Instructions</a></p>
+            <p><strong>Schedule Next Audit:</strong> <a href="#">Configure Automated Monthly Audits</a></p>
+            <p><strong>Documentation:</strong> <a href="#">M365 CIS Security Guide</a></p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="sp-footer">
+            <p><strong>Last Updated:</strong> 2024-11-14 | <strong>Next Audit:</strong> 2024-12-14</p>
+            <p>Generated by M365 Security & SharePoint Analysis Toolkit</p>
+        </div>
+    </div>
+    
+    <script>
+        // SharePoint-compatible JavaScript
+        // Add interactivity as needed
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SharePoint security dashboard loaded');
+            
+            // Example: Add click handlers for table rows
+            const tableRows = document.querySelectorAll('.sp-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    console.log('Row clicked:', this.children[0].textContent);
+                    // Could open a details panel or modal
+                });
+            });
+        });
+    </script>
+</body>
+</html>
