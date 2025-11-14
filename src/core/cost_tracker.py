@@ -41,16 +41,18 @@ class GPT5CostTracker:
         "gpt-5-nano": {"input": 0.75, "cached_input": 0.375, "output": 2.25},
     }
 
-    def __init__(self, budget_limit: Optional[float] = None, log_file: Optional[str] = None):
+    def __init__(self, budget_limit: Optional[float] = None, log_file: Optional[str] = None, session_id: Optional[str] = None):
         """
         Initialize cost tracker.
 
         Args:
             budget_limit: Optional daily budget limit in USD (triggers warnings)
             log_file: Path to JSON log file for tracking usage history
+            session_id: Optional session ID to associate costs with a specific session
         """
         self.budget_limit = budget_limit
         self.log_file = log_file or "output/reports/gpt5_cost_log.json"
+        self.session_id = session_id
         self.session_costs = []
         self.total_tokens = {"input": 0, "cached_input": 0, "output": 0}
         self.total_cost = 0.0
@@ -121,6 +123,7 @@ class GPT5CostTracker:
         # Create log entry
         entry = {
             "timestamp": datetime.now().isoformat(),
+            "session_id": self.session_id,
             "model": model,
             "request_type": request_type,
             "tokens": {

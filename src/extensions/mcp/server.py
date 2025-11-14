@@ -29,6 +29,9 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+
 # MCP imports
 try:
     from mcp import McpError, Server
@@ -43,6 +46,14 @@ try:
 except ImportError:
     print("Warning: Microsoft Graph SDK not installed. Some features may be limited.", file=sys.stderr)
 
+# Import session manager
+try:
+    from src.core.session_manager import get_session_manager, Session
+except ImportError:
+    print("Warning: Session manager not available. Session tracking will be limited.", file=sys.stderr)
+    get_session_manager = None
+    Session = None
+
 
 class M365SecurityMCPServer:
     """Custom MCP Server for M365 Security Toolkit integration"""
@@ -50,7 +61,8 @@ class M365SecurityMCPServer:
     def __init__(self):
         self.server = Server("m365-security-toolkit")
         self.graph_client = None
-        self.toolkit_path = Path(__file__).parent.parent.parent  # Go up to share report root
+        self.toolkit_path = Path(__file__).parent.parent.parent.parent  # Go up to repo root
+        self.session_manager = get_session_manager() if get_session_manager else None
         self.setup_logging()
         self.setup_tools()
 
@@ -85,8 +97,23 @@ class M365SecurityMCPServer:
             Returns:
                 Audit results summary and file location
             """
+            # Create session for tracking
+            session = None
+            if self.session_manager:
+                session = self.session_manager.create_session(
+                    operation_type="security_audit",
+                    metadata={
+                        "timestamped": timestamped,
+                        "spo_admin_url": spo_admin_url,
+                        "skip_purview": skip_purview,
+                    },
+                )
+                session.add_event("start", "Starting M365 CIS security audit")
+
             try:
                 self.logger.info("Starting M365 CIS security audit...")
+                if session:
+                    session.add_event("progress", "Building PowerShell command")
 
                 # Build PowerShell command
                 script_path = self.toolkit_path / "scripts" / "powershell" / "Invoke-M365CISAudit.ps1"
@@ -99,6 +126,9 @@ class M365SecurityMCPServer:
                 if skip_purview:
                     cmd.append("-SkipPurview")
 
+                if session:
+                    session.add_event("progress", "Executing PowerShell audit script")
+
                 # Execute audit
                 result = await asyncio.create_subprocess_exec(
                     *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=str(self.toolkit_path)
@@ -107,6 +137,9 @@ class M365SecurityMCPServer:
                 stdout, stderr = await result.communicate()
 
                 if result.returncode == 0:
+                    if session:
+                        session.add_event("progress", "Audit script completed, parsing results")
+
                     # Parse results
                     output_file = self.toolkit_path / "output" / "reports" / "security" / "m365_cis_audit.json"
                     if output_file.exists():
@@ -117,6 +150,14 @@ class M365SecurityMCPServer:
                         passed_controls = sum(1 for r in audit_data.get("results", []) if r.get("Status") == "Pass")
                         compliance_percentage = (passed_controls / total_controls * 100) if total_controls > 0 else 0
 
+                        if session:
+                            session.add_event(
+                                "complete",
+                                f"Audit completed with {compliance_percentage:.1f}% compliance",
+                                {"total_controls": total_controls, "passed_controls": passed_controls},
+                            )
+                            self.session_manager.complete_session(session.session_id, status="success")
+
                         summary = f"""✅ M365 CIS Security Audit Complete!
 
 📊 **Results Summary:**
@@ -124,6 +165,7 @@ class M365SecurityMCPServer:
 • Controls Passed: {passed_controls}
 • Compliance Percentage: {compliance_percentage:.1f}%
 • Audit File: {output_file}
+{"• Session ID: " + session.session_id if session else ""}
 
 🎯 **Next Steps:**
 • Review detailed results in the audit file
@@ -133,13 +175,22 @@ class M365SecurityMCPServer:
                         self.logger.info(f"Audit completed successfully. Compliance: {compliance_percentage:.1f}%")
                         return summary
                     else:
+                        if session:
+                            session.add_event("error", "Audit completed but output file not found")
+                            self.session_manager.complete_session(session.session_id, status="error")
                         raise McpError("Audit completed but output file not found")
                 else:
                     error_msg = stderr.decode() if stderr else "Unknown error"
+                    if session:
+                        session.add_event("error", f"Audit script failed: {error_msg}")
+                        self.session_manager.complete_session(session.session_id, status="error")
                     raise McpError(f"Audit failed: {error_msg}")
 
             except Exception as e:
                 self.logger.error(f"Security audit failed: {str(e)}")
+                if session and self.session_manager:
+                    session.add_event("error", f"Exception: {str(e)}")
+                    self.session_manager.complete_session(session.session_id, status="error")
                 raise McpError(f"Security audit failed: {str(e)}")
 
         @self.server.tool("analyze_sharepoint_permissions")
