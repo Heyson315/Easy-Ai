@@ -5,7 +5,7 @@
 # For format details, see: https://gh.io/customagents/config
 
 name: killa
-description:
+description: AI coding agent for M365 Security & SharePoint Analysis Toolkit with project-specific patterns and conventions
 ---
 
 # My Agent
