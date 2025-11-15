@@ -9,7 +9,7 @@ description: Agent description here
 # For format details, see: https://gh.io/customagents/config
 # My Agent
 
-Describe what your agent does here...
+This agent assists with development of the M365 Security & SharePoint Analysis Toolkit. It understands the hybrid Python/PowerShell architecture, project conventions, and common development patterns. See the complete guide below for detailed usage instructions.
 .github/copilot-instructions.md
 # 🤖 AI Agent Quick Start Guide
 
