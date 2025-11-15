@@ -49,12 +49,8 @@ def main():
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
     
-    try:
-        result = run_performance_benchmarks(baseline=args.baseline, verbose=args.verbose)
-        if result["status"] != "success":
-            sys.exit(1)
-    except Exception as e:
-        print(f"❌ Error: {e}", file=sys.stderr)
+    result = run_performance_benchmarks(baseline=args.baseline, verbose=args.verbose)
+    if result["status"] != "success":
         sys.exit(1)
 
 

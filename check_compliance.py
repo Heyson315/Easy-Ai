@@ -20,8 +20,14 @@ def check_compliance(json_path: Path) -> None:
     except json.JSONDecodeError as e:
         print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Failed to read file: {e}", file=sys.stderr)
+    except PermissionError as e:
+        print(f"ERROR: Permission denied when reading {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: Encoding error when reading {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error when reading {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
     
     if not isinstance(data, list):

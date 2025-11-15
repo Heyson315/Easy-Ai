@@ -31,8 +31,11 @@ def sync_json_to_csv(json_path: Path, csv_path: Path) -> None:
     except (PermissionError, UnicodeDecodeError) as e:
         print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Unexpected error reading {json_path}: {e}", file=sys.stderr)
+    except FileNotFoundError as e:
+        print(f"ERROR: File not found: {json_path} ({e})", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error reading {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
     
     # Normalize data structure
@@ -50,8 +53,11 @@ def sync_json_to_csv(json_path: Path, csv_path: Path) -> None:
     # Create DataFrame
     try:
         df = pd.DataFrame(rows)
-    except Exception as e:
-        print(f"ERROR: Failed to create DataFrame: {e}", file=sys.stderr)
+    except (ValueError, TypeError) as e:
+        print(f"ERROR: Failed to create DataFrame from input data: {e}", file=sys.stderr)
+        sys.exit(1)
+    except MemoryError as e:
+        print(f"ERROR: Not enough memory to create DataFrame: {e}", file=sys.stderr)
         sys.exit(1)
     
     if df.empty:
@@ -70,8 +76,14 @@ def sync_json_to_csv(json_path: Path, csv_path: Path) -> None:
     except PermissionError as e:
         print(f"ERROR: Permission denied writing to {csv_path}: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Failed to write CSV: {e}", file=sys.stderr)
+    except OSError as e:
+        print(f"ERROR: OS error writing to {csv_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except UnicodeEncodeError as e:
+        print(f"ERROR: Encoding error writing to {csv_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f"ERROR: Data error writing to {csv_path}: {e}", file=sys.stderr)
         sys.exit(1)
 
 

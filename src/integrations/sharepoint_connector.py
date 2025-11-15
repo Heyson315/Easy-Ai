@@ -13,6 +13,7 @@ Usage (PowerShell):
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -111,19 +112,18 @@ def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) ->
                 sheet = name[:31]
                 sdf.to_excel(writer, sheet_name=sheet, index=False)
     except PermissionError as e:
-        import sys
         print(f"ERROR: Cannot write to {output_path}: Permission denied. "
               f"Please close the file if it's open.", file=sys.stderr)
         raise
-    except Exception as e:
-        import sys
-        print(f"ERROR: Failed to write Excel report: {e}", file=sys.stderr)
+    except OSError as e:
+        print(f"ERROR: OS error writing to {output_path}: {e}", file=sys.stderr)
+        raise
+    except ValueError as e:
+        print(f"ERROR: Invalid data for Excel: {e}", file=sys.stderr)
         raise
 
 
 def main():
-    import sys
-    
     ap = argparse.ArgumentParser(description="Generate SharePoint permissions analysis report")
     ap.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
     ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
@@ -142,8 +142,14 @@ def main():
     except pd.errors.ParserError as e:
         print(f"ERROR: Failed to parse CSV: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Failed to read input file: {e}", file=sys.stderr)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: Failed to decode input file (encoding issue): {e}", file=sys.stderr)
+        sys.exit(1)
+    except FileNotFoundError as e:
+        print(f"ERROR: Input file not found: {e}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error while reading input file: {e}", file=sys.stderr)
         sys.exit(1)
     
     if df.empty:
@@ -151,16 +157,16 @@ def main():
     
     try:
         summaries = build_summaries(df)
-        
-        if not summaries:
-            print("WARNING: No summaries could be generated from the input data", file=sys.stderr)
-        
-        write_excel_report(summaries, args.output)
-        print(f"✓ Report written: {args.output}")
-        
     except Exception as e:
-        print(f"ERROR: Failed to generate report: {e}", file=sys.stderr)
+        print(f"ERROR: Failed to build summaries: {e}", file=sys.stderr)
         sys.exit(1)
+    
+    if not summaries:
+        print("WARNING: No summaries could be generated from the input data", file=sys.stderr)
+    
+    # Let exceptions from write_excel_report propagate; it already prints detailed errors
+    write_excel_report(summaries, args.output)
+    print(f"✓ Report written: {args.output}")
 
 
 if __name__ == "__main__":

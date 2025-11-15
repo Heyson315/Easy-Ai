@@ -21,8 +21,14 @@ def inspect_report(report_path: Path) -> None:
     except ValueError as e:
         print(f"ERROR: Invalid Excel file: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Failed to open Excel file: {e}", file=sys.stderr)
+    except FileNotFoundError:
+        print(f"ERROR: File not found: {report_path}", file=sys.stderr)
+        sys.exit(1)
+    except PermissionError as e:
+        print(f"ERROR: Permission denied accessing {report_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error opening Excel file: {e}", file=sys.stderr)
         sys.exit(1)
     
     print(f"Report: {report_path}")
@@ -40,8 +46,14 @@ def inspect_report(report_path: Path) -> None:
                 print(df.head(5).to_string(index=False))
             else:
                 print("  (Empty sheet)")
-        except Exception as e:
-            print(f"ERROR: Failed to parse sheet '{sheet}': {e}", file=sys.stderr)
+        except pd.errors.ParserError as e:
+            print(f"ERROR: ParserError while parsing sheet '{sheet}': {e}", file=sys.stderr)
+            continue
+        except (KeyError, ValueError) as e:
+            print(f"ERROR: Data access error in sheet '{sheet}': {e}", file=sys.stderr)
+            continue
+        except MemoryError as e:
+            print(f"ERROR: MemoryError while parsing sheet '{sheet}': {e}", file=sys.stderr)
             continue
 
 

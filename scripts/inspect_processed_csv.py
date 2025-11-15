@@ -24,8 +24,14 @@ def inspect_csv(csv_path: Path) -> None:
     except pd.errors.ParserError as e:
         print(f"ERROR: Failed to parse CSV: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Failed to read CSV: {e}", file=sys.stderr)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: Encoding issue while reading CSV: {e}", file=sys.stderr)
+        sys.exit(1)
+    except FileNotFoundError as e:
+        print(f"ERROR: File not found: {csv_path} ({e})", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error while reading CSV: {e}", file=sys.stderr)
         sys.exit(1)
     
     # Validate DataFrame is not empty

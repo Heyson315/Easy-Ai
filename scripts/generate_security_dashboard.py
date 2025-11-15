@@ -29,8 +29,11 @@ def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     except (PermissionError, FileNotFoundError) as e:
         print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Unexpected error reading {json_path}: {e}", file=sys.stderr)
+    except OSError as e:
+        print(f"ERROR: I/O error reading {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: Encoding error reading {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
     
     # Validate data is a list

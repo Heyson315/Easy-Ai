@@ -34,10 +34,7 @@ def create_project_management_workbook(filename=None):
         raise ValueError("Filename cannot be empty")
     
     # Create a new workbook
-    try:
-        wb = openpyxl.Workbook()
-    except Exception as e:
-        raise RuntimeError(f"Failed to create workbook: {e}") from e
+    wb = openpyxl.Workbook()
 
     # Financial Transactions Sheet
     trans_sheet = wb.active
@@ -134,8 +131,10 @@ def create_project_management_workbook(filename=None):
         raise PermissionError(
             f"Cannot write to {filename}. Please close the file if it's open."
         ) from e
-    except Exception as e:
-        raise RuntimeError(f"Failed to save workbook: {e}") from e
+    except OSError as e:
+        raise OSError(f"OS error writing to {filename}: {e}") from e
+    except ValueError as e:
+        raise ValueError(f"Invalid data for Excel: {e}") from e
     
     return wb
 
