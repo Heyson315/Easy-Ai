@@ -10,7 +10,7 @@ description: Agent description here
 # My Agent
 
 This agent assists with development of the M365 Security & SharePoint Analysis Toolkit. It understands the hybrid Python/PowerShell architecture, project conventions, and common development patterns. See the complete guide below for detailed usage instructions.
-.github/copilot-instructions.md
+../copilot-instructions.md
 # 🤖 AI Agent Quick Start Guide
 
 **Last Updated**: 2025-11-12
@@ -23,7 +23,7 @@ This guide is specifically for AI coding agents (GitHub Copilot, Claude, ChatGPT
 
 Before starting any task, **read these in order**:
 
-1. **[Copilot Instructions](.github/copilot-instructions.md)** ⭐ **MOST IMPORTANT**
+1. **[Copilot Instructions](../copilot-instructions.md)** ⭐ **MOST IMPORTANT**
    - Complete project architecture
    - Critical workflows and data pipelines
    - Project-specific conventions
@@ -487,7 +487,7 @@ python scripts/process_data.py --input "clean.csv"
 
 ## 📚 Additional Resources
 
-- **[Copilot Instructions](.github/copilot-instructions.md)** - Complete project reference
+- **[Copilot Instructions](../copilot-instructions.md)** - Complete project reference
 - **[Contributing Guide](../../CONTRIBUTING.md)** - Development standards
 - **[Scripts README](../../scripts/README.md)** - Script usage guide
 - **[Documentation Index](../docs/README.md)** - All documentation
@@ -496,7 +496,7 @@ python scripts/process_data.py --input "clean.csv"
 
 ## 🎓 Learning Path for New AI Agents
 
-1. **Start Here**: Read [Copilot Instructions](.github/copilot-instructions.md) (5 min)
+1. **Start Here**: Read [Copilot Instructions](../copilot-instructions.md) (5 min)
 2. **Understand Structure**: Review [Project Architecture](#project-architecture-at-a-glance) (2 min)
 3. **Pick a Task**: Choose from [Common AI Agent Tasks](#common-ai-agent-tasks) (2 min)
 4. **Follow the Pattern**: Copy-paste relevant code pattern (1 min)
