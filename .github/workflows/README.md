@@ -40,6 +40,23 @@ This guide explains how to configure GitHub Actions for your M365 Security & Sha
 - 📝 Automated pull request creation
 - 🔐 Build provenance attestation for security reports
 
+### 4. **Release Drafter** (`.github/release-drafter.yml`)
+**Triggers:** Pull request merge, release creation  
+**Purpose:** Automated release note generation
+
+**Features:**
+- 📝 Automatically drafts release notes from merged PRs
+- 🏷️ Organizes changes by category (Features, Fixes, Documentation, Maintenance)
+- 🔢 Semantic version management (major/minor/patch)
+- 👥 Contributor attribution
+- 🔗 Full changelog link generation
+
+**Configuration:**
+- The `.github/release-drafter.yml` file defines how releases are drafted
+- Categories are based on PR labels (feature, bug, documentation, etc.)
+- Version bumps are determined by labels (major, minor, patch)
+- No additional secrets or configuration required
+
 ## ⚙️ Configuration Required
 
 ### For Basic CI/CD (Works Immediately)
