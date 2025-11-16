@@ -487,7 +487,7 @@ python scripts/process_data.py --input "clean.csv"
 
 ## 📚 Additional Resources
 
-- **[Copilot Instructions](.github/copilot-instructions.md)** - Complete project reference
+- **[Copilot Instructions](../copilot-instructions.md)** - Complete project reference
 - **[Contributing Guide](../../CONTRIBUTING.md)** - Development standards
 - **[Scripts README](../../scripts/README.md)** - Script usage guide
 - **[Documentation Index](../docs/README.md)** - All documentation
