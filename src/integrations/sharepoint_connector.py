@@ -22,13 +22,17 @@ DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xls
 
 
 def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
-    """Create summary DataFrames for the report."""
+    """
+    Create summary DataFrames for the report.
+
+    Optimizations:
+    - Avoid unnecessary DataFrame copy by working with view
+    - Use .astype() only on columns that need it
+    """
     summaries: dict[str, pd.DataFrame] = {}
 
-    # Normalize some fields
-    df = df.copy()
-    # Ensure consistent types
-    for col in [
+    # Normalize string columns efficiently (only those that exist and need normalization)
+    str_columns = [
         "Resource Path",
         "Item Type",
         "Permission",
@@ -38,8 +42,14 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
         "Link ID",
         "Link Type",
         "AccessViaLinkID",
-    ]:
-        if col in df.columns:
+    ]
+
+    # Only normalize columns that exist in the DataFrame
+    existing_str_cols = [col for col in str_columns if col in df.columns]
+    if existing_str_cols:
+        # Create a copy only if we need to modify
+        df = df.copy()
+        for col in existing_str_cols:
             df[col] = df[col].astype(str).str.strip()
 
     # 1) Counts by Item Type
