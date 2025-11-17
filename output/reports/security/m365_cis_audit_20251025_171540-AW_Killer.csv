@@ -1,0 +1,251 @@
+﻿"ControlId","Title","Severity","Expected","Actual","Status","Evidence","Reference","Timestamp"
+"CIS-EXO-1","Ensure modern auth is enabled and basic auth blocked (EXO)","High","OAuth2 on; basic off","Unknown","Manual","The term 'Get-OrganizationConfig' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.","CIS M365 Foundations v3.0 L1; EXO Auth Policies","2025-10-25T17:16:25"
+"CIS-EXO-2","Disable external auto-forwarding (TransportConfig)","High","External forwarding disabled","Unknown","Manual","The term 'Get-TransportConfig' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.","CIS M365 Foundations v3.0 L1; EXO TransportConfig","2025-10-25T17:16:25"
+"CIS-EXO-3","Ensure mailbox auditing is enabled","Medium","Mailbox auditing enabled","Unknown","Manual","The term 'Get-OrganizationConfig' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.","CIS M365 Foundations v3.0 L1; EXO Auditing","2025-10-25T17:16:25"
+"CIS-EXO-4","Ensure legacy protocols disabled per mailbox (sample check)","Medium","Legacy protocols disabled","Unknown","Manual","The term 'Get-CasMailbox' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.","CIS M365 Foundations v3.0 L1; EXO Mailbox Protocols","2025-10-25T17:16:26"
+"CIS-SPO-1","Restrict SharePoint external sharing (Tenant)","High","SharingCapability: ExternalUserSharingOnly or more restrictive","SharingCapability=ExternalUserAndGuestSharing","Fail","
+
+StorageQuota                                                     : 1059328
+BonusStorageQuotaMB                                              : 0
+StorageQuotaAllocated                                            : 0
+ResourceQuota                                                    : 0
+ResourceQuotaAllocated                                           : 0
+OneDriveStorageQuota                                             : 1048576
+CompatibilityRange                                               : 15,15
+ExternalServicesEnabled                                          : True
+NoAccessRedirectUrl                                              :
+ArchiveRedirectUrl                                               :
+SharingCapability                                                : ExternalUserAndGuestSharing
+DisplayStartASiteOption                                          : True
+StartASiteFormUrl                                                :
+ShowEveryoneClaim                                                : False
+ShowAllUsersClaim                                                : False
+OfficeClientADALDisabled                                         : False
+LegacyAuthProtocolsEnabled                                       : True
+DisableCustomAppAuthentication                                   : True
+IsSharePointAddInsDisabled                                       : False
+IsSharePointAddInsBlocked                                        : False
+DisableSharePointStoreAccess                                     : False
+SiteOwnerManageLegacyServicePrincipalEnabled                     : False
+ShowEveryoneExceptExternalUsersClaim                             : True
+AllowEveryoneExceptExternalUsersClaimInPrivateSite               : False
+SearchResolveExactEmailOrUPN                                     : False
+ProvisionSharedWithEveryoneFolder                                : False
+SignInAccelerationDomain                                         :
+EnableGuestSignInAcceleration                                    : False
+UsePersistentCookiesForExplorerView                              : False
+ContentTypeSyncSiteTemplatesList                                 : {}
+BccExternalSharingInvitations                                    : False
+BccExternalSharingInvitationsList                                :
+PublicCdnEnabled                                                 : False
+PublicCdnAllowedFileTypes                                        : CSS,EOT,GIF,ICO,JPEG,JPG,JS,MAP,PNG,SVG,TTF,WOFF
+PublicCdnOrigins                                                 : {}
+RequireAnonymousLinksExpireInDays                                : -1
+RequireOrganizationLinksExpireInDays                             : 0
+SharingAllowedDomainList                                         :
+SharingBlockedDomainList                                         :
+SharingDomainRestrictionMode                                     : None
+OneDriveForGuestsEnabled                                         : False
+IPAddressEnforcement                                             : False
+IPAddressAllowList                                               :
+IPAddressWACTokenLifetime                                        : 15
+EnableTenantRestrictionsInsights                                 : False
+EnablePromotedFileHandlers                                       : True
+UseFindPeopleInPeoplePicker                                      : False
+DefaultSharingLinkType                                           : AnonymousAccess
+ODBMembersCanShare                                               : Unspecified
+ODBAccessRequests                                                : Unspecified
+PreventExternalUsersFromResharing                                : False
+ShowPeoplePickerSuggestionsForGuestUsers                         : False
+AppOnlyBypassPeoplePickerPolicies                                : False
+EnableDiscoverableByOrganizationForVideos                        : False
+FileAnonymousLinkType                                            : Edit
+FolderAnonymousLinkType                                          : Edit
+NotifyOwnersWhenItemsReshared                                    : True
+NotificationsInOneDriveForBusinessEnabled                        : True
+NotificationsInSharePointEnabled                                 : True
+SelfServiceSiteCreationDisabled                                  : False
+SpecialCharactersStateInFileFolderNames                          : Allowed
+OwnerAnonymousNotification                                       : True
+CommentsOnSitePagesDisabled                                      : False
+CommentsOnFilesDisabled                                          : False
+CommentsOnListItemsDisabled                                      : False
+ViewersCanCommentOnMediaDisabled                                 : False
+SocialBarOnSitePagesDisabled                                     : False
+SiteOwnersCanAccessMissingContent                                : True
+OrphanedPersonalSitesRetentionPeriod                             : 2555
+PermissiveBrowserFileHandlingOverride                            : False
+DisallowInfectedFileDownload                                     : False
+DefaultLinkPermission                                            : Edit
+CustomizedExternalSharingServiceUrl                              :
+ConditionalAccessPolicy                                          : AllowFullAccess
+AllowDownloadingNonWebViewableFiles                              : True
+LimitedAccessFileType                                            : WebPreviewableFiles
+AllowEditing                                                     : True
+ApplyAppEnforcedRestrictionsToAdHocRecipients                    : True
+FilePickerExternalImageSearchEnabled                             : True
+EmailAttestationRequired                                         : False
+EmailAttestationReAuthDays                                       : 30
+DisabledWebPartIds                                               :
+DisabledAdaptiveCardExtensionIds                                 :
+EnableMinimumVersionRequirement                                  : True
+MarkNewFilesSensitiveByDefault                                   : AllowExternalSharing
+EnableAIPIntegration                                             : True
+AllowCommentsTextOnEmailEnabled                                  : True
+ConditionalAccessPolicyErrorHelpLink                             :
+RestrictedAccessControlforSitesErrorHelpLink                     : None
+EnableAzureADB2BIntegration                                      : True
+RestrictedAccessControlForOneDriveErrorHelpLink                  : None
+ResyncContentSecurityPolicyConfigurationEntries                  : False
+ContentSecurityPolicyEnforcement                                 : False
+IncludeAtAGlanceInShareEmails                                    : True
+ExternalUserExpirationRequired                                   : False
+ExternalUserExpireInDays                                         : 60
+BlockDownloadLinksFileType                                       : WebPreviewableFiles
+AnyoneLinkTrackUsers                                             : False
+OneDriveLoopDefaultSharingLinkScope                              : Uninitialized
+OneDriveLoopDefaultSharingLinkRole                               : None
+OneDriveRequestFilesLinkEnabled                                  : False
+OneDriveRequestFilesLinkExpirationInDays                         : -1
+OneDriveSharingCapability                                        : ExistingExternalUserSharingOnly
+OneDriveDefaultShareLinkScope                                    : Uninitialized
+OneDriveDefaultShareLinkRole                                     : None
+OneDriveDefaultLinkToExistingAccess                              : False
+OneDriveBlockGuestsAsSiteAdmin                                   : Unspecified
+CoreLoopDefaultSharingLinkScope                                  : Uninitialized
+CoreLoopDefaultSharingLinkRole                                   : None
+CoreSharingCapability                                            : ExternalUserAndGuestSharing
+CoreRequestFilesLinkEnabled                                      : False
+CoreRequestFilesLinkExpirationInDays                             : -1
+CoreDefaultShareLinkScope                                        : Uninitialized
+CoreDefaultShareLinkRole                                         : None
+CoreDefaultLinkToExistingAccess                                  : False
+CoreBlockGuestsAsSiteAdmin                                       : Unspecified
+BlockAppAccessWithAuthenticationContext                          : False
+AllowAnonymousMeetingParticipantsToAccessWhiteboards             : Unspecified
+Workflows2013State                                               : Retired
+IsFluidEnabled                                                   : True
+IsWBFluidEnabled                                                 : True
+IsCollabMeetingNotesFluidEnabled                                 : True
+IsLoopEnabled                                                    : True
+DisableDocumentLibraryDefaultLabeling                            : False
+ExtendPermissionsToUnprotectedFiles                              : False
+EnableSensitivityLabelForPDF                                     : True
+EnableSensitivityLabelForOneNote                                 : False
+EnableSensitivityLabelForVideoFiles                              : False
+BlockSendLabelMismatchEmail                                      : False
+LabelMismatchEmailHelpLink                                       :
+DisableAddShortcutsToOneDrive                                    : False
+EnableAutoNewsDigest                                             : True
+Workflow2010Disabled                                             : True
+StopNew2010Workflows                                             : False
+AllowSharingOutsideRestrictedAccessControlGroups                 : True
+StopNew2013Workflows                                             : False
+DisableBackToClassic                                             : False
+BlockUserInfoVisibility                                          : ExternalPeopleInOD
+BlockUserInfoVisibilityInOneDrive                                : ApplyToGuestAndExternalUsers
+BlockUserInfoVisibilityInSharePoint                              : ApplyToNoUsers
+AllowOverrideForBlockUserInfoVisibility                          : False
+InformationBarriersSuspension                                    : True
+IBImplicitGroupBased                                             : False
+AppBypassInformationBarriers                                     : False
+DefaultOneDriveInformationBarrierMode                            : Explicit
+AppAccessInformationBarriersAllowList                            :
+AllOrganizationSecurityGroupId                                   :
+DisablePersonalListCreation                                      : False
+DisabledModernListTemplateIds                                    : {}
+DisableSpacesActivation                                          : False
+DisableVivaConnectionsAnalytics                                  : False
+HideSyncButtonOnTeamSite                                         : False
+AllowGuestUserShareToUsersNotInSiteCollection                    : False
+DisableOutlookPSTVersionTrimming                                 : False
+EnableAutoExpirationVersionTrim                                  : False
+EnableMediaReactions                                             : True
+ExpireVersionsAfterDays                                          : 0
+MajorVersionLimit                                                : 500
+VersionPolicyFileTypeOverride                                    : {}
+StreamLaunchConfig                                               : 21
+MediaTranscription                                               : Enabled
+MediaTranscriptionAutomaticFeatures                              : Enabled
+ViewInFileExplorerEnabled                                        : False
+AuthContextResilienceMode                                        : DefaultAAD
+ReduceTempTokenLifetimeEnabled                                   : False
+ReduceTempTokenLifetimeValue                                     : 15
+ShowOpenInDesktopOptionForSyncedFiles                            : False
+ShowPeoplePickerGroupSuggestionsForIB                            : False
+EnableRestrictedAccessControl                                    : False
+DelegateRestrictedContentDiscoverabilityManagement               : False
+DelegateRestrictedAccessControlManagement                        : False
+BlockDownloadFileTypePolicy                                      : False
+BlockDownloadFileTypeIds                                         : {}
+ExcludedBlockDownloadGroupIds                                    : {}
+TlsTokenBindingPolicyValue                                       : None
+LegacyBrowserAuthProtocolsEnabled                                : True
+AllowLegacyBrowserAuthProtocolsEnabledSetting                    : False
+AllowLegacyAuthProtocolsEnabledSetting                           : False
+RecycleBinRetentionPeriod                                        : 93
+IsEnableAppAuthPopUpEnabled                                      : False
+IsDataAccessInCardDesignerEnabled                                : False
+MassDeleteNotificationDisabled                                   : False
+BusinessConnectivityServiceDisabled                              : False
+AllowSensitivityLabelOnRecords                                   : False
+DelayDenyAddAndCustomizePagesEnforcement                         : False
+DelayDenyAddAndCustomizePagesEnforcementOnClassicPublishingSites : False
+AllowClassicPublishingSiteCreation                               : False
+EsignatureEnabled                                                : False
+ESignatureSiteList                                               : {}
+ESignatureThirdPartyProviderInfoList                             : {""{\""ProviderName\"":\""DocuSign\"",\""IsEnabled\"":false}"",
+                                                                   ""{\""ProviderName\"":\""AdobeSign\"",\""IsEnabled\"":false}""}
+ESignatureAppList                                                : {""{\""AppName\"":\""WordDesktop\"",\""IsEnabled\"":true}""}
+WhoCanShareAnonymousAllowList                                    : {}
+WhoCanShareAuthenticatedGuestAllowList                           : {}
+DocumentUnderstandingModelScope                                  : AllSites
+DocumentUnderstandingModelSelectedSitesList                      : {}
+AIBuilderModelScope                                              : AllSites
+AIBuilderModelSelectedSitesList                                  : {}
+AIBuilderSelectedSitesIncludesContentCenters                     : False
+PrebuiltModelScope                                               : AllSites
+PrebuiltModelSelectedSitesList                                   : {}
+DocumentTranslationScope                                         : AllSites
+DocumentTranslationSelectedSitesList                             : {}
+AutofillColumnsScope                                             : AllSites
+AutofillColumnsSelectedSitesList                                 : {}
+KnowledgeAgentScope                                              : NoSites
+KnowledgeAgentSelectedSitesList                                  : {}
+OpticalCharacterRecognitionScope                                 : NoSites
+OpticalCharacterRecognitionSelectedSitesList                     : {}
+DefaultContentCenterSite                                         :
+AllowWebPropertyBagUpdateWhenDenyAddAndCustomizePagesIsEnabled   : False
+AllowSelectSecurityGroupsInSPSitesList                           :
+DenySelectSecurityGroupsInSPSitesList                            :
+ExemptNativeUsersFromTenantLevelRestricedAccessControl           : False
+AllowSelectSGsInODBListInTenant                                  :
+DenySelectSGsInODBListInTenant                                   :
+EnforceRequestDigest                                             : True
+RestrictResourceAccountAccess                                    : False
+
+
+
+","CIS M365 Foundations v3.0 L1; SPO Sharing","2025-10-25T17:16:27"
+"CIS-AAD-1","Limit Global Administrator role assignments","High","Global Admin assignments minimal (<= 2-4)","GlobalAdminCount=3","Pass","
+PrincipalId                          RoleDefinitionId
+-----------                          ----------------
+6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10
+727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10
+2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10
+
+
+","CIS M365 Foundations v3.0 L1; AAD Roles","2025-10-25T17:16:38"
+"CIS-DEF-1","Ensure Safe Links policy is enabled","High","Safe Links enabled","Unknown","Manual","No Safe Links rules or policies found","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T17:16:38"
+"CIS-DEF-2","Ensure Safe Attachments policy is enabled","High","Safe Attachments enabled","Unknown","Manual","The term 'Get-SafeAttachmentPolicy' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T17:16:38"
+"CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","At least one enabled CA policy requiring MFA for all users","MFAPolicies=5","Pass","
+DisplayName                                               State
+-----------                                               -----
+Require multifactor authentication for guest access       enabled
+Require multifactor authentication for all users          enabled
+conditional access 1`                                     enabled
+Require multifactor authentication for ‎Azure‎ management enabled
+Require multifactor authentication for Azure management   enabled
+
+
+","CIS M365 Foundations v3.0 L1; Conditional Access","2025-10-25T17:16:39"

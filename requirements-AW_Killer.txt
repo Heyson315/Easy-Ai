@@ -1,0 +1,13 @@
+# Python dependencies for share-report M365 Security Toolkit
+# Install with: pip install -r requirements.txt
+
+# Data processing and Excel generation
+pandas>=1.3.0
+openpyxl>=3.0.0
+
+# AI Integration - OpenAI GPT-5
+openai>=1.65.0
+azure-identity>=1.19.0
+
+# No other external dependencies required!
+# The dashboard generator and other scripts use only Python standard library.

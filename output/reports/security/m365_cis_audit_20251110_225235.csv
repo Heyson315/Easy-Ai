@@ -1,0 +1,5365 @@
+﻿"ControlId","Title","Severity","Expected","Actual","Status","Evidence","Reference","Timestamp"
+"CIS-EXO-1","Ensure modern auth is enabled and basic auth blocked (EXO)","High","OAuth2 enabled; All Basic Auth protocols disabled via Authentication Policies","OAuth2ClientProfileEnabled=True; BasicAllowed=False","Pass","","CIS M365 Foundations v3.0 L1; EXO Auth Policies","2025-11-10T22:53:32"
+"CIS-EXO-2","Disable external auto-forwarding (TransportConfig)","High","ExternalClientForwardingDisabled=True","ExternalClientForwardingDisabled=","Fail","
+
+Addres : F
+         a
+         l
+         s
+         e
+AllowL : F
+         a
+         l
+         s
+         e
+Anonym : 1
+         8
+         0
+         0
+ClearC : T
+         r
+         u
+         e
+Conver : F
+         a
+         l
+         s
+         e
+DSNCon : P
+         r
+         e
+         s
+         e
+         r
+         v
+         e
+         D
+         S
+         N
+         B
+         o
+         d
+         y
+Journa : F
+         a
+         l
+         s
+         e
+Enable : F
+         a
+         l
+         s
+         e
+Extern : T
+         r
+         u
+         e
+Extern :
+Extern : T
+         r
+         u
+         e
+Extern : 1
+         0
+
+         M
+         B
+
+         (
+         1
+         0
+         ,
+         4
+         8
+         5
+         ,
+         7
+         6
+         0
+
+         b
+         y
+         t
+         e
+         s
+         )
+Extern :
+Extern : T
+         r
+         u
+         e
+Extern :
+Genera : {
+         }
+Hygien : P
+         r
+         e
+         m
+         i
+         u
+         m
+Intern : T
+         r
+         u
+         e
+Intern :
+Intern : T
+         r
+         u
+         e
+Intern : 1
+         0
+
+         M
+         B
+
+         (
+         1
+         0
+         ,
+         4
+         8
+         5
+         ,
+         7
+         6
+         0
+
+         b
+         y
+         t
+         e
+         s
+         )
+Intern :
+Intern : T
+         r
+         u
+         e
+Intern : {
+         }
+Journa : 0
+Journa : <
+         >
+Legacy : F
+         a
+         l
+         s
+         e
+Legacy : F
+         a
+         l
+         s
+         e
+Legacy : F
+         a
+         l
+         s
+         e
+Redire : F
+         a
+         l
+         s
+         e
+Redire : F
+         a
+         l
+         s
+         e
+MaxDum : 1
+         8
+
+         M
+         B
+
+         (
+         1
+         8
+         ,
+         8
+         7
+         4
+         ,
+         3
+         6
+         8
+
+         b
+         y
+         t
+         e
+         s
+         )
+MaxDum : 7
+         .
+         0
+         0
+         :
+         0
+         0
+         :
+         0
+         0
+MaxRec : U
+         n
+         l
+         i
+         m
+         i
+         t
+         e
+         d
+MaxRec : U
+         n
+         l
+         i
+         m
+         i
+         t
+         e
+         d
+MaxSen : U
+         n
+         l
+         i
+         m
+         i
+         t
+         e
+         d
+Messag : 1
+         .
+         0
+         0
+         :
+         0
+         0
+         :
+         0
+         0
+Migrat : T
+         r
+         u
+         e
+OpenDo : F
+         a
+         l
+         s
+         e
+Rfc223 : F
+         a
+         l
+         s
+         e
+Safety : 7
+         .
+         0
+         0
+         :
+         0
+         0
+         :
+         0
+         0
+SmtpCl : F
+         a
+         l
+         s
+         e
+Superv : {
+         R
+         e
+         j
+         e
+         c
+         t
+         ,
+
+         A
+         l
+         l
+         o
+         w
+         }
+TLSRec : {
+         }
+TLSSen : {
+         }
+Verify : F
+         a
+         l
+         s
+         e
+Voicem : T
+         r
+         u
+         e
+Header : N
+         o
+         C
+         r
+         e
+         a
+         t
+         e
+Xexch5 : T
+         r
+         u
+         e
+
+
+
+","CIS M365 Foundations v3.0 L1; EXO TransportConfig","2025-11-10T22:53:32"
+"CIS-EXO-3","Ensure mailbox auditing is enabled","Medium","Organization AuditDisabled=False","AuditDisabled=False","Pass","
+
+Organi : N
+         A
+         M
+         P
+         R
+         1
+         2
+         A
+         0
+         1
+         2
+         .
+         P
+         R
+         O
+         D
+         .
+         O
+         U
+         T
+         L
+         O
+         O
+         K
+         .
+         C
+         O
+         M
+         /
+         M
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+
+         E
+         x
+         c
+         h
+         a
+         n
+         g
+         e
+
+         H
+         o
+         s
+         t
+         e
+         d
+
+         O
+         r
+         g
+         a
+         n
+         i
+         z
+         a
+         t
+         i
+         o
+         n
+         s
+         /
+         R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+
+         -
+
+         N
+         A
+         M
+         P
+         R
+         1
+         2
+         A
+         0
+         1
+         2
+         .
+         P
+         R
+         O
+         D
+         .
+         O
+         U
+         T
+         L
+         O
+         O
+         K
+         .
+         C
+         O
+         M
+         /
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+         U
+         n
+         i
+         t
+         s
+         /
+         R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+         /
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+Name   : R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+Identi : R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+Guid   : c
+         0
+         2
+         e
+         f
+         6
+         7
+         a
+         -
+         e
+         d
+         4
+         1
+         -
+         4
+         0
+         8
+         3
+         -
+         b
+         2
+         0
+         f
+         -
+         b
+         d
+         4
+         4
+         4
+         d
+         8
+         2
+         a
+         3
+         3
+         7
+Object : 1
+         6
+         5
+         0
+         0
+Delaye : E
+         n
+         a
+         b
+         l
+         e
+         d
+         :
+
+         F
+         a
+         l
+         s
+         e
+         ;
+
+         W
+         h
+         e
+         n
+         L
+         a
+         s
+         t
+         M
+         o
+         d
+         i
+         f
+         i
+         e
+         d
+         U
+         t
+         c
+         :
+
+         1
+         /
+         1
+         /
+         0
+         0
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Tenant : E
+         n
+         a
+         b
+         l
+         e
+         d
+         :
+
+         F
+         a
+         l
+         s
+         e
+         ;
+
+         W
+         h
+         e
+         n
+         L
+         a
+         s
+         t
+         M
+         o
+         d
+         i
+         f
+         i
+         e
+         d
+         U
+         t
+         c
+         :
+
+         1
+         /
+         1
+         /
+         0
+         0
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+EndUse : E
+         n
+         a
+         b
+         l
+         e
+         d
+         :
+
+         F
+         a
+         l
+         s
+         e
+         ;
+
+         W
+         h
+         e
+         n
+         L
+         a
+         s
+         t
+         M
+         o
+         d
+         i
+         f
+         i
+         e
+         d
+         U
+         t
+         c
+         :
+
+         1
+         /
+         1
+         /
+         0
+         0
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Delaye : E
+         n
+         a
+         b
+         l
+         e
+         d
+         :
+
+         F
+         a
+         l
+         s
+         e
+         ;
+
+         W
+         h
+         e
+         n
+         L
+         a
+         s
+         t
+         M
+         o
+         d
+         i
+         f
+         i
+         e
+         d
+         U
+         t
+         c
+         :
+
+         1
+         /
+         1
+         /
+         0
+         0
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Defaul :
+Defaul : 1
+         .
+         7
+
+         G
+         B
+
+         (
+         1
+         ,
+         8
+         2
+         5
+         ,
+         3
+         6
+         1
+         ,
+         9
+         2
+         0
+
+         b
+         y
+         t
+         e
+         s
+         )
+Defaul : 2
+
+         G
+         B
+
+         (
+         2
+         ,
+         1
+         4
+         7
+         ,
+         4
+         8
+         3
+         ,
+         6
+         4
+         8
+
+         b
+         y
+         t
+         e
+         s
+         )
+Defaul : U
+         n
+         l
+         i
+         m
+         i
+         t
+         e
+         d
+Defaul : 3
+         0
+         .
+         0
+         0
+         :
+         0
+         0
+         :
+         0
+         0
+Defaul : 7
+         .
+         0
+         0
+         :
+         0
+         0
+         :
+         0
+         0
+Public : F
+         a
+         l
+         s
+         e
+Public : F
+         a
+         l
+         s
+         e
+Public : F
+         a
+         l
+         s
+         e
+Public : F
+         a
+         l
+         s
+         e
+Public : F
+         a
+         l
+         s
+         e
+Public : L
+         o
+         c
+         a
+         l
+Activi : T
+         r
+         u
+         e
+Activi : 0
+         6
+         :
+         0
+         0
+         :
+         0
+         0
+Activi : T
+         r
+         u
+         e
+AppsFo : T
+         r
+         u
+         e
+AppsFo : 5
+Privat : 5
+AVAuth :
+Custom :
+Distri :
+Distri : {
+         }
+Distri :
+EwsAll :
+EwsAll :
+EwsAll :
+EwsAll :
+Disabl : F
+         a
+         l
+         s
+         e
+Reject : F
+         a
+         l
+         s
+         e
+MaskCl : T
+         r
+         u
+         e
+EwsApp :
+EwsBlo :
+Autodi : F
+         a
+         l
+         s
+         e
+EwsEna :
+IPList : {
+         }
+ElcPro : F
+         a
+         l
+         s
+         e
+AutoEx : F
+         a
+         l
+         s
+         e
+Compli : F
+         a
+         l
+         s
+         e
+Exchan : T
+         r
+         u
+         e
+Exchan : {
+         }
+Hierar :
+Indust : N
+         o
+         t
+         S
+         p
+         e
+         c
+         i
+         f
+         i
+         e
+         d
+MailTi : T
+         r
+         u
+         e
+MailTi : T
+         r
+         u
+         e
+MailTi : T
+         r
+         u
+         e
+MailTi : 2
+         5
+MailTi : T
+         r
+         u
+         e
+Manage :
+Micros : {
+         S
+         M
+         T
+         P
+         :
+         M
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         E
+         x
+         c
+         h
+         a
+         n
+         g
+         e
+         3
+         2
+         9
+         e
+         7
+         1
+         e
+         c
+         8
+         8
+         a
+         e
+         4
+         6
+         1
+         5
+         b
+         b
+         c
+         3
+         6
+         a
+         b
+         6
+         c
+         e
+         4
+         1
+         1
+         0
+         9
+         e
+         @
+         R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+         }
+Micros : F
+         a
+         l
+         s
+         e
+Micros : M
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         E
+         x
+         c
+         h
+         a
+         n
+         g
+         e
+         3
+         2
+         9
+         e
+         7
+         1
+         e
+         c
+         8
+         8
+         a
+         e
+         4
+         6
+         1
+         5
+         b
+         b
+         c
+         3
+         6
+         a
+         b
+         6
+         c
+         e
+         4
+         1
+         1
+         0
+         9
+         e
+         @
+         R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+Micros :
+Forwar : F
+         a
+         l
+         s
+         e
+Organi : {
+         }
+ReadTr : F
+         a
+         l
+         s
+         e
+SCLJun : 4
+SIPAcc :
+SIPSes :
+MaxCon : U
+         n
+         l
+         i
+         m
+         i
+         t
+         e
+         d
+MaxAdd :
+MaxOff :
+MaxInf :
+MaxInf : 5
+         0
+         0
+         0
+MaxInf : 5
+         0
+         0
+         0
+Inform : F
+         a
+         l
+         s
+         e
+Inform : F
+         a
+         l
+         s
+         e
+Inform : T
+         r
+         u
+         e
+Upgrad : F
+         a
+         l
+         s
+         e
+Inform : L
+         e
+         g
+         a
+         c
+         y
+IsExcl : F
+         a
+         l
+         s
+         e
+IsExcl : F
+         a
+         l
+         s
+         e
+IsFfoM : F
+         a
+         l
+         s
+         e
+Extern : F
+         a
+         l
+         s
+         e
+IsProc : F
+         a
+         l
+         s
+         e
+Tenant : F
+         a
+         l
+         s
+         e
+ACLabl : F
+         a
+         l
+         s
+         e
+Prefer : 0
+Requir : 1
+         0
+         0
+ByteEn : 0
+Public : F
+         a
+         l
+         s
+         e
+RmsoSu : U
+         n
+         k
+         n
+         o
+         w
+         n
+Intune : T
+         r
+         u
+         e
+AzureP : F
+         a
+         l
+         s
+         e
+Hybrid : U
+         n
+         k
+         n
+         o
+         w
+         n
+Releas : S
+         t
+         a
+         g
+         e
+         d
+         R
+         o
+         l
+         l
+         o
+         u
+         t
+Compas :
+ShareP : h
+         t
+         t
+         p
+         s
+         :
+         /
+         /
+         r
+         a
+         h
+         m
+         a
+         n
+         f
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         a
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         s
+         h
+         a
+         r
+         e
+         p
+         o
+         i
+         n
+         t
+         .
+         c
+         o
+         m
+         /
+MapiHt : F
+         a
+         l
+         s
+         e
+RealTi : F
+         a
+         l
+         s
+         e
+Custom : F
+         a
+         l
+         s
+         e
+OAuth2 : T
+         r
+         u
+         e
+PerTen : F
+         a
+         l
+         s
+         e
+LinkPr : T
+         r
+         u
+         e
+Outloo : T
+         r
+         u
+         e
+Connec : T
+         r
+         u
+         e
+Connec : T
+         r
+         u
+         e
+SmtpAc : T
+         r
+         u
+         e
+Office : F
+         a
+         l
+         s
+         e
+Unbloc : T
+         r
+         u
+         e
+AsyncS : T
+         r
+         u
+         e
+Refres : F
+         a
+         l
+         s
+         e
+IsAgen : T
+         r
+         u
+         e
+Networ :
+Bookin : T
+         r
+         u
+         e
+Bookin : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : T
+         r
+         u
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin :
+Bookin : F
+         a
+         l
+         s
+         e
+Bookin :
+Bookin : F
+         a
+         l
+         s
+         e
+LeanPo : F
+         a
+         l
+         s
+         e
+Outloo : T
+         r
+         u
+         e
+Outloo : F
+         a
+         l
+         s
+         e
+Outloo : F
+         a
+         l
+         s
+         e
+Elevat :
+AuditD : F
+         a
+         l
+         s
+         e
+WebPus : F
+         a
+         l
+         s
+         e
+WebSug : F
+         a
+         l
+         s
+         e
+Connec : T
+         r
+         u
+         e
+Connec : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Connec : T
+         r
+         u
+         e
+Connec : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Connec : T
+         r
+         u
+         e
+Connec : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Connec : T
+         r
+         u
+         e
+Connec : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+AutoEn : F
+         a
+         l
+         s
+         e
+Online :
+SendFr : T
+         r
+         u
+         e
+Outloo : F
+         a
+         l
+         s
+         e
+Mobile : T
+         r
+         u
+         e
+Enable : F
+         a
+         l
+         s
+         e
+Outloo : F
+         a
+         l
+         s
+         e
+Worksp : T
+         r
+         u
+         e
+BasicA : 7
+         6
+         7
+Shorte : N
+         o
+         n
+         e
+Defaul : 5
+Defaul : 1
+         0
+FindTi : F
+         a
+         l
+         s
+         e
+FindTi : F
+         a
+         l
+         s
+         e
+FindTi : F
+         a
+         l
+         s
+         e
+FindTi : F
+         a
+         l
+         s
+         e
+Messag : T
+         r
+         u
+         e
+IsEopT : F
+         a
+         l
+         s
+         e
+Enable : F
+         a
+         l
+         s
+         e
+IsComp : F
+         a
+         l
+         s
+         e
+DataIn : 4
+         0
+         9
+         3
+         6
+         4
+         0
+         6
+         9
+         4
+Messag : T
+         r
+         u
+         e
+Shared : T
+         r
+         u
+         e
+Hybrid : T
+         r
+         u
+         e
+Postpo : F
+         a
+         l
+         s
+         e
+TwoCli : F
+         a
+         l
+         s
+         e
+Messag : 3
+         6
+         5
+         .
+         0
+         0
+         :
+         0
+         0
+         :
+         0
+         0
+RPSEna : F
+         a
+         l
+         s
+         e
+EwsOpe :
+EwsOpe :
+EwsOpe : F
+         a
+         l
+         s
+         e
+BlockE : F
+         a
+         l
+         s
+         e
+Enforc :
+DLPWai : F
+         a
+         l
+         s
+         e
+DLPWai : 9
+         9
+         9
+         9
+InRegi : F
+         a
+         l
+         s
+         e
+InRegi :
+Organi : f
+         J
+         H
+         N
+         T
+         s
+         M
+         w
+         D
+         I
+         B
+         f
+         p
+         e
+         o
+         J
+         D
+         k
+         v
+         T
+         C
+         S
+         Y
+         m
+         Z
+         Z
+         2
+         m
+         V
+         h
+         N
+         c
+         A
+         C
+         H
+         g
+         b
+         t
+         K
+         0
+         t
+         d
+         Q
+         4
+         V
+         X
+         4
+         m
+         x
+         q
+         t
+         x
+         4
+         J
+         F
+         4
+         B
+         V
+         J
+         6
+         4
+         a
+         d
+         w
+         s
+         m
+         N
+         /
+         8
+         m
+         c
+         r
+         7
+         6
+         9
+         v
+         Y
+         v
+         u
+         s
+         +
+         +
+         S
+         g
+         r
+         E
+         N
+         D
+         m
+         z
+         R
+         n
+         P
+         E
+         0
+         U
+         S
+         V
+         M
+         j
+         t
+         Z
+         s
+         0
+         +
+         G
+         a
+         R
+         r
+         9
+         J
+         t
+         I
+         a
+         r
+         y
+         8
+         v
+         h
+         k
+         s
+         S
+         4
+         N
+         N
+         d
+         g
+         G
+         C
+         z
+         7
+         y
+         h
+         b
+         h
+         y
+         F
+         X
+         g
+         o
+         F
+         X
+         l
+         l
+         i
+         3
+         s
+         b
+         l
+         M
+         i
+         +
+         l
+         c
+         S
+         u
+         1
+         k
+         g
+         V
+         u
+         q
+         G
+         H
+         4
+         +
+         N
+         k
+         K
+         T
+         h
+         b
+         8
+         u
+         Q
+         k
+         P
+         4
+         +
+         B
+         r
+         Z
+         f
+         r
+         C
+         7
+         Y
+         6
+         F
+         d
+         k
+         c
+         G
+         M
+         c
+         /
+         D
+         K
+         2
+         F
+         c
+         Z
+         k
+         b
+         2
+         w
+         L
+         h
+         y
+         +
+         T
+         d
+         Q
+         +
+         8
+         +
+         V
+         f
+         N
+         t
+         c
+         W
+         v
+         V
+         A
+         U
+         1
+         w
+         8
+         /
+         Z
+         8
+         t
+         J
+         +
+         x
+         M
+         e
+         G
+         M
+         R
+         /
+         d
+         /
+         u
+         N
+         h
+         J
+         q
+         Q
+         a
+         v
+         6
+         s
+         p
+         o
+         w
+         P
+         i
+         e
+         4
+         j
+         V
+         o
+         V
+         X
+         S
+         d
+         X
+         c
+         g
+         B
+         m
+         D
+         R
+         a
+         Z
+         F
+         /
+         q
+         c
+         0
+         x
+         w
+         f
+         y
+         J
+         3
+         0
+         G
+         m
+         g
+         P
+         R
+         K
+         Q
+         V
+         E
+         B
+         1
+         N
+         J
+         p
+         A
+         P
+         l
+         7
+         F
+         D
+         G
+         m
+         U
+         1
+         j
+         j
+         T
+         +
+         N
+         +
+         W
+         7
+         O
+         d
+         q
+         2
+         f
+         w
+         v
+         f
+         Q
+         A
+         A
+         A
+         P
+         /
+         /
+         A
+         w
+         A
+         =
+Legacy : /
+         o
+         =
+         E
+         x
+         c
+         h
+         a
+         n
+         g
+         e
+         L
+         a
+         b
+         s
+         /
+         o
+         u
+         =
+         E
+         x
+         c
+         h
+         a
+         n
+         g
+         e
+
+         A
+         d
+         m
+         i
+         n
+         i
+         s
+         t
+         r
+         a
+         t
+         i
+         v
+         e
+
+         G
+         r
+         o
+         u
+         p
+
+         (
+         F
+         Y
+         D
+         I
+         B
+         O
+         H
+         F
+         2
+         3
+         S
+         P
+         D
+         L
+         T
+         )
+         /
+         c
+         n
+         =
+         e
+         x
+         o
+         t
+         e
+         m
+         p
+         l
+         a
+         t
+         e
+         e
+         3
+         4
+         f
+         5
+         8
+         b
+         c
+         -
+         e
+         b
+         3
+         e
+         -
+         4
+         7
+         e
+         d
+         -
+         a
+         4
+         a
+         8
+         -
+         b
+         8
+         b
+         4
+         7
+         8
+         9
+         3
+         c
+         a
+         9
+         d
+         .
+         c
+         o
+         m
+         /
+         c
+         n
+         =
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+Displa : R
+         a
+         h
+         m
+         a
+         n
+
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+
+         a
+         n
+         d
+
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+
+         P
+         .
+         L
+         .
+         L
+         C
+         .
+Heuris : N
+         o
+         n
+         e
+Resour : {
+         \
+         A
+         l
+         l
+
+         R
+         o
+         o
+         m
+         s
+         }
+IsMixe : T
+         r
+         u
+         e
+Previo : 0
+         .
+         1
+         0
+
+         (
+         1
+         4
+         .
+         0
+         .
+         1
+         0
+         0
+         .
+         0
+         )
+IsAddr : T
+         r
+         u
+         e
+Foreig : {
+         }
+Foreig :
+Foreig :
+Foreig :
+MimeTy : {
+         }
+IsLice : T
+         r
+         u
+         e
+IsTena : F
+         a
+         l
+         s
+         e
+IsDual : T
+         r
+         u
+         e
+IsTena : F
+         a
+         l
+         s
+         e
+IsDehy : F
+         a
+         l
+         s
+         e
+IsGuid : F
+         a
+         l
+         s
+         e
+IsMail : F
+         a
+         l
+         s
+         e
+RBACCo : 0
+         .
+         1
+
+         (
+         1
+         5
+         .
+         2
+         0
+         .
+         9
+         2
+         9
+         8
+         .
+         6
+         )
+RootPu :
+Remote : {
+         }
+AdminD : 0
+         .
+         2
+         0
+
+         (
+         1
+         5
+         .
+         2
+         0
+         .
+         9
+         2
+         9
+         8
+         .
+         6
+         )
+IsUpgr : F
+         a
+         l
+         s
+         e
+IsUpda : F
+         a
+         l
+         s
+         e
+Servic : B
+         P
+         O
+         S
+         _
+         S
+         _
+         E
+         1
+         5
+         _
+         0
+Target :
+WACDis :
+AdfsAu :
+AdfsIs :
+AdfsAu : {
+         }
+AdfsSi : {
+         }
+AdfsEn :
+SiteMa :
+Defaul :
+Mailbo : F
+         a
+         l
+         s
+         e
+Defaul :
+Allowe : {
+         n
+         a
+         m
+         =
+         n
+         a
+         m
+         p
+         r
+         d
+         1
+         2
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+
+         N
+         A
+         M
+         .
+         S
+         u
+         b
+         =
+         n
+         a
+         m
+         p
+         r
+         d
+         0
+         2
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+         n
+         a
+         m
+         p
+         2
+         2
+         0
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+         n
+         a
+         m
+         p
+         r
+         d
+         1
+         2
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+         n
+         a
+         m
+         p
+         r
+         d
+         1
+         9
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+         p
+         r
+         o
+         d
+         .
+         e
+         x
+         c
+         h
+         a
+         n
+         g
+         e
+         l
+         a
+         b
+         s
+         .
+         c
+         o
+         m
+         }
+Defaul : n
+         a
+         m
+Curren : {
+         n
+         a
+         m
+         p
+         r
+         d
+         1
+         2
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+
+         n
+         a
+         m
+         p
+         r
+         d
+         0
+         2
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+
+         n
+         a
+         m
+         p
+         2
+         2
+         0
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         ,
+
+         n
+         a
+         m
+         p
+         r
+         d
+         1
+         9
+         .
+         p
+         r
+         o
+         d
+         .
+         o
+         u
+         t
+         l
+         o
+         o
+         k
+         .
+         c
+         o
+         m
+         .
+         .
+         .
+         }
+IsJitE :
+AutoJi :
+Defaul : 0
+         3
+         /
+         3
+         0
+         /
+         2
+         4
+
+         0
+         6
+         :
+         3
+         4
+         :
+         1
+         3
+
+         P
+         M
+Allowe : 1
+         0
+         /
+         3
+         1
+         /
+         2
+         5
+
+         0
+         3
+         :
+         2
+         9
+         :
+         4
+         3
+
+         A
+         M
+Direct : F
+         a
+         l
+         s
+         e
+AllowT : T
+         r
+         u
+         e
+Guests : T
+         r
+         u
+         e
+Groups : T
+         r
+         u
+         e
+Hidden : F
+         a
+         l
+         s
+         e
+Groups :
+Groups :
+Defaul : P
+         r
+         i
+         v
+         a
+         t
+         e
+GroupL : <
+         G
+         r
+         o
+         u
+         p
+         L
+         i
+         f
+         e
+         C
+         y
+         c
+         l
+         e
+         P
+         o
+         l
+         i
+         c
+         y
+         >
+         <
+         G
+         r
+         o
+         u
+         p
+         L
+         i
+         f
+         e
+         t
+         i
+         m
+         e
+         I
+         n
+         D
+         a
+         y
+         s
+         >
+         -
+         1
+         <
+         /
+         G
+         r
+         o
+         u
+         p
+         L
+         i
+         f
+         e
+         t
+         i
+         m
+         e
+         I
+         n
+         D
+         a
+         y
+         s
+         >
+         <
+         M
+         a
+         n
+         a
+         g
+         e
+         d
+         G
+         r
+         o
+         u
+         p
+         T
+         y
+         p
+         e
+
+         p
+         2
+         :
+         n
+         i
+         l
+         =
+         ""
+         t
+         r
+         u
+         e
+         ""
+
+         x
+         m
+         l
+         n
+         s
+         :
+         p
+         2
+         =
+         ""
+         h
+         t
+         t
+         p
+         :
+         /
+         /
+         w
+         w
+         w
+         .
+         w
+         3
+         .
+         o
+         r
+         g
+         /
+         2
+         0
+         0
+         1
+         /
+         X
+         M
+         L
+         S
+         c
+         h
+         e
+         m
+         a
+         -
+         i
+         n
+         s
+         t
+         a
+         n
+         c
+         e
+         ""
+
+         /
+         >
+         <
+         L
+         a
+         s
+         t
+         U
+         p
+         d
+         a
+         t
+         e
+         d
+         T
+         i
+         m
+         e
+         >
+         2
+         0
+         2
+         5
+         -
+         1
+         1
+         -
+         0
+         7
+         T
+         2
+         3
+         :
+         4
+         3
+         :
+         5
+         3
+         .
+         4
+         7
+         6
+         0
+         2
+         8
+         8
+         Z
+         <
+         /
+         L
+         a
+         s
+         t
+         U
+         p
+         d
+         a
+         t
+         e
+         d
+         T
+         i
+         m
+         e
+         >
+         <
+         /
+         G
+         r
+         o
+         u
+         p
+         L
+         i
+         f
+         e
+         C
+         y
+         c
+         l
+         e
+         P
+         o
+         l
+         i
+         c
+         y
+         >
+Groups :
+DataCl : <
+         D
+         a
+         t
+         a
+         C
+         l
+         a
+         s
+         s
+         i
+         f
+         i
+         c
+         a
+         t
+         i
+         o
+         n
+         s
+
+         /
+         >
+Visibl : L
+         o
+         c
+         a
+         t
+         i
+         o
+         n
+         ,
+         A
+         l
+         l
+         P
+         r
+         o
+         p
+         e
+         r
+         t
+         i
+         e
+         s
+         :
+         1
+         5
+MatchS : F
+         a
+         l
+         s
+         e
+Disabl : F
+         a
+         l
+         s
+         e
+InPlac : {
+         }
+Servic :
+Guests :
+Organi : h
+         t
+         t
+         p
+         s
+         :
+         /
+         /
+         h
+         h
+         r
+         -
+         c
+         p
+         a
+         .
+         c
+         o
+         m
+         /
+         p
+         r
+         i
+         v
+         a
+         c
+         y
+IsMIPL : F
+         a
+         l
+         s
+         e
+IsGrou : F
+         a
+         l
+         s
+         e
+BlockM : F
+         a
+         l
+         s
+         e
+Focuse :
+Focuse : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+Forest :
+Forest : 0
+         1
+         /
+         0
+         1
+         /
+         0
+         1
+
+         1
+         2
+         :
+         0
+         0
+         :
+         0
+         0
+
+         A
+         M
+EndUse : F
+         a
+         l
+         s
+         e
+OcmGro :
+IsGrou : F
+         a
+         l
+         s
+         e
+Recall :
+Messag :
+Messag : F
+         a
+         l
+         s
+         e
+Messag : F
+         a
+         l
+         s
+         e
+Automa : F
+         a
+         l
+         s
+         e
+Action : F
+         a
+         l
+         s
+         e
+Id     : F
+         i
+         r
+         s
+         t
+
+         O
+         r
+         g
+         a
+         n
+         i
+         z
+         a
+         t
+         i
+         o
+         n
+IsVali : T
+         r
+         u
+         e
+Exchan : 0
+         .
+         1
+
+         (
+         8
+         .
+         0
+         .
+         5
+         3
+         5
+         .
+         0
+         )
+Distin : C
+         N
+         =
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+         ,
+         C
+         N
+         =
+         R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+         ,
+         C
+         N
+         =
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+         U
+         n
+         i
+         t
+         s
+         ,
+         D
+         C
+         =
+         N
+         A
+         M
+         P
+         R
+         1
+         2
+         A
+         0
+         1
+         2
+         ,
+         D
+         C
+         =
+         P
+         R
+         O
+         D
+         ,
+         D
+         C
+         =
+         O
+         U
+         T
+         L
+         O
+         O
+         K
+         ,
+         D
+         C
+         =
+         C
+         O
+         M
+Object : N
+         A
+         M
+         P
+         R
+         1
+         2
+         A
+         0
+         1
+         2
+         .
+         P
+         R
+         O
+         D
+         .
+         O
+         U
+         T
+         L
+         O
+         O
+         K
+         .
+         C
+         O
+         M
+         /
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+         /
+         S
+         c
+         h
+         e
+         m
+         a
+         /
+         m
+         s
+         -
+         E
+         x
+         c
+         h
+         -
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+         -
+         U
+         n
+         i
+         t
+         -
+         C
+         o
+         n
+         t
+         a
+         i
+         n
+         e
+         r
+Object : {
+         t
+         o
+         p
+         ,
+
+         c
+         o
+         n
+         t
+         a
+         i
+         n
+         e
+         r
+         ,
+
+         m
+         s
+         E
+         x
+         c
+         h
+         O
+         r
+         g
+         a
+         n
+         i
+         z
+         a
+         t
+         i
+         o
+         n
+         C
+         o
+         n
+         t
+         a
+         i
+         n
+         e
+         r
+         ,
+
+         m
+         s
+         E
+         x
+         c
+         h
+         C
+         o
+         n
+         f
+         i
+         g
+         u
+         r
+         a
+         t
+         i
+         o
+         n
+         U
+         n
+         i
+         t
+         C
+         o
+         n
+         t
+         a
+         i
+         n
+         e
+         r
+         }
+WhenCh : 1
+         1
+         /
+         1
+         0
+         /
+         2
+         5
+
+         1
+         0
+         :
+         3
+         3
+         :
+         5
+         2
+
+         P
+         M
+WhenCr : 0
+         3
+         /
+         3
+         0
+         /
+         2
+         4
+
+         0
+         2
+         :
+         3
+         3
+         :
+         5
+         5
+
+         P
+         M
+WhenCh : 1
+         1
+         /
+         1
+         1
+         /
+         2
+         5
+
+         0
+         3
+         :
+         3
+         3
+         :
+         5
+         2
+
+         A
+         M
+WhenCr : 0
+         3
+         /
+         3
+         0
+         /
+         2
+         4
+
+         0
+         6
+         :
+         3
+         3
+         :
+         5
+         5
+
+         P
+         M
+Exchan : 7
+         c
+         d
+         5
+         b
+         2
+         d
+         5
+         -
+         2
+         2
+         3
+         6
+         -
+         4
+         0
+         9
+         a
+         -
+         9
+         a
+         6
+         1
+         -
+         3
+         5
+         7
+         4
+         d
+         7
+         4
+         e
+         2
+         2
+         6
+         4
+Organi : R
+         a
+         h
+         m
+         a
+         n
+         F
+         i
+         n
+         a
+         n
+         c
+         e
+         a
+         n
+         d
+         A
+         c
+         c
+         o
+         u
+         n
+         t
+         i
+         n
+         g
+         .
+         o
+         n
+         m
+         i
+         c
+         r
+         o
+         s
+         o
+         f
+         t
+         .
+         c
+         o
+         m
+Origin : S
+         N
+         4
+         P
+         R
+         1
+         2
+         A
+         1
+         2
+         D
+         C
+         0
+         0
+         3
+         .
+         N
+         A
+         M
+         P
+         R
+         1
+         2
+         A
+         0
+         1
+         2
+         .
+         P
+         R
+         O
+         D
+         .
+         O
+         U
+         T
+         L
+         O
+         O
+         K
+         .
+         C
+         O
+         M
+Object : C
+         h
+         a
+         n
+         g
+         e
+         d
+
+
+
+","CIS M365 Foundations v3.0 L1; EXO Auditing","2025-11-10T22:53:33"
+"CIS-EXO-4","Ensure legacy protocols disabled per mailbox (sample check)","Medium","Legacy protocols (POP/IMAP/MAPI) disabled on all mailboxes","MailboxesWithLegacyProtocols=2 (sample of 100)","Fail","
+DisplayNam
+e
+----------
+Discove...
+Hassan ...
+
+
+","CIS M365 Foundations v3.0 L1; EXO Mailbox Protocols","2025-11-10T22:53:33"
+"CIS-SPO-1","Restrict SharePoint external sharing (Tenant)","High","SharingCapability: ExternalUserSharingOnly or more restrictive","SharingCapability=ExternalUserAndGuestSharing","Fail","
+
+Storag : 1
+         0
+         5
+         9
+         3
+         2
+         8
+BonusS : 0
+Storag : 0
+Resour : 0
+Resour : 0
+OneDri : 1
+         0
+         4
+         8
+         5
+         7
+         6
+Compat : 1
+         5
+         ,
+         1
+         5
+Extern : T
+         r
+         u
+         e
+NoAcce :
+Archiv :
+Sharin : E
+         x
+         t
+         e
+         r
+         n
+         a
+         l
+         U
+         s
+         e
+         r
+         A
+         n
+         d
+         G
+         u
+         e
+         s
+         t
+         S
+         h
+         a
+         r
+         i
+         n
+         g
+Displa : T
+         r
+         u
+         e
+StartA :
+ShowEv : F
+         a
+         l
+         s
+         e
+ShowAl : F
+         a
+         l
+         s
+         e
+Office : F
+         a
+         l
+         s
+         e
+Legacy : T
+         r
+         u
+         e
+Disabl : T
+         r
+         u
+         e
+IsShar : F
+         a
+         l
+         s
+         e
+IsShar : F
+         a
+         l
+         s
+         e
+Disabl : F
+         a
+         l
+         s
+         e
+SiteOw : F
+         a
+         l
+         s
+         e
+ShowEv : T
+         r
+         u
+         e
+AllowE : F
+         a
+         l
+         s
+         e
+Search : F
+         a
+         l
+         s
+         e
+Provis : F
+         a
+         l
+         s
+         e
+SignIn :
+Enable : F
+         a
+         l
+         s
+         e
+UsePer : F
+         a
+         l
+         s
+         e
+Conten : {
+         }
+BccExt : F
+         a
+         l
+         s
+         e
+BccExt :
+Public : F
+         a
+         l
+         s
+         e
+Public : C
+         S
+         S
+         ,
+         E
+         O
+         T
+         ,
+         G
+         I
+         F
+         ,
+         I
+         C
+         O
+         ,
+         J
+         P
+         E
+         G
+         ,
+         J
+         P
+         G
+         ,
+         J
+         S
+         ,
+         M
+         A
+         P
+         ,
+         P
+         N
+         G
+         ,
+         S
+         V
+         G
+         ,
+         T
+         T
+         F
+         ,
+         W
+         O
+         F
+         F
+Public : {
+         }
+Requir : -
+         1
+Requir : 0
+Sharin :
+Sharin :
+Sharin : N
+         o
+         n
+         e
+OneDri : F
+         a
+         l
+         s
+         e
+IPAddr : F
+         a
+         l
+         s
+         e
+IPAddr :
+IPAddr : 1
+         5
+Enable : F
+         a
+         l
+         s
+         e
+Enable : T
+         r
+         u
+         e
+UseFin : F
+         a
+         l
+         s
+         e
+Defaul : A
+         n
+         o
+         n
+         y
+         m
+         o
+         u
+         s
+         A
+         c
+         c
+         e
+         s
+         s
+ODBMem : U
+         n
+         s
+         p
+         e
+         c
+         i
+         f
+         i
+         e
+         d
+ODBAcc : U
+         n
+         s
+         p
+         e
+         c
+         i
+         f
+         i
+         e
+         d
+Preven : F
+         a
+         l
+         s
+         e
+ShowPe : F
+         a
+         l
+         s
+         e
+AppOnl : F
+         a
+         l
+         s
+         e
+Enable : F
+         a
+         l
+         s
+         e
+FileAn : E
+         d
+         i
+         t
+Folder : E
+         d
+         i
+         t
+Notify : T
+         r
+         u
+         e
+Notifi : T
+         r
+         u
+         e
+Notifi : T
+         r
+         u
+         e
+SelfSe : F
+         a
+         l
+         s
+         e
+Specia : A
+         l
+         l
+         o
+         w
+         e
+         d
+OwnerA : T
+         r
+         u
+         e
+Commen : F
+         a
+         l
+         s
+         e
+Commen : F
+         a
+         l
+         s
+         e
+Commen : F
+         a
+         l
+         s
+         e
+Viewer : F
+         a
+         l
+         s
+         e
+Social : F
+         a
+         l
+         s
+         e
+SiteOw : T
+         r
+         u
+         e
+Orphan : 2
+         5
+         5
+         5
+Permis : F
+         a
+         l
+         s
+         e
+Disall : F
+         a
+         l
+         s
+         e
+Defaul : E
+         d
+         i
+         t
+Custom :
+Condit : A
+         l
+         l
+         o
+         w
+         F
+         u
+         l
+         l
+         A
+         c
+         c
+         e
+         s
+         s
+AllowD : T
+         r
+         u
+         e
+Limite : W
+         e
+         b
+         P
+         r
+         e
+         v
+         i
+         e
+         w
+         a
+         b
+         l
+         e
+         F
+         i
+         l
+         e
+         s
+AllowE : T
+         r
+         u
+         e
+ApplyA : T
+         r
+         u
+         e
+FilePi : T
+         r
+         u
+         e
+EmailA : F
+         a
+         l
+         s
+         e
+EmailA : 3
+         0
+Disabl :
+Disabl :
+Enable : T
+         r
+         u
+         e
+MarkNe : A
+         l
+         l
+         o
+         w
+         E
+         x
+         t
+         e
+         r
+         n
+         a
+         l
+         S
+         h
+         a
+         r
+         i
+         n
+         g
+Enable : T
+         r
+         u
+         e
+AllowC : T
+         r
+         u
+         e
+Condit :
+Restri : N
+         o
+         n
+         e
+Enable : T
+         r
+         u
+         e
+Restri : N
+         o
+         n
+         e
+Resync : F
+         a
+         l
+         s
+         e
+Conten : F
+         a
+         l
+         s
+         e
+Includ : T
+         r
+         u
+         e
+Extern : F
+         a
+         l
+         s
+         e
+Extern : 6
+         0
+BlockD : W
+         e
+         b
+         P
+         r
+         e
+         v
+         i
+         e
+         w
+         a
+         b
+         l
+         e
+         F
+         i
+         l
+         e
+         s
+Anyone : F
+         a
+         l
+         s
+         e
+OneDri : U
+         n
+         i
+         n
+         i
+         t
+         i
+         a
+         l
+         i
+         z
+         e
+         d
+OneDri : N
+         o
+         n
+         e
+OneDri : F
+         a
+         l
+         s
+         e
+OneDri : -
+         1
+OneDri : E
+         x
+         i
+         s
+         t
+         i
+         n
+         g
+         E
+         x
+         t
+         e
+         r
+         n
+         a
+         l
+         U
+         s
+         e
+         r
+         S
+         h
+         a
+         r
+         i
+         n
+         g
+         O
+         n
+         l
+         y
+OneDri : U
+         n
+         i
+         n
+         i
+         t
+         i
+         a
+         l
+         i
+         z
+         e
+         d
+OneDri : N
+         o
+         n
+         e
+OneDri : F
+         a
+         l
+         s
+         e
+OneDri : U
+         n
+         s
+         p
+         e
+         c
+         i
+         f
+         i
+         e
+         d
+CoreLo : U
+         n
+         i
+         n
+         i
+         t
+         i
+         a
+         l
+         i
+         z
+         e
+         d
+CoreLo : N
+         o
+         n
+         e
+CoreSh : E
+         x
+         t
+         e
+         r
+         n
+         a
+         l
+         U
+         s
+         e
+         r
+         A
+         n
+         d
+         G
+         u
+         e
+         s
+         t
+         S
+         h
+         a
+         r
+         i
+         n
+         g
+CoreRe : F
+         a
+         l
+         s
+         e
+CoreRe : -
+         1
+CoreDe : U
+         n
+         i
+         n
+         i
+         t
+         i
+         a
+         l
+         i
+         z
+         e
+         d
+CoreDe : N
+         o
+         n
+         e
+CoreDe : F
+         a
+         l
+         s
+         e
+CoreBl : U
+         n
+         s
+         p
+         e
+         c
+         i
+         f
+         i
+         e
+         d
+BlockA : F
+         a
+         l
+         s
+         e
+AllowA : U
+         n
+         s
+         p
+         e
+         c
+         i
+         f
+         i
+         e
+         d
+Workfl : R
+         e
+         t
+         i
+         r
+         e
+         d
+IsFlui : T
+         r
+         u
+         e
+IsWBFl : T
+         r
+         u
+         e
+IsColl : T
+         r
+         u
+         e
+IsLoop : T
+         r
+         u
+         e
+Disabl : F
+         a
+         l
+         s
+         e
+Extend : F
+         a
+         l
+         s
+         e
+Enable : T
+         r
+         u
+         e
+Enable : F
+         a
+         l
+         s
+         e
+Enable : F
+         a
+         l
+         s
+         e
+BlockS : F
+         a
+         l
+         s
+         e
+LabelM :
+Disabl : F
+         a
+         l
+         s
+         e
+Enable : T
+         r
+         u
+         e
+Workfl : T
+         r
+         u
+         e
+StopNe : F
+         a
+         l
+         s
+         e
+AllowS : T
+         r
+         u
+         e
+StopNe : F
+         a
+         l
+         s
+         e
+Disabl : F
+         a
+         l
+         s
+         e
+BlockU : E
+         x
+         t
+         e
+         r
+         n
+         a
+         l
+         P
+         e
+         o
+         p
+         l
+         e
+         I
+         n
+         O
+         D
+BlockU : A
+         p
+         p
+         l
+         y
+         T
+         o
+         G
+         u
+         e
+         s
+         t
+         A
+         n
+         d
+         E
+         x
+         t
+         e
+         r
+         n
+         a
+         l
+         U
+         s
+         e
+         r
+         s
+BlockU : A
+         p
+         p
+         l
+         y
+         T
+         o
+         N
+         o
+         U
+         s
+         e
+         r
+         s
+AllowO : F
+         a
+         l
+         s
+         e
+Inform : T
+         r
+         u
+         e
+IBImpl : F
+         a
+         l
+         s
+         e
+AppByp : F
+         a
+         l
+         s
+         e
+Defaul : E
+         x
+         p
+         l
+         i
+         c
+         i
+         t
+AppAcc :
+AllOrg :
+Disabl : F
+         a
+         l
+         s
+         e
+Disabl : {
+         }
+Disabl : F
+         a
+         l
+         s
+         e
+Disabl : F
+         a
+         l
+         s
+         e
+HideSy : F
+         a
+         l
+         s
+         e
+AllowG : F
+         a
+         l
+         s
+         e
+Disabl : F
+         a
+         l
+         s
+         e
+Enable : F
+         a
+         l
+         s
+         e
+Enable : T
+         r
+         u
+         e
+Expire : 0
+MajorV : 5
+         0
+         0
+Versio : {
+         }
+Stream : 2
+         1
+MediaT : E
+         n
+         a
+         b
+         l
+         e
+         d
+MediaT : E
+         n
+         a
+         b
+         l
+         e
+         d
+ViewIn : F
+         a
+         l
+         s
+         e
+AuthCo : D
+         e
+         f
+         a
+         u
+         l
+         t
+         A
+         A
+         D
+Reduce : F
+         a
+         l
+         s
+         e
+Reduce : 1
+         5
+ShowOp : F
+         a
+         l
+         s
+         e
+ShowPe : F
+         a
+         l
+         s
+         e
+Enable : F
+         a
+         l
+         s
+         e
+Delega : F
+         a
+         l
+         s
+         e
+Delega : F
+         a
+         l
+         s
+         e
+BlockD : F
+         a
+         l
+         s
+         e
+BlockD : {
+         }
+Exclud : {
+         }
+TlsTok : N
+         o
+         n
+         e
+Legacy : T
+         r
+         u
+         e
+AllowL : F
+         a
+         l
+         s
+         e
+AllowL : F
+         a
+         l
+         s
+         e
+Recycl : 9
+         3
+IsEnab : F
+         a
+         l
+         s
+         e
+IsData : F
+         a
+         l
+         s
+         e
+MassDe : F
+         a
+         l
+         s
+         e
+Busine : F
+         a
+         l
+         s
+         e
+AllowS : F
+         a
+         l
+         s
+         e
+DelayD : F
+         a
+         l
+         s
+         e
+DelayD : F
+         a
+         l
+         s
+         e
+AllowC : F
+         a
+         l
+         s
+         e
+Esigna : F
+         a
+         l
+         s
+         e
+ESigna : {
+         }
+ESigna : {
+         ""
+         {
+         \
+         ""
+         P
+         r
+         o
+         v
+         i
+         d
+         e
+         r
+         N
+         a
+         m
+         e
+         \
+         ""
+         :
+         \
+         ""
+         D
+         o
+         c
+         u
+         S
+         i
+         g
+         n
+         \
+         ""
+         ,
+         \
+         ""
+         I
+         s
+         E
+         n
+         a
+         b
+         l
+         e
+         d
+         \
+         ""
+         :
+         f
+         a
+         l
+         s
+         e
+         }
+         ""
+         ,
+
+         ""
+         {
+         \
+         ""
+         P
+         r
+         o
+         v
+         i
+         d
+         e
+         r
+         N
+         a
+         m
+         e
+         \
+         ""
+         :
+         \
+         ""
+         A
+         d
+         o
+         b
+         e
+         S
+         i
+         g
+         n
+         \
+         ""
+         ,
+         \
+         ""
+         I
+         s
+         E
+         n
+         a
+         b
+         l
+         e
+         d
+         \
+         ""
+         :
+         f
+         a
+         l
+         s
+         e
+         }
+         ""
+         }
+ESigna : {
+         ""
+         {
+         \
+         ""
+         A
+         p
+         p
+         N
+         a
+         m
+         e
+         \
+         ""
+         :
+         \
+         ""
+         W
+         o
+         r
+         d
+         D
+         e
+         s
+         k
+         t
+         o
+         p
+         \
+         ""
+         ,
+         \
+         ""
+         I
+         s
+         E
+         n
+         a
+         b
+         l
+         e
+         d
+         \
+         ""
+         :
+         t
+         r
+         u
+         e
+         }
+         ""
+         }
+WhoCan : {
+         }
+WhoCan : {
+         }
+Docume : A
+         l
+         l
+         S
+         i
+         t
+         e
+         s
+Docume : {
+         }
+AIBuil : A
+         l
+         l
+         S
+         i
+         t
+         e
+         s
+AIBuil : {
+         }
+AIBuil : F
+         a
+         l
+         s
+         e
+Prebui : A
+         l
+         l
+         S
+         i
+         t
+         e
+         s
+Prebui : {
+         }
+Docume : A
+         l
+         l
+         S
+         i
+         t
+         e
+         s
+Docume : {
+         }
+Autofi : A
+         l
+         l
+         S
+         i
+         t
+         e
+         s
+Autofi : {
+         }
+Knowle : N
+         o
+         S
+         i
+         t
+         e
+         s
+Knowle : {
+         }
+Optica : N
+         o
+         S
+         i
+         t
+         e
+         s
+Optica : {
+         }
+Defaul :
+AllowW : F
+         a
+         l
+         s
+         e
+AllowS :
+DenySe :
+Exempt : F
+         a
+         l
+         s
+         e
+AllowS :
+DenySe :
+Enforc : T
+         r
+         u
+         e
+Restri : F
+         a
+         l
+         s
+         e
+
+
+
+","CIS M365 Foundations v3.0 L1; SPO Sharing","2025-11-10T22:53:34"
+"CIS-AAD-1","Limit Global Administrator role assignments","High","Global Admin assignments minimal (<= 2-4)","GlobalAdminCount=3","Pass","
+PrincipalId                          RoleDefinitionId
+-----------                          ----------------
+6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10
+727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10
+2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10
+
+
+","CIS M365 Foundations v3.0 L1; AAD Roles","2025-11-10T22:53:45"
+"CIS-DEF-1","Ensure Safe Links policy is enabled","High","At least one Safe Links rule or policy is enabled","EnabledRules=0; EnabledPolicies=0","Fail","
+Name                                        Enabled
+----                                        -------
+Strict Preset Security Policy1713470629399
+StandardRecommendedPolicy638480795407067709
+Built-In Protection Policy
+
+
+","CIS M365 Foundations v3.0 L1; Defender for Office","2025-11-10T22:53:45"
+"CIS-DEF-2","Ensure Safe Attachments policy is enabled","High","At least one Safe Attachments policy enabled","EnabledPolicies=3","Pass","
+Name                                        Enable
+----                                        ------
+Strict Preset Security Policy1713470628358    True
+StandardRecommendedPolicy638480795383316441   True
+Built-In Protection Policy                    True
+
+
+","CIS M365 Foundations v3.0 L1; Defender for Office","2025-11-10T22:53:45"
+"CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","At least one enabled CA policy requiring MFA for all users","MFAPolicies=5","Pass","
+DisplayName                                               State
+-----------                                               -----
+Require multifactor authentication for guest access       enabled
+Require multifactor authentication for all users          enabled
+conditional access 1`                                     enabled
+Require multifactor authentication for ‎Azure‎ management enabled
+Require multifactor authentication for Azure management   enabled
+
+
+","CIS M365 Foundations v3.0 L1; Conditional Access","2025-11-10T22:53:47"
+"CIS-PURVIEW-1","Ensure DLP policies are enabled for data protection","High","At least one DLP policy enabled","EnabledPolicies=5","Pass","
+Name                                                    Enabled
+----                                                    -------
+DSPM for AI: Detect sensitive info added to AI sites       True
+Default DLP policy for Teams                               True
+DSPM for AI - Block sensitive info from AI sites           True
+DSPM for AI - Block prompts sent to AI apps in Edge        True
+DSPM for AI - Block sensitive info from AI apps in Edge    True
+
+
+","CIS M365 Foundations v3.0 L1; Purview DLP","2025-11-10T22:54:04"
+"CIS-AAD-2","Ensure Azure AD Identity Protection risk policies are configured","High","At least one risk-based CA policy enabled (user or sign-in risk)","RiskBasedPolicies=0","Fail","","CIS M365 Foundations v3.0 L1; AAD Identity Protection","2025-11-10T22:54:06"
+"CIS-INTUNE-1","Ensure Intune device compliance policies exist and are enforced","Medium","Compliance policies configured","Unknown","Manual","Intune cmdlets unavailable or insufficient permissions","CIS M365 Foundations v3.0 L1; Intune MDM","2025-11-10T22:54:11"
+"CIS-AAD-3","Ensure guest user access restrictions are configured","Medium","Guest user role is restrictive (not Member role)","GuestUserRoleId=a0b1b346-4d3e-4e8b-98f8-753987be4970","Fail","
+DeletedDateTime Description                                                       DisplayName          Id                  AllowEmailVerifiedUsersToJoinOrganization AllowInvitesFrom Allo
+                                                                                                                                                                                      wUse
+                                                                                                                                                                                      rCon
+                                                                                                                                                                                      sent
+                                                                                                                                                                                      ForR
+                                                                                                                                                                                      isky
+                                                                                                                                                                                      Apps
+--------------- -----------                                                       -----------          --                  ----------------------------------------- ---------------- ----
+                Used to manage authorization related settings across the company. Authorization Policy authorizationPolicy True                                      everyone         F...
+
+
+","CIS M365 Foundations v3.0 L1; AAD Guest Access","2025-11-10T22:54:12"
+"CIS-PURVIEW-2","Ensure audit logs are retained for compliance (90+ days recommended)","Medium","Audit log retention 90+ days","Unknown","Manual","No audit log retention policies found","CIS M365 Foundations v3.0 L1; Purview Auditing","2025-11-10T22:54:14"
+"CIS-PURVIEW-3","Ensure sensitivity labels are published and enforced","Medium","At least one sensitivity label policy published","PublishedPolicies=3","Pass","
+Name                            Enabled
+----                            -------
+Global sensitivity label policy    True
+confidential label                 True
+confidential label 2               True
+
+
+","CIS M365 Foundations v3.0 L1; Purview Information Protection","2025-11-10T22:54:14"

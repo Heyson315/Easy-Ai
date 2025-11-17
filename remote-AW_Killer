@@ -1,0 +1,625 @@
+﻿"ControlId","Title","Severity","Expected","Actual","Status","Evidence","Reference","Timestamp"
+"CIS-EXO-1","Ensure modern auth is enabled and basic auth blocked (EXO)","High","OAuth2 enabled; All Basic Auth protocols disabled via Authentication Policies","OAuth2ClientProfileEnabled=True; BasicAllowed=False","Pass","","CIS M365 Foundations v3.0 L1; EXO Auth Policies","2025-10-25T17:15:14"
+"CIS-EXO-2","Disable external auto-forwarding (TransportConfig)","High","ExternalClientForwardingDisabled=True","ExternalClientForwardingDisabled=","Fail","
+
+AddressBookPolicyRoutingEnabled                             : False
+AllowLegacyTLSClients                                       : False
+AnonymousSenderToRecipientRatePerHour                       : 1800
+ClearCategories                                             : True
+ConvertDisclaimerWrapperToEml                               : False
+DSNConversionMode                                           : PreserveDSNBody
+JournalArchivingEnabled                                     : False
+EnableExternalHTTPMailDelivery                              : False
+ExternalDelayDsnEnabled                                     : True
+ExternalDsnDefaultLanguage                                  :
+ExternalDsnLanguageDetectionEnabled                         : True
+ExternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)
+ExternalDsnReportingAuthority                               :
+ExternalDsnSendHtml                                         : True
+ExternalPostmasterAddress                                   :
+GenerateCopyOfDSNFor                                        : {}
+HygieneSuite                                                : Premium
+InternalDelayDsnEnabled                                     : True
+InternalDsnDefaultLanguage                                  :
+InternalDsnLanguageDetectionEnabled                         : True
+InternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)
+InternalDsnReportingAuthority                               :
+InternalDsnSendHtml                                         : True
+InternalSMTPServers                                         : {}
+JournalMessageExpirationDays                                : 0
+JournalingReportNdrTo                                       : <>
+LegacyJournalingMigrationEnabled                            : False
+LegacyArchiveJournalingEnabled                              : False
+LegacyArchiveLiveJournalingEnabled                          : False
+RedirectUnprovisionedUserMessagesForLegacyArchiveJournaling : False
+RedirectDLMessagesForLegacyArchiveJournaling                : False
+MaxDumpsterSizePerDatabase                                  : 18 MB (18,874,368 bytes)
+MaxDumpsterTime                                             : 7.00:00:00
+MaxReceiveSize                                              : Unlimited
+MaxRecipientEnvelopeLimit                                   : Unlimited
+MaxSendSize                                                 : Unlimited
+MessageExpiration                                           : 1.00:00:00
+MigrationEnabled                                            : True
+OpenDomainRoutingEnabled                                    : False
+Rfc2231EncodingEnabled                                      : False
+SafetyNetHoldTime                                           : 7.00:00:00
+SmtpClientAuthenticationDisabled                            : False
+SupervisionTags                                             : {Reject, Allow}
+TLSReceiveDomainSecureList                                  : {}
+TLSSendDomainSecureList                                     : {}
+VerifySecureSubmitEnabled                                   : False
+VoicemailJournalingEnabled                                  : True
+HeaderPromotionModeSetting                                  : NoCreate
+Xexch50Enabled                                              : True
+
+
+
+","CIS M365 Foundations v3.0 L1; EXO TransportConfig","2025-10-25T17:15:14"
+"CIS-EXO-3","Ensure mailbox auditing is enabled","Medium","Organization AuditDisabled=False","AuditDisabled=False","Pass","
+
+OrganizationId                                            : NAMPR12A012.PROD.OUTLOOK.COM/Microsoft Exchange Hosted
+                                                            Organizations/RahmanFinanceandAccounting.onmicrosoft.com - NAMPR12A012.PROD.OU
+                                                            TLOOK.COM/ConfigurationUnits/RahmanFinanceandAccounting.onmicrosoft.com/Config
+                                                            uration
+Name                                                      : RahmanFinanceandAccounting.onmicrosoft.com
+Identity                                                  : RahmanFinanceandAccounting.onmicrosoft.com
+Guid                                                      : c02ef67a-ed41-4083-b20f-bd444d82a337
+ObjectVersion                                             : 16500
+DelayedDelicensingEnabledState                            : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
+TenantAdminNotificationForDelayedDelicensingState         : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
+EndUserMailNotificationForDelayedDelicensingState         : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
+DelayedDelicensingBlockedExplicitlyState                  : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
+DefaultPublicFolderAgeLimit                               :
+DefaultPublicFolderIssueWarningQuota                      : 1.7 GB (1,825,361,920 bytes)
+DefaultPublicFolderProhibitPostQuota                      : 2 GB (2,147,483,648 bytes)
+DefaultPublicFolderMaxItemSize                            : Unlimited
+DefaultPublicFolderDeletedItemRetention                   : 30.00:00:00
+DefaultPublicFolderMovedItemRetention                     : 7.00:00:00
+PublicFoldersLockedForMigration                           : False
+PublicFolderMigrationComplete                             : False
+PublicFolderMailboxesLockedForNewConnections              : False
+PublicFolderMailboxesMigrationComplete                    : False
+PublicFolderShowClientControl                             : False
+PublicFoldersEnabled                                      : Local
+ActivityBasedAuthenticationTimeoutEnabled                 : True
+ActivityBasedAuthenticationTimeoutInterval                : 06:00:00
+ActivityBasedAuthenticationTimeoutWithSingleSignOnEnabled : True
+AppsForOfficeEnabled                                      : True
+AppsForOfficeCorpCatalogAppsCount                         : 5
+PrivateCatalogAppsCount                                   : 5
+AVAuthenticationService                                   :
+CustomerFeedbackEnabled                                   :
+DistributionGroupDefaultOU                                :
+DistributionGroupNameBlockedWordsList                     : {}
+DistributionGroupNamingPolicy                             :
+EwsAllowEntourage                                         :
+EwsAllowList                                              :
+EwsAllowMacOutlook                                        :
+EwsAllowOutlook                                           :
+DisablePlusAddressInRecipients                            : False
+RejectDirectSend                                          : False
+MaskClientIpInReceivedHeadersEnabled                      : True
+EwsApplicationAccessPolicy                                :
+EwsBlockList                                              :
+AutodiscoverPartialDirSync                                : False
+EwsEnabled                                                :
+IPListBlocked                                             : {}
+ElcProcessingDisabled                                     : False
+AutoExpandingArchiveEnabled                               : False
+ComplianceMLBgdCrawlEnabled                               : False
+ExchangeNotificationEnabled                               : True
+ExchangeNotificationRecipients                            : {}
+HierarchicalAddressBookRoot                               :
+Industry                                                  : NotSpecified
+MailTipsAllTipsEnabled                                    : True
+MailTipsExternalRecipientsTipsEnabled                     : True
+MailTipsGroupMetricsEnabled                               : True
+MailTipsLargeAudienceThreshold                            : 25
+MailTipsMailboxSourcedTipsEnabled                         : True
+ManagedFolderHomepage                                     :
+MicrosoftExchangeRecipientEmailAddresses                  : {SMTP:MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@RahmanFinanceandAccoun
+                                                            ting.onmicrosoft.com}
+MicrosoftExchangeRecipientEmailAddressPolicyEnabled       : False
+MicrosoftExchangeRecipientPrimarySmtpAddress              : MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@RahmanFinanceandAccounting.o
+                                                            nmicrosoft.com
+MicrosoftExchangeRecipientReplyRecipient                  :
+ForwardSyncLiveIdBusinessInstance                         : False
+OrganizationSummary                                       : {}
+ReadTrackingEnabled                                       : False
+SCLJunkThreshold                                          : 4
+SIPAccessService                                          :
+SIPSessionBorderController                                :
+MaxConcurrentMigrations                                   : Unlimited
+MaxAddressBookPolicies                                    :
+MaxOfflineAddressBooks                                    :
+MaxInformationBarrierSegmentsLegacy                       :
+MaxInformationBarrierSegments                             : 5000
+MaxInformationBarrierBridges                              : 5000
+InformationBarriersManagementEnabled                      : False
+InformationBarriersEnforcementEnabled                     : False
+InformationBarriersRestrictPeopleSearch                   : True
+UpgradeIBInProgress                                       : False
+InformationBarrierMode                                    : Legacy
+IsExcludedFromOnboardMigration                            : False
+IsExcludedFromOffboardMigration                           : False
+IsFfoMigrationInProgress                                  : False
+ExternalCloudAccessEnabled                                : False
+IsProcessEhaMigratedMessagesEnabled                       : False
+TenantRelocationsAllowed                                  : False
+ACLableSyncedObjectEnabled                                : False
+PreferredInternetCodePageForShiftJis                      : 0
+RequiredCharsetCoverage                                   : 100
+ByteEncoderTypeFor7BitCharsets                            : 0
+PublicComputersDetectionEnabled                           : False
+RmsoSubscriptionStatus                                    : Unknown
+IntuneManagedStatus                                       : True
+AzurePremiumSubscriptionStatus                            : False
+HybridConfigurationStatus                                 : Unknown
+ReleaseTrack                                              : StagedRollout
+CompassEnabled                                            :
+SharePointUrl                                             : https://rahmanfinanceandaccounting.sharepoint.com/
+MapiHttpEnabled                                           : False
+RealTimeLogServiceEnabled                                 : False
+CustomerLockboxEnabled                                    : False
+OAuth2ClientProfileEnabled                                : True
+PerTenantSwitchToESTSEnabled                              : False
+LinkPreviewEnabled                                        : True
+OutlookPayEnabled                                         : True
+ConnectorsEnabled                                         : True
+ConnectorsActionableMessagesEnabled                       : True
+SmtpActionableMessagesEnabled                             : True
+OfficeGraphActivitySharingOrgOptout                       : False
+UnblockUnsafeSenderPromptEnabled                          : True
+AsyncSendEnabled                                          : True
+RefreshSessionEnabled                                     : False
+IsAgendaMailEnabled                                       : True
+NetworkThrottlingConfiguration                            :
+BookingsEnabled                                           : True
+BookingsEnabledLastUpdateTime                             : 01/01/01 12:00:00 AM
+BookingsPaymentsEnabled                                   : False
+BookingsSocialSharingRestricted                           : False
+BookingsAddressEntryRestricted                            : False
+BookingsAuthEnabled                                       : False
+BookingsCreationOfCustomQuestionsRestricted               : False
+BookingsExposureOfStaffDetailsRestricted                  : False
+BookingsNotesEntryRestricted                              : False
+BookingsPhoneNumberEntryRestricted                        : False
+BookingsMembershipApprovalRequired                        : False
+BookingsSmsMicrosoftEnabled                               : True
+BookingsNamingPolicyEnabled                               : False
+BookingsBlockedWordsEnabled                               : False
+BookingsNamingPolicyPrefixEnabled                         : False
+BookingsNamingPolicyPrefix                                :
+BookingsNamingPolicySuffixEnabled                         : False
+BookingsNamingPolicySuffix                                :
+BookingsSearchEngineIndexDisabled                         : False
+LeanPopoutEnabled                                         : False
+OutlookMobileHelpShiftEnabled                             : True
+OutlookMobileSingleAccountEnabled                         : False
+OutlookMobileGCCRestrictionsEnabled                       : False
+ElevatedAccessControl                                     :
+AuditDisabled                                             : False
+WebPushNotificationsDisabled                              : False
+WebSuggestedRepliesDisabled                               : False
+ConnectorsEnabledForOutlook                               : True
+ConnectorsEnabledForOutlookLastUpdateTime                 : 01/01/01 12:00:00 AM
+ConnectorsEnabledForTeams                                 : True
+ConnectorsEnabledForTeamsLastUpdateTime                   : 01/01/01 12:00:00 AM
+ConnectorsEnabledForSharepoint                            : True
+ConnectorsEnabledForSharepointLastUpdateTime              : 01/01/01 12:00:00 AM
+ConnectorsEnabledForYammer                                : True
+ConnectorsEnabledForYammerLastUpdateTime                  : 01/01/01 12:00:00 AM
+AutoEnableArchiveMailbox                                  : False
+OnlineMeetingsByDefaultEnabled                            :
+SendFromAliasEnabled                                      : True
+OutlookTextPredictionDisabled                             : False
+MobileAppEducationEnabled                                 : True
+EnableForwardingAddressSyncForMailboxes                   : False
+OutlookGifPickerDisabled                                  : False
+WorkspaceTenantEnabled                                    : True
+BasicAuthBlockedApps                                      : 767
+ShortenEventScopeDefault                                  : None
+DefaultMinutesToReduceShortEventsBy                       : 5
+DefaultMinutesToReduceLongEventsBy                        : 10
+FindTimeAttendeeAuthenticationEnabled                     : False
+FindTimeOnlineMeetingOptionDisabled                       : False
+FindTimeAutoScheduleDisabled                              : False
+FindTimeLockPollForAttendeesEnabled                       : False
+MessageRemindersEnabled                                   : True
+IsEopTrialEnabled                                         : False
+EnableOutlookEvents                                       : False
+IsComplianceTrialEnabled                                  : False
+DataInsightsFlag                                          : 4093640694
+MessageHighlightsEnabled                                  : True
+SharedDomainEmailAddressFlowEnabled                       : True
+HybridRSVPEnabled                                         : True
+PostponeRoamingSignaturesUntilLater                       : False
+TwoClickMailPreviewEnabled                                : False
+MessageRecallMaxRecallableAge                             : 365.00:00:00
+RPSEnabled                                                : False
+EwsOperationAccessPolicyEnabled                           :
+EwsOperationAccessPolicyAllowList                         :
+EwsOperationAccessPolicyPopulated                         : False
+BlockExchangeProvisioningFromOnPremEnabled                : False
+EnforceShortenEventSettingEffectiveTime                   :
+DLPWaitOnSendEnabled                                      : False
+DLPWaitOnSendTimeout                                      : 0
+InRegionRoutingEnabled                                    : False
+OrganizationConfigHash                                    : fJHNTsMwDIBfpeoJDkubwZCQsk5TqwkugBDsbtK0tdQ4VX4mxqtx4JF4BVJ64adwsmN/8mcr769vYv
+                                                            Os++SgrEND65SzPE0USVMjtes0+GbBL9JNIary6vhksS4NNdgGCz7yhbh2FXgoFXlliwcblMi+lcS2
+                                                            1kgVuqGH436yFDlb5skJX8XALperM8b5qcjmyDj/cWgtjNvc2hYIXybxDnr36ZpvizurDmiCm9fzUX
+                                                            /OxiRneXT/h4utlGrwqq6MBozvKd6AVkXX2YUcgEmjRfalPscE9ydyD50G2iEBSQVUR6MJ5ONVzJBG
+                                                            aY0zjf9tyX6uls1/0wcAAAD//wMA
+LegacyExchangeDN                                          : /o=ExchangeLabs/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=exotempl
+                                                            atee34f58bc-eb3e-47ed-a4a8-b8b47893ca9d.com/cn=Configuration
+DisplayName                                               : Rahman Finance and Accounting P.L.LC.
+Heuristics                                                : None
+ResourceAddressLists                                      : {\All Rooms}
+IsMixedMode                                               : True
+PreviousAdminDisplayVersion                               : 0.10 (14.0.100.0)
+IsAddressListPagingEnabled                                : True
+ForeignForestFQDN                                         : {}
+ForeignForestOrgAdminUSGSid                               :
+ForeignForestRecipientAdminUSGSid                         :
+ForeignForestViewOnlyAdminUSGSid                          :
+MimeTypes                                                 : {}
+IsLicensingEnforced                                       : True
+IsTenantAccessBlocked                                     : False
+IsDualWriteEnabled                                        : True
+IsTenantInGracePeriod                                     : False
+IsDehydrated                                              : False
+IsGuidPrefixedLegacyDnDisabled                            : False
+IsMailboxForcedReplicationDisabled                        : False
+RBACConfigurationVersion                                  : 0.1 (15.20.9253.11)
+RootPublicFolderMailbox                                   :
+RemotePublicFolderMailboxes                               : {}
+AdminDisplayVersion                                       : 0.20 (15.20.9253.11)
+IsUpgradingOrganization                                   : False
+IsUpdatingServicePlan                                     : False
+ServicePlan                                               : BPOS_S_E15_0
+TargetServicePlan                                         :
+WACDiscoveryEndpoint                                      :
+AdfsAuthenticationConfiguration                           :
+AdfsIssuer                                                :
+AdfsAudienceUris                                          : {}
+AdfsSignCertificateThumbprints                            : {}
+AdfsEncryptCertificateThumbprint                          :
+SiteMailboxCreationURL                                    :
+DefaultDataEncryptionPolicy                               :
+MailboxDataEncryptionEnabled                              : False
+DefaultAuthenticationPolicy                               :
+AllowedMailboxRegions                                     : {nam=namprd12.prod.outlook.com}
+DefaultMailboxRegion                                      : nam
+CurrentMailboxForests                                     : {namprd12.prod.outlook.com}
+IsJitEnabled                                              :
+AutoJitForests                                            :
+DefaultMailboxRegionLastUpdateTime                        : 03/30/24 06:34:13 PM
+AllowedMailboxRegionsLastUpdateTime                       : 03/30/24 06:34:13 PM
+DirectReportsGroupAutoCreationEnabled                     : False
+AllowToAddGuests                                          : True
+GuestsEnabled                                             : True
+GroupsCreationEnabled                                     : True
+HiddenMembershipGroupsCreationEnabled                     : False
+GroupsCreationWhitelistedId                               :
+GroupsUsageGuidelinesLink                                 :
+DefaultGroupAccessType                                    : Private
+GroupLifeCyclePolicy                                      : <GroupLifeCyclePolicy><GroupLifetimeInDays>-1</GroupLifetimeInDays><ManagedGro
+                                                            upType p2:nil=""true"" xmlns:p2=""http://www.w3.org/2001/XMLSchema-instance"" /><L
+                                                            astUpdatedTime>2025-10-22T22:00:42.8575342Z</LastUpdatedTime></GroupLifeCycleP
+                                                            olicy>
+GroupsNamingPolicy                                        :
+DataClassifications                                       : <DataClassifications />
+VisibleMeetingUpdateProperties                            : Location,AllProperties:15
+MatchSenderOrganizerProperties                            : False
+DisableMailboxForSubstrateOnlyFinished                    : False
+InPlaceHolds                                              : {}
+ServiceInstanceMove                                       :
+GuestsUsageGuidelinesLink                                 :
+OrganizationPrivacyStatementLink                          : https://hhr-cpa.com/privacy
+IsMIPLabelForGroupsEnabled                                : False
+IsGroupFoldersAndRulesEnabled                             : False
+BlockMoveMessagesForGroupFolders                          : False
+FocusedInboxOn                                            :
+FocusedInboxOnLastUpdateTime                              : 01/01/01 12:00:00 AM
+ForestConfigVersion                                       :
+ForestConfigLastRunTime                                   : 01/01/01 12:00:00 AM
+EndUserDLUpgradeFlowsDisabled                             : False
+OcmGroupId                                                :
+IsGroupMemberAllowedToEditContent                         : False
+RecallReadMessagesEnabled                                 :
+MessageRecallEnabled                                      :
+MessageRecallAlertRecipientsEnabled                       : False
+MessageRecallAlertRecipientsReadMessagesOnlyEnabled       : False
+AutomaticForcedReadReceiptEnabled                         : False
+ActionableMessagesExtenalAccessTokenEnabled               : False
+Id                                                        : First Organization
+IsValid                                                   : True
+ExchangeVersion                                           : 0.1 (8.0.535.0)
+DistinguishedName                                         : CN=Configuration,CN=RahmanFinanceandAccounting.onmicrosoft.com,CN=Configuratio
+                                                            nUnits,DC=NAMPR12A012,DC=PROD,DC=OUTLOOK,DC=COM
+ObjectCategory                                            : NAMPR12A012.PROD.OUTLOOK.COM/Configuration/Schema/ms-Exch-Configuration-Unit-C
+                                                            ontainer
+ObjectClass                                               : {top, container, msExchOrganizationContainer,
+                                                            msExchConfigurationUnitContainer}
+WhenChanged                                               : 10/25/25 05:11:23 PM
+WhenCreated                                               : 03/30/24 02:33:55 PM
+WhenChangedUTC                                            : 10/25/25 09:11:23 PM
+WhenCreatedUTC                                            : 03/30/24 06:33:55 PM
+ExchangeObjectId                                          : 7cd5b2d5-2236-409a-9a61-3574d74e2264
+OrganizationalUnitRoot                                    : RahmanFinanceandAccounting.onmicrosoft.com
+OriginatingServer                                         : SN4PR12A12DC003.NAMPR12A012.PROD.OUTLOOK.COM
+ObjectState                                               : Changed
+
+
+
+","CIS M365 Foundations v3.0 L1; EXO Auditing","2025-10-25T17:15:14"
+"CIS-EXO-4","Ensure legacy protocols disabled per mailbox (sample check)","Medium","Legacy protocols (POP/IMAP/MAPI) disabled on all mailboxes","MailboxesWithLegacyProtocols=2 (sample of 100)","Fail","
+DisplayName              PopEnabled ImapEnabled MAPIEnabled
+-----------              ---------- ----------- -----------
+Discovery Search Mailbox       True        True        True
+Hassan Rahman                  True        True        True
+
+
+","CIS M365 Foundations v3.0 L1; EXO Mailbox Protocols","2025-10-25T17:15:14"
+"CIS-SPO-1","Restrict SharePoint external sharing (Tenant)","High","SharingCapability: ExternalUserSharingOnly or more restrictive","SharingCapability=ExternalUserAndGuestSharing","Fail","
+
+StorageQuota                                                     : 1059328
+BonusStorageQuotaMB                                              : 0
+StorageQuotaAllocated                                            : 0
+ResourceQuota                                                    : 0
+ResourceQuotaAllocated                                           : 0
+OneDriveStorageQuota                                             : 1048576
+CompatibilityRange                                               : 15,15
+ExternalServicesEnabled                                          : True
+NoAccessRedirectUrl                                              :
+ArchiveRedirectUrl                                               :
+SharingCapability                                                : ExternalUserAndGuestSharing
+DisplayStartASiteOption                                          : True
+StartASiteFormUrl                                                :
+ShowEveryoneClaim                                                : False
+ShowAllUsersClaim                                                : False
+OfficeClientADALDisabled                                         : False
+LegacyAuthProtocolsEnabled                                       : True
+DisableCustomAppAuthentication                                   : True
+IsSharePointAddInsDisabled                                       : False
+IsSharePointAddInsBlocked                                        : False
+DisableSharePointStoreAccess                                     : False
+SiteOwnerManageLegacyServicePrincipalEnabled                     : False
+ShowEveryoneExceptExternalUsersClaim                             : True
+AllowEveryoneExceptExternalUsersClaimInPrivateSite               : False
+SearchResolveExactEmailOrUPN                                     : False
+ProvisionSharedWithEveryoneFolder                                : False
+SignInAccelerationDomain                                         :
+EnableGuestSignInAcceleration                                    : False
+UsePersistentCookiesForExplorerView                              : False
+ContentTypeSyncSiteTemplatesList                                 : {}
+BccExternalSharingInvitations                                    : False
+BccExternalSharingInvitationsList                                :
+PublicCdnEnabled                                                 : False
+PublicCdnAllowedFileTypes                                        : CSS,EOT,GIF,ICO,JPEG,JPG,JS,MAP,PNG,SVG,TTF,WOFF
+PublicCdnOrigins                                                 : {}
+RequireAnonymousLinksExpireInDays                                : -1
+RequireOrganizationLinksExpireInDays                             : 0
+SharingAllowedDomainList                                         :
+SharingBlockedDomainList                                         :
+SharingDomainRestrictionMode                                     : None
+OneDriveForGuestsEnabled                                         : False
+IPAddressEnforcement                                             : False
+IPAddressAllowList                                               :
+IPAddressWACTokenLifetime                                        : 15
+EnableTenantRestrictionsInsights                                 : False
+EnablePromotedFileHandlers                                       : True
+UseFindPeopleInPeoplePicker                                      : False
+DefaultSharingLinkType                                           : AnonymousAccess
+ODBMembersCanShare                                               : Unspecified
+ODBAccessRequests                                                : Unspecified
+PreventExternalUsersFromResharing                                : False
+ShowPeoplePickerSuggestionsForGuestUsers                         : False
+AppOnlyBypassPeoplePickerPolicies                                : False
+EnableDiscoverableByOrganizationForVideos                        : False
+FileAnonymousLinkType                                            : Edit
+FolderAnonymousLinkType                                          : Edit
+NotifyOwnersWhenItemsReshared                                    : True
+NotificationsInOneDriveForBusinessEnabled                        : True
+NotificationsInSharePointEnabled                                 : True
+SelfServiceSiteCreationDisabled                                  : False
+SpecialCharactersStateInFileFolderNames                          : Allowed
+OwnerAnonymousNotification                                       : True
+CommentsOnSitePagesDisabled                                      : False
+CommentsOnFilesDisabled                                          : False
+CommentsOnListItemsDisabled                                      : False
+ViewersCanCommentOnMediaDisabled                                 : False
+SocialBarOnSitePagesDisabled                                     : False
+SiteOwnersCanAccessMissingContent                                : True
+OrphanedPersonalSitesRetentionPeriod                             : 2555
+PermissiveBrowserFileHandlingOverride                            : False
+DisallowInfectedFileDownload                                     : False
+DefaultLinkPermission                                            : Edit
+CustomizedExternalSharingServiceUrl                              :
+ConditionalAccessPolicy                                          : AllowFullAccess
+AllowDownloadingNonWebViewableFiles                              : True
+LimitedAccessFileType                                            : WebPreviewableFiles
+AllowEditing                                                     : True
+ApplyAppEnforcedRestrictionsToAdHocRecipients                    : True
+FilePickerExternalImageSearchEnabled                             : True
+EmailAttestationRequired                                         : False
+EmailAttestationReAuthDays                                       : 30
+DisabledWebPartIds                                               :
+DisabledAdaptiveCardExtensionIds                                 :
+EnableMinimumVersionRequirement                                  : True
+MarkNewFilesSensitiveByDefault                                   : AllowExternalSharing
+EnableAIPIntegration                                             : True
+AllowCommentsTextOnEmailEnabled                                  : True
+ConditionalAccessPolicyErrorHelpLink                             :
+RestrictedAccessControlforSitesErrorHelpLink                     : None
+EnableAzureADB2BIntegration                                      : True
+RestrictedAccessControlForOneDriveErrorHelpLink                  : None
+ResyncContentSecurityPolicyConfigurationEntries                  : False
+ContentSecurityPolicyEnforcement                                 : False
+IncludeAtAGlanceInShareEmails                                    : True
+ExternalUserExpirationRequired                                   : False
+ExternalUserExpireInDays                                         : 60
+BlockDownloadLinksFileType                                       : WebPreviewableFiles
+AnyoneLinkTrackUsers                                             : False
+OneDriveLoopDefaultSharingLinkScope                              : Uninitialized
+OneDriveLoopDefaultSharingLinkRole                               : None
+OneDriveRequestFilesLinkEnabled                                  : False
+OneDriveRequestFilesLinkExpirationInDays                         : -1
+OneDriveSharingCapability                                        : ExistingExternalUserSharingOnly
+OneDriveDefaultShareLinkScope                                    : Uninitialized
+OneDriveDefaultShareLinkRole                                     : None
+OneDriveDefaultLinkToExistingAccess                              : False
+OneDriveBlockGuestsAsSiteAdmin                                   : Unspecified
+CoreLoopDefaultSharingLinkScope                                  : Uninitialized
+CoreLoopDefaultSharingLinkRole                                   : None
+CoreSharingCapability                                            : ExternalUserAndGuestSharing
+CoreRequestFilesLinkEnabled                                      : False
+CoreRequestFilesLinkExpirationInDays                             : -1
+CoreDefaultShareLinkScope                                        : Uninitialized
+CoreDefaultShareLinkRole                                         : None
+CoreDefaultLinkToExistingAccess                                  : False
+CoreBlockGuestsAsSiteAdmin                                       : Unspecified
+BlockAppAccessWithAuthenticationContext                          : False
+AllowAnonymousMeetingParticipantsToAccessWhiteboards             : Unspecified
+Workflows2013State                                               : Retired
+IsFluidEnabled                                                   : True
+IsWBFluidEnabled                                                 : True
+IsCollabMeetingNotesFluidEnabled                                 : True
+IsLoopEnabled                                                    : True
+DisableDocumentLibraryDefaultLabeling                            : False
+ExtendPermissionsToUnprotectedFiles                              : False
+EnableSensitivityLabelForPDF                                     : True
+EnableSensitivityLabelForOneNote                                 : False
+EnableSensitivityLabelForVideoFiles                              : False
+BlockSendLabelMismatchEmail                                      : False
+LabelMismatchEmailHelpLink                                       :
+DisableAddShortcutsToOneDrive                                    : False
+EnableAutoNewsDigest                                             : True
+Workflow2010Disabled                                             : True
+StopNew2010Workflows                                             : False
+AllowSharingOutsideRestrictedAccessControlGroups                 : True
+StopNew2013Workflows                                             : False
+DisableBackToClassic                                             : False
+BlockUserInfoVisibility                                          : ExternalPeopleInOD
+BlockUserInfoVisibilityInOneDrive                                : ApplyToGuestAndExternalUsers
+BlockUserInfoVisibilityInSharePoint                              : ApplyToNoUsers
+AllowOverrideForBlockUserInfoVisibility                          : False
+InformationBarriersSuspension                                    : True
+IBImplicitGroupBased                                             : False
+AppBypassInformationBarriers                                     : False
+DefaultOneDriveInformationBarrierMode                            : Explicit
+AppAccessInformationBarriersAllowList                            :
+AllOrganizationSecurityGroupId                                   :
+DisablePersonalListCreation                                      : False
+DisabledModernListTemplateIds                                    : {}
+DisableSpacesActivation                                          : False
+DisableVivaConnectionsAnalytics                                  : False
+HideSyncButtonOnTeamSite                                         : False
+AllowGuestUserShareToUsersNotInSiteCollection                    : False
+DisableOutlookPSTVersionTrimming                                 : False
+EnableAutoExpirationVersionTrim                                  : False
+EnableMediaReactions                                             : True
+ExpireVersionsAfterDays                                          : 0
+MajorVersionLimit                                                : 500
+VersionPolicyFileTypeOverride                                    : {}
+StreamLaunchConfig                                               : 21
+MediaTranscription                                               : Enabled
+MediaTranscriptionAutomaticFeatures                              : Enabled
+ViewInFileExplorerEnabled                                        : False
+AuthContextResilienceMode                                        : DefaultAAD
+ReduceTempTokenLifetimeEnabled                                   : False
+ReduceTempTokenLifetimeValue                                     : 15
+ShowOpenInDesktopOptionForSyncedFiles                            : False
+ShowPeoplePickerGroupSuggestionsForIB                            : False
+EnableRestrictedAccessControl                                    : False
+DelegateRestrictedContentDiscoverabilityManagement               : False
+DelegateRestrictedAccessControlManagement                        : False
+BlockDownloadFileTypePolicy                                      : False
+BlockDownloadFileTypeIds                                         : {}
+ExcludedBlockDownloadGroupIds                                    : {}
+TlsTokenBindingPolicyValue                                       : None
+LegacyBrowserAuthProtocolsEnabled                                : True
+AllowLegacyBrowserAuthProtocolsEnabledSetting                    : False
+AllowLegacyAuthProtocolsEnabledSetting                           : False
+RecycleBinRetentionPeriod                                        : 93
+IsEnableAppAuthPopUpEnabled                                      : False
+IsDataAccessInCardDesignerEnabled                                : False
+MassDeleteNotificationDisabled                                   : False
+BusinessConnectivityServiceDisabled                              : False
+AllowSensitivityLabelOnRecords                                   : False
+DelayDenyAddAndCustomizePagesEnforcement                         : False
+DelayDenyAddAndCustomizePagesEnforcementOnClassicPublishingSites : False
+AllowClassicPublishingSiteCreation                               : False
+EsignatureEnabled                                                : False
+ESignatureSiteList                                               : {}
+ESignatureThirdPartyProviderInfoList                             : {""{\""ProviderName\"":\""DocuSign\"",\""IsEnabled\"":false}"",
+                                                                   ""{\""ProviderName\"":\""AdobeSign\"",\""IsEnabled\"":false}""}
+ESignatureAppList                                                : {""{\""AppName\"":\""WordDesktop\"",\""IsEnabled\"":true}""}
+WhoCanShareAnonymousAllowList                                    : {}
+WhoCanShareAuthenticatedGuestAllowList                           : {}
+DocumentUnderstandingModelScope                                  : AllSites
+DocumentUnderstandingModelSelectedSitesList                      : {}
+AIBuilderModelScope                                              : AllSites
+AIBuilderModelSelectedSitesList                                  : {}
+AIBuilderSelectedSitesIncludesContentCenters                     : False
+PrebuiltModelScope                                               : AllSites
+PrebuiltModelSelectedSitesList                                   : {}
+DocumentTranslationScope                                         : AllSites
+DocumentTranslationSelectedSitesList                             : {}
+AutofillColumnsScope                                             : AllSites
+AutofillColumnsSelectedSitesList                                 : {}
+KnowledgeAgentScope                                              : NoSites
+KnowledgeAgentSelectedSitesList                                  : {}
+OpticalCharacterRecognitionScope                                 : NoSites
+OpticalCharacterRecognitionSelectedSitesList                     : {}
+DefaultContentCenterSite                                         :
+AllowWebPropertyBagUpdateWhenDenyAddAndCustomizePagesIsEnabled   : False
+AllowSelectSecurityGroupsInSPSitesList                           :
+DenySelectSecurityGroupsInSPSitesList                            :
+ExemptNativeUsersFromTenantLevelRestricedAccessControl           : False
+AllowSelectSGsInODBListInTenant                                  :
+DenySelectSGsInODBListInTenant                                   :
+EnforceRequestDigest                                             : True
+RestrictResourceAccountAccess                                    : False
+
+
+
+","CIS M365 Foundations v3.0 L1; SPO Sharing","2025-10-25T17:15:16"
+"CIS-AAD-1","Limit Global Administrator role assignments","High","Global Admin assignments minimal (<= 2-4)","GlobalAdminCount=3","Pass","
+PrincipalId                          RoleDefinitionId
+-----------                          ----------------
+6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10
+727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10
+2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10
+
+
+","CIS M365 Foundations v3.0 L1; AAD Roles","2025-10-25T17:15:26"
+"CIS-DEF-1","Ensure Safe Links policy is enabled","High","At least one Safe Links rule or policy is enabled","EnabledRules=0; EnabledPolicies=0","Fail","
+Name                                        Enabled
+----                                        -------
+Strict Preset Security Policy1713470629399
+StandardRecommendedPolicy638480795407067709
+Built-In Protection Policy
+
+
+","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T17:15:27"
+"CIS-DEF-2","Ensure Safe Attachments policy is enabled","High","At least one Safe Attachments policy enabled","EnabledPolicies=3","Pass","
+Name                                        Enable
+----                                        ------
+Strict Preset Security Policy1713470628358    True
+StandardRecommendedPolicy638480795383316441   True
+Built-In Protection Policy                    True
+
+
+","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T17:15:27"
+"CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","At least one enabled CA policy requiring MFA for all users","MFAPolicies=5","Pass","
+DisplayName                                               State
+-----------                                               -----
+Require multifactor authentication for guest access       enabled
+Require multifactor authentication for all users          enabled
+conditional access 1`                                     enabled
+Require multifactor authentication for ‎Azure‎ management enabled
+Require multifactor authentication for Azure management   enabled
+
+
+","CIS M365 Foundations v3.0 L1; Conditional Access","2025-10-25T17:15:29"

@@ -19,14 +19,14 @@ function Connect-M365CIS {
         [string]$SPOAdminUrl,
         [switch]$SkipPurview
     )
-    
+
     # Fix PSModulePath for OneDrive-synced modules
     $userModulePath = "$env:USERPROFILE\OneDrive - Rahman Finance and Accounting P.L.LC\Documents\WindowsPowerShell\Modules"
     if ((Test-Path $userModulePath) -and ($env:PSModulePath -notlike "*$userModulePath*")) {
         $env:PSModulePath += ";$userModulePath"
         Write-CISLog "Added OneDrive module path to PSModulePath" "Info"
     }
-    
+
     if (-not $SkipExchange) {
         try {
             Write-CISLog 'Connecting to Exchange Online...'
@@ -84,7 +84,7 @@ function Connect-M365CIS {
 function Connect-PurviewCompliance {
     [CmdletBinding()]
     param()
-    
+
     try {
         # Check if ExchangeOnlineManagement module is available (provides Security & Compliance cmdlets)
         if (Get-Module -ListAvailable ExchangeOnlineManagement) {
@@ -222,7 +222,7 @@ function Test-CIS-AAD-GlobalAdminCount {
     }
 }
 
-function Test-CIS-Defender-SafeLinks {
+function Test-CIS-Defender-SafeLink {
     [CmdletBinding()] param()
     $id='CIS-DEF-1'; $name='Ensure Safe Links policy is enabled'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Defender for Office'
     try {
@@ -265,7 +265,7 @@ function Test-CIS-Defender-SafeLinks {
     }
 }
 
-function Test-CIS-Defender-SafeAttachments {
+function Test-CIS-Defender-SafeAttachment {
     [CmdletBinding()] param()
     $id='CIS-DEF-2'; $name='Ensure Safe Attachments policy is enabled'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Defender for Office'
     try {
@@ -362,7 +362,7 @@ function Test-CIS-AAD-RiskPoliciesEnabled {
     }
 }
 
-function Test-CIS-Intune-CompliancePolicies {
+function Test-CIS-Intune-CompliancePolicy {
     [CmdletBinding()] param()
     $id='CIS-INTUNE-1'; $name='Ensure Intune device compliance policies exist and are enforced'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; Intune MDM'
     try {
@@ -387,7 +387,7 @@ function Test-CIS-Intune-CompliancePolicies {
     }
 }
 
-function Test-CIS-AAD-GuestUserRestrictions {
+function Test-CIS-AAD-GuestUserRestriction {
     [CmdletBinding()] param()
     $id='CIS-AAD-3'; $name='Ensure guest user access restrictions are configured'; $sev='Medium'; $ref='CIS M365 Foundations v3.0 L1; AAD Guest Access'
     try {
@@ -462,15 +462,15 @@ function Invoke-M365CISAudit {
     $results += Test-CIS-EXO-LegacyProtocolsPerMailbox
     $results += Test-CIS-SPO-ExternalSharingPolicy
     $results += Test-CIS-AAD-GlobalAdminCount
-    $results += Test-CIS-Defender-SafeLinks
+    $results += Test-CIS-Defender-SafeLink
     $results += Test-CIS-Defender-SafeAttachment
     $results += Test-CIS-CA-MFAEnabled
-    
+
     # New enhanced controls (6)
     $results += Test-CIS-Purview-DLPPoliciesEnabled
     $results += Test-CIS-AAD-RiskPoliciesEnabled
     $results += Test-CIS-Intune-CompliancePolicy
-    $results += Test-CIS-AAD-GuestUserRestrictions
+    $results += Test-CIS-AAD-GuestUserRestriction
     $results += Test-CIS-Purview-AuditLogRetention
     $results += Test-CIS-Purview-SensitivityLabelsPublished
 

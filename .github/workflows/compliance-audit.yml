@@ -1,0 +1,74 @@
+name: M365 Compliance Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 0' # Run every Sunday at 2:00 AM UTC
+
+jobs:
+  run-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Set up PowerShell
+        uses: microsoft/powershell-dev-container@v0.1.0
+        with:
+          image: mcr.microsoft.com/powershell/powershell:latest
+
+      - name: Install PowerShell Modules
+        run: |
+          Install-Module ExchangeOnlineManagement -Force -Scope CurrentUser
+          Install-Module Microsoft.Graph.Authentication -Force -Scope CurrentUser
+          Install-Module Microsoft.Graph.Identity.DirectoryManagement -Force -Scope CurrentUser
+        shell: pwsh
+
+      - name: Run M365 CIS Audit
+        run: |
+          $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+          $reportFile = "output/reports/security/m365_cis_audit_$timestamp.json"
+          
+          # Note: This requires secrets to be configured in the repository for the service principal
+          # See docs/M365_SERVICE_PRINCIPAL_SETUP.md for details.
+          ./scripts/powershell/Invoke-M365CISAudit.ps1 -TenantId ${{ secrets.M365_TENANT_ID }} -AppId ${{ secrets.M365_APP_ID }} -AppSecret ${{ secrets.M365_APP_SECRET }} -Timestamped
+        shell: pwsh
+        env:
+          # Environment variables for the audit script if needed
+          SPO_ADMIN_URL: ${{ secrets.SPO_ADMIN_URL }}
+
+      - name: Find latest audit report
+        id: find_report
+        run: |
+          $latestReport = Get-ChildItem -Path output/reports/security -Filter *.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          echo "report_path=$($latestReport.FullName)" >> $GITHUB_OUTPUT
+
+      - name: Run Compliance Check
+        run: python check_compliance.py ${{ steps.find_report.outputs.report_path }}
+        
+      - name: Upload Audit Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: m365-cis-audit-report
+          path: ${{ steps.find_report.outputs.report_path }}
+
+      - name: Generate Remediation Plan
+        if: always() # Run even if previous steps fail, to get a plan for any found issues
+        run: python scripts/remediate.py ${{ steps.find_report.outputs.report_path }}
+
+      - name: Upload Remediation Plan as Artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: remediation-plan
+          path: remediation_plan.ps1

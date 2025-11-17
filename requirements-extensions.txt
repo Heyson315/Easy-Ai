@@ -1,0 +1,31 @@
+# M365 Security Toolkit - Optional Extensions
+# Install with: pip install -r requirements-extensions.txt
+
+# ==============================
+# MCP Server Extension
+# ==============================
+# Model Context Protocol SDK for AI assistant integration
+mcp>=1.0.0
+
+# Microsoft Graph SDK for real-time M365 data access
+msgraph-sdk>=1.0.0
+azure-identity>=1.15.0
+
+# ==============================
+# GPT-5 Integration Extension
+# ==============================
+# OpenAI SDK for GPT-5 models (preview)
+openai>=1.65.0
+
+# ==============================
+# Shared Extension Dependencies
+# ==============================
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# ==============================
+# Development Tools (Optional)
+# ==============================
+black>=23.0.0
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
