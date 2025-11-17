@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"testing.coverageBarThresholds": {
+
+			"red": 0,
+			"yellow": 60,
+			"green": 90
+		},
+		"github.copilot.chat.agent.thinkingTool": false,
+	"github.copilot.chat.virtualTools.threshold": 0,
+	"extensions.experimental.issueQuickAccess": false,
+	"extensions.ignoreRecommendations": false,
+	"workbench.editor.alwaysShowEditorActions": true,
+	"workbench.editor.centeredLayoutFixedWidth": true,
+		"gitlens.ai.generateCommits.customInstructions": "@id:gitlens.ai.generateCommits.customInstructions"
+	}
+}			"python.analysis.extraPaths": [
+			"${env:USERPROFILE}\\.vscode\\extensions\\ms-security.ms-sentinel-1.0.0\\python"
+		]

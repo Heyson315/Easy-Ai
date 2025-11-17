@@ -2,7 +2,12 @@
 
 Thank you for your interest in contributing to the Share Report M365 Security Toolkit! This document provides guidelines for contributing to the project.
 
+## 🧠 AI-Assisted Development
+
+**For AI coding agents**: Please read [`.github/copilot-instructions.md`](.github/copilot-instructions.md) first for comprehensive project context, architecture patterns, and development workflows specific to this hybrid Python/PowerShell enterprise security toolkit.
+
 ## Table of Contents
+- [AI-Assisted Development](#ai-assisted-development)
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Code Style Guidelines](#code-style-guidelines)

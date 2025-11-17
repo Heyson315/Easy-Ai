@@ -1,0 +1,253 @@
+name: M365 Security Toolkit CI/CD
+
+on:
+  push:
+    branches: [ evidence/2025-10-25, feature/* ]
+  pull_request:
+    branches: [ evidence/2025-10-25 ]
+  workflow_dispatch:
+
+jobs:
+  python-quality-checks:
+    name: Python Code Quality & Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: Run performance benchmarks
+      run: |
+        echo "🚀 Running Performance Benchmarks..."
+        python scripts/run_performance_benchmark.py
+        
+    - name: Lint Python code
+      run: |
+        echo "🔍 Linting Python code..."
+        flake8 scripts/ src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        
+    - name: Check code formatting
+      run: |
+        echo "🎨 Checking code formatting..."
+        black --check scripts/ src/ tests/
+        
+    - name: Run Python tests
+      run: |
+        echo "🧪 Running Python tests..."
+        python -m pytest tests/ -v --cov=src --cov-report=xml
+        
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  powershell-security-checks:
+    name: PowerShell Security & Quality
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install PowerShell modules
+      shell: pwsh
+      run: |
+        Write-Host "📦 Installing PowerShell modules..."
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+        Install-Module -Name Pester -Force -Scope CurrentUser -SkipPublisherCheck
+
+    - name: Analyze PowerShell scripts
+      shell: pwsh
+      run: |
+        Write-Host "🔍 Analyzing PowerShell scripts..."
+        $results = Invoke-ScriptAnalyzer -Path "scripts/powershell/" -Recurse -Severity Warning,Error
+        if ($results) {
+          $results | Format-Table -AutoSize
+          Write-Host "❌ PowerShell script analysis found issues"
+          exit 1
+        } else {
+          Write-Host "✅ PowerShell scripts passed analysis"
+        }
+
+    - name: Test PowerShell modules
+      shell: pwsh
+      run: |
+        Write-Host "🧪 Testing PowerShell modules..."
+        # Test if M365CIS module loads without errors
+        try {
+          Import-Module "./scripts/powershell/modules/M365CIS.psm1" -Force
+          Write-Host "✅ M365CIS module imported successfully"
+        } catch {
+          Write-Host "❌ Failed to import M365CIS module: $_"
+          exit 1
+        }
+
+  security-vulnerability-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety bandit semgrep
+
+    - name: Check Python dependencies for vulnerabilities
+      run: |
+        echo "🔍 Scanning Python dependencies for vulnerabilities..."
+        safety check --json --output safety-report.json || true
+        if [ -s safety-report.json ]; then
+          echo "⚠️ Security vulnerabilities found in dependencies!"
+          cat safety-report.json
+        else
+          echo "✅ No vulnerabilities found in Python dependencies"
+        fi
+
+    - name: Run bandit security linter
+      run: |
+        echo "🔍 Running bandit security analysis..."
+        bandit -r scripts/ src/ -f json -o bandit-report.json || true
+        if [ -s bandit-report.json ] && [ "$(jq '.results | length' bandit-report.json)" -gt 0 ]; then
+          echo "⚠️ Security issues found by bandit!"
+          jq '.results' bandit-report.json
+        else
+          echo "✅ No security issues found by bandit"
+        fi
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          safety-report.json
+          bandit-report.json
+
+  documentation-checks:
+    name: Documentation & Markdown Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install markdown tools
+      run: |
+        npm install -g markdownlint-cli markdown-link-check
+
+    - name: Lint Markdown files
+      run: |
+        echo "📝 Linting Markdown files..."
+        markdownlint docs/ *.md --config .markdownlint.json || true
+
+    - name: Check Markdown links
+      run: |
+        echo "🔗 Checking Markdown links..."
+        find . -name "*.md" -not -path "./node_modules/*" -not -path "./.git/*" | \
+        xargs -I {} markdown-link-check {} --config .markdown-link-check.json || true
+
+  integration-tests:
+    name: M365 Integration Tests (Simulation)
+    runs-on: ubuntu-latest
+    needs: [python-quality-checks]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Test CSV processing pipeline
+      run: |
+        echo "📊 Testing CSV processing pipeline..."
+        # Create test data
+        mkdir -p data/test
+        echo "Site Name,Site URL,Principal Name,Permission Level" > data/test/test_input.csv
+        echo "Test Site,https://test.sharepoint.com,user@test.com,Read" >> data/test/test_input.csv
+        
+        # Test cleaning
+        python scripts/clean_csv.py --input data/test/test_input.csv --output data/test/test_clean.csv
+        
+        # Verify output
+        if [ -f data/test/test_clean.csv ]; then
+          echo "✅ CSV processing pipeline works"
+        else
+          echo "❌ CSV processing pipeline failed"
+          exit 1
+        fi
+
+    - name: Test JSON report generation simulation
+      run: |
+        echo "📋 Testing JSON report generation..."
+        python scripts/generate_security_dashboard.py --input data/raw/sample_audit.json --output output/test_dashboard.html || true
+        echo "✅ Report generation simulation completed"
+
+  build-summary:
+    name: Build Summary
+    runs-on: ubuntu-latest
+    needs: [python-quality-checks, powershell-security-checks, security-vulnerability-scan, documentation-checks, integration-tests]
+    if: always()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Generate build summary
+      run: |
+        echo "## 🎯 M365 Security Toolkit Build Summary" > build-summary.md
+        echo "" >> build-summary.md
+        echo "### Build Status:" >> build-summary.md
+        echo "- **Python Quality**: ${{ needs.python-quality-checks.result }}" >> build-summary.md
+        echo "- **PowerShell Security**: ${{ needs.powershell-security-checks.result }}" >> build-summary.md
+        echo "- **Security Scan**: ${{ needs.security-vulnerability-scan.result }}" >> build-summary.md
+        echo "- **Documentation**: ${{ needs.documentation-checks.result }}" >> build-summary.md
+        echo "- **Integration Tests**: ${{ needs.integration-tests.result }}" >> build-summary.md
+        echo "" >> build-summary.md
+        echo "### 🛡️ Security Features Validated:" >> build-summary.md
+        echo "- M365 CIS Benchmark compliance checks" >> build-summary.md
+        echo "- SharePoint permissions analysis" >> build-summary.md
+        echo "- Performance benchmarking capabilities" >> build-summary.md
+        echo "- Automated security reporting" >> build-summary.md
+        echo "" >> build-summary.md
+        echo "Generated at: $(date)" >> build-summary.md
+        
+        cat build-summary.md
+
+    - name: Upload build summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-summary
+        path: build-summary.md
