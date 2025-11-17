@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Keep template
+!.env.template
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Output artifacts (exclude by default)
+output/**
+
+# Re-include security reports folder
+!output/
+!output/reports/
+!output/reports/security/
+
+# Re-include only JSON/CSV evidence by default
+output/reports/security/**
+!output/reports/security/*.json
+!output/reports/security/*.csv
+
+# Keep Excel out of Git to avoid repo bloat; use Git LFS if needed
+output/reports/security/*.xlsx
+
+# Exclude test audit files
+output/reports/security/test_*.json
+output/reports/security/test_*.html
+output/reports/security/test_*.csv
+
+# Test data
+data/test/
