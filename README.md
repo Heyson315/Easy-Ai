@@ -10,6 +10,7 @@
 [![Dependency Review](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/dependency-review.yml)
 [![Security Scan](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/security-scan.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/security-scan.yml)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-success.svg)](https://docs.github.com/code-security/dependabot)
+[![CI Tests](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/ci.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/ci.yml) ![Coverage](coverage.svg)
 
 ## 🎯 Overview
 
