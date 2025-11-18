@@ -6,6 +6,10 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-green.svg)](https://www.python.org/downloads/)
 [![AI Development Ready](https://img.shields.io/badge/AI%20Development-Ready-brightgreen.svg)](.github/copilot-instructions.md)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple.svg)](docs/CUSTOM_MCP_SERVER_GUIDE.md)
+[![CodeQL](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/codeql.yml)
+[![Dependency Review](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/dependency-review.yml)
+[![Security Scan](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/security-scan.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/security-scan.yml)
+[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-success.svg)](https://docs.github.com/code-security/dependabot)
 
 ## 🎯 Overview
 
