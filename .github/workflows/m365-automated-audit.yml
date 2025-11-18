@@ -1,9 +1,9 @@
 name: Automated M365 Security Audit
 
 on:
-  schedule:
-    # Run monthly on the 1st at 6 AM UTC
-    - cron: '0 6 1 * *'
+  # schedule:
+  #   # Run monthly on the 1st at 6 AM UTC
+  #   - cron: '0 6 1 * *'
   workflow_dispatch:
     inputs:
       audit_scope:
