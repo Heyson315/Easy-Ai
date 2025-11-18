@@ -125,7 +125,7 @@ jobs:
         retention-days: 90
 
     - name: Attest audit artifacts
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-path: output/reports/security/*
 

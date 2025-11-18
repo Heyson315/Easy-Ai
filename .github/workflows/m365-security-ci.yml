@@ -159,7 +159,7 @@ jobs:
           bandit-report.json
 
     - name: Attest security reports
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       if: always()
       with:
         subject-path: |
@@ -279,6 +279,6 @@ jobs:
         path: build-summary.md
 
     - name: Attest build summary
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-path: build-summary.md

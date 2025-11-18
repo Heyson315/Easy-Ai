@@ -151,7 +151,7 @@ jobs:
 
     - name: Attest Python dependency artifacts
       if: steps.check-updates.outputs.updates-available == 'true'
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-path: |
           dependency-update-summary.md
@@ -275,7 +275,7 @@ jobs:
 
     - name: Attest PowerShell update artifacts
       if: steps.check-ps-updates.outputs.updates-available == 'true'
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-path: |
           powershell-update-summary.md
@@ -328,7 +328,7 @@ jobs:
         retention-days: 90
 
     - name: Attest security report
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-path: security-report.md
 
