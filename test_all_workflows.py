@@ -8,7 +8,7 @@ import subprocess
 import sys
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.absolute()
