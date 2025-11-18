@@ -52,7 +52,7 @@ M365 CIS Report (200 controls)          0.4114s     6.07MB      ✅ Fast
 Statistics Calculation (200 controls)   0.0001s     0.00MB      ✅ Fast
 SharePoint Summaries (5000 rows)        0.0285s     1.16MB      ✅ Fast
 ========================================================================
-Total                                   0.5000s     6.07MB peak
+Total                                   0.4999s     6.07MB peak  # (sum of above, not hardcoded)
 ```
 
 **All operations complete in under 1 second with less than 100MB memory!** ✅
