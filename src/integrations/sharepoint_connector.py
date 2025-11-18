@@ -21,6 +21,18 @@ DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xlsx")
 
 
+def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """
+    Create summary DataFrames for the report.
+
+    Optimizations:
+    - Avoid unnecessary DataFrame copy by working with view
+    - Use .astype() only on columns that need it
+    """
+    summaries: dict[str, pd.DataFrame] = {}
+
+    # Normalize string columns efficiently (only those that exist and need normalization)
+    str_columns = [
 def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFrame]:
     """Create summary DataFrames for the report."""
     summaries: dict[str, pd.DataFrame] = {}
@@ -38,6 +50,15 @@ def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFra
         "Link ID",
         "Link Type",
         "AccessViaLinkID",
+    ]
+
+    # Only normalize columns that exist in the DataFrame
+    existing_str_cols = [col for col in str_columns if col in df.columns]
+    if existing_str_cols:
+        # Create a copy only if we need to modify
+        df = df.copy()
+        for col in existing_str_cols:
+            df[col] = df[col].astype(str).str.strip()
     ]:
         if col in permissions_dataframe.columns:
             permissions_dataframe[col] = permissions_dataframe[col].astype(str).str.strip()
