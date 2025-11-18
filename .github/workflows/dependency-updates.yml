@@ -382,7 +382,7 @@ jobs:
         echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
 
     - name: 📝 Create Pull Request
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const fs = require('fs');
