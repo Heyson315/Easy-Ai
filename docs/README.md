@@ -41,6 +41,8 @@
 ### **📊 Project Management**
 ```
 📁 Project Tracking
+├── 📄 REPOSITORY_BRAINSTORMING.md   # 🆕 Strategic improvement plan & roadmap
+├── 📄 docs/STRATEGIC_ROADMAP.md      # 🆕 Quick reference implementation roadmap
 ├── 📄 CHANGELOG.md                   # Version history & feature releases
 ├── 📄 IMPLEMENTATION_SUMMARY.md      # Implementation status & milestones
 └── 📄 REVIEW_SUMMARY.md             # Review status & feedback
@@ -60,10 +62,12 @@
 ## 🎯 By Use Case
 
 ### **👩‍💼 Executives & Stakeholders**
-1. **[PROJECT_OUTLINE.md](../PROJECT_OUTLINE.md)** - Complete project scope, ROI, and compliance
-2. **[docs/CPA_DEVELOPMENT_ENVIRONMENT.md](CPA_DEVELOPMENT_ENVIRONMENT.md)** - Enterprise development approach
-3. **[README.md](../README.md)** - High-level overview and key features
-4. **[CHANGELOG.md](../CHANGELOG.md)** - Progress tracking and deliverables
+1. **[docs/STRATEGIC_ROADMAP.md](STRATEGIC_ROADMAP.md)** - 🆕 Priority matrix and success metrics
+2. **[REPOSITORY_BRAINSTORMING.md](../REPOSITORY_BRAINSTORMING.md)** - 🆕 Comprehensive improvement analysis
+3. **[PROJECT_OUTLINE.md](../PROJECT_OUTLINE.md)** - Complete project scope, ROI, and compliance
+4. **[docs/CPA_DEVELOPMENT_ENVIRONMENT.md](CPA_DEVELOPMENT_ENVIRONMENT.md)** - Enterprise development approach
+5. **[README.md](../README.md)** - High-level overview and key features
+6. **[CHANGELOG.md](../CHANGELOG.md)** - Progress tracking and deliverables
 
 ### **🛡️ Security & Compliance Teams**
 1. **[docs/SECURITY_M365_CIS.md](SECURITY_M365_CIS.md)** - CIS control implementation
@@ -72,9 +76,11 @@
 
 ### **👨‍💻 Developers & AI Agents**
 1. **[.github/copilot-instructions.md](../.github/copilot-instructions.md)** - **START HERE** for AI development
-2. **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Development guidelines and patterns
-3. **[scripts/README.md](../scripts/README.md)** - Script usage and PowerShell commands
-4. **[docs/CUSTOM_MCP_SERVER_GUIDE.md](CUSTOM_MCP_SERVER_GUIDE.md)** - AI MCP integration
+2. **[docs/STRATEGIC_ROADMAP.md](STRATEGIC_ROADMAP.md)** - 🆕 Implementation priorities and roadmap
+3. **[REPOSITORY_BRAINSTORMING.md](../REPOSITORY_BRAINSTORMING.md)** - 🆕 Detailed technical improvement analysis
+4. **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Development guidelines and patterns
+5. **[scripts/README.md](../scripts/README.md)** - Script usage and PowerShell commands
+6. **[docs/CUSTOM_MCP_SERVER_GUIDE.md](CUSTOM_MCP_SERVER_GUIDE.md)** - AI MCP integration
 
 ### **🔧 System Administrators**
 1. **[docs/CPA_DEVELOPMENT_ENVIRONMENT.md](CPA_DEVELOPMENT_ENVIRONMENT.md)** - Enterprise development environment
@@ -92,6 +98,7 @@
 ## 🔍 Quick Search Guide
 
 ### **Find by Topic**
+- **Strategic Planning**: STRATEGIC_ROADMAP.md, REPOSITORY_BRAINSTORMING.md
 - **Security Auditing**: SECURITY_M365_CIS.md, PROJECT_OUTLINE.md
 - **SharePoint Analysis**: USAGE_SHAREPOINT.md, scripts/README.md
 - **AI Development**: copilot-instructions.md, CUSTOM_MCP_SERVER_GUIDE.md
