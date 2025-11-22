@@ -13,6 +13,8 @@
 
 name: Codacy Security Scan
 
+run-name: ubuntu-latest
+
 on:
   push:
     branches: [ "Primary" ]
