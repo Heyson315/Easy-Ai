@@ -270,6 +270,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 ### **🎯 Quick Navigation**
 | For | Document | Purpose |
 |-----|----------|---------|
+| **📋 Strategic Planning** | [Strategic Roadmap](docs/STRATEGIC_ROADMAP.md) | 🆕 Priority matrix & implementation plan |
 | **🚀 New Users** | [Project Outline](PROJECT_OUTLINE.md) | Complete project blueprint & setup |
 | **🧠 AI Agents** | [Copilot Instructions](.github/copilot-instructions.md) | Development patterns & architecture |
 | **🛡️ Security Teams** | [CIS Security Guide](docs/SECURITY_M365_CIS.md) | Security audit workflows |
@@ -280,6 +281,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 📁 **[Complete Documentation Index](docs/README.md)** - Organized by audience and use case
 
 **Key Guides:**
+- 📋 [Strategic Roadmap](docs/STRATEGIC_ROADMAP.md) - 🆕 Implementation priorities & success metrics
 - 🔐 [M365 CIS Security Auditing](docs/SECURITY_M365_CIS.md)
 - 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md)
 - 🤖 [AI MCP Server Development](docs/CUSTOM_MCP_SERVER_GUIDE.md)
