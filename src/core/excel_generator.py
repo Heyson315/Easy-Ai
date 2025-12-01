@@ -10,7 +10,6 @@ Usage:
 """
 
 from datetime import datetime
-from typing import Optional
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill
@@ -55,7 +54,7 @@ def _auto_size_columns(workbook: Workbook) -> None:
             sheet.column_dimensions[get_column_letter(column_index)].width = 15
 
 
-def create_project_management_workbook(filename: Optional[str] = None) -> Workbook:
+def create_project_management_workbook(filename: str | None = None) -> Workbook:
     """
     Create a project management Excel workbook with formatted sheets.
 

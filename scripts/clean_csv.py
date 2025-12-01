@@ -18,13 +18,13 @@ from __future__ import annotations
 import argparse
 import csv
 from pathlib import Path
-from typing import Dict, Any, Generator
+from typing import Generator
 
 DEFAULT_INPUT = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
 DEFAULT_OUTPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 
 
-def clean_csv(in_path: Path, out_path: Path) -> Dict[str, Any]:
+def clean_csv(in_path: Path, out_path: Path) -> dict:
     """
     Clean CSV file using single-pass streaming processing.
 
@@ -40,7 +40,7 @@ def clean_csv(in_path: Path, out_path: Path) -> Dict[str, Any]:
         - Streaming I/O for memory efficiency
         - In-place cell stripping to reduce allocations
     """
-    stats: Dict[str, Any] = {
+    stats: dict = {
         "input_lines": 0,
         "output_rows": 0,
         "comment_lines": 0,

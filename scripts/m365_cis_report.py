@@ -12,14 +12,14 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Union
 
 import pandas as pd
 
 DEFAULT_JSON = Path("output/reports/security/m365_cis_audit.json")
 
 
-def build_report(json_path: Path, xlsx_path: Optional[Path] = None) -> None:
+def build_report(json_path: Path, xlsx_path: Path | None = None) -> None:
     """
     Build Excel report from CIS audit JSON.
 
@@ -45,7 +45,8 @@ def build_report(json_path: Path, xlsx_path: Optional[Path] = None) -> None:
 
     # Handle potential UTF-8 BOM from PowerShell's UTF8 encoding
     try:
-        data: List[Dict[str, Any]] = json.loads(json_path.read_text(encoding="utf-8-sig"))
+        # Load JSON data (can be single dict or list of dicts)
+        data: Union[dict, list] = json.loads(json_path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as e:
         print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
@@ -58,7 +59,7 @@ def build_report(json_path: Path, xlsx_path: Optional[Path] = None) -> None:
 
     # Handle both single object and list formats
     if isinstance(data, dict):
-        rows: List[Dict[str, Any]] = [data]
+        rows: list[dict] = [data]
     else:
         rows = data
     # Create DataFrame from audit results

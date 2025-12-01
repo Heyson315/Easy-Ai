@@ -24,10 +24,9 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
 
 
-def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
+def load_audit_results(json_path: Path) -> list[dict]:
     """
     Load audit results from JSON file.
 
@@ -45,7 +44,7 @@ def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
         return json.load(f)
 
 
-def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
+def calculate_statistics(results: list[dict]) -> dict:
     """
     Calculate summary statistics from audit results.
 
@@ -93,7 +92,7 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     return stats
 
 
-def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
+def load_historical_data(reports_dir: Path) -> list[dict]:
     """
     Load historical audit data for trend analysis.
 
@@ -164,9 +163,7 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
     return historical[-10:]  # Return last 10 data points
 
 
-def generate_html_dashboard(
-    results: List[Dict[str, Any]], stats: Dict[str, Any], historical: List[Dict[str, Any]], output_path: Path
-) -> None:
+def generate_html_dashboard(results: list[dict], stats: dict, historical: list[dict], output_path: Path) -> None:
     """
     Generate interactive HTML dashboard with embedded CSS and JavaScript.
 

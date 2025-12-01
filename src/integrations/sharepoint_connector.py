@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Dict
 
 import pandas as pd
 
@@ -27,7 +26,7 @@ DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xlsx")
 
 
-def build_summaries(df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
+def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     """
     Create summary DataFrames for Excel report.
 
@@ -42,7 +41,7 @@ def build_summaries(df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
         - Conditional DataFrame copying (performance)
         - Top-N limiting (25 items) for large datasets
     """
-    summaries: Dict[str, pd.DataFrame] = {}
+    summaries: dict[str, pd.DataFrame] = {}
 
     # Normalize string columns efficiently (only those that exist and need normalization)
     str_columns = [
@@ -103,7 +102,7 @@ def build_summaries(df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     return summaries
 
 
-def write_excel_report(summaries: Dict[str, pd.DataFrame], output_path: Path) -> None:
+def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) -> None:
     """
     Write summaries to multi-sheet Excel workbook.
 
