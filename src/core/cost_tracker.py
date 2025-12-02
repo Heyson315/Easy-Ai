@@ -158,30 +158,33 @@ class GPT5CostTracker:
 
     def get_daily_cost(self) -> float:
         """Get total cost for today."""
-        today = datetime.now().date()
+        today_str = datetime.now().strftime("%Y-%m-%d")
         daily_cost = sum(
             entry["cost"]["total"]
             for entry in self.history
-            if datetime.fromisoformat(entry["timestamp"]).date() == today
+            if entry["timestamp"].startswith(today_str)
         )
         return daily_cost
 
     def get_weekly_cost(self) -> float:
         """Get total cost for the past 7 days."""
         week_ago = datetime.now() - timedelta(days=7)
+        week_ago_str = week_ago.strftime("%Y-%m-%dT%H:%M:%S")
         weekly_cost = sum(
-            entry["cost"]["total"] for entry in self.history if datetime.fromisoformat(entry["timestamp"]) >= week_ago
+            entry["cost"]["total"]
+            for entry in self.history
+            if entry["timestamp"] >= week_ago_str
         )
         return weekly_cost
 
     def get_monthly_cost(self) -> float:
         """Get total cost for the current month."""
         today = datetime.now()
+        month_prefix = today.strftime("%Y-%m-")
         monthly_cost = sum(
             entry["cost"]["total"]
             for entry in self.history
-            if datetime.fromisoformat(entry["timestamp"]).month == today.month
-            and datetime.fromisoformat(entry["timestamp"]).year == today.year
+            if entry["timestamp"].startswith(month_prefix)
         )
         return monthly_cost
 
@@ -227,7 +230,8 @@ class GPT5CostTracker:
     def print_detailed_report(self, days: int = 30):
         """Print detailed cost report."""
         cutoff = datetime.now() - timedelta(days=days)
-        recent = [e for e in self.history if datetime.fromisoformat(e["timestamp"]) >= cutoff]
+        cutoff_str = cutoff.strftime("%Y-%m-%dT%H:%M:%S")
+        recent = [e for e in self.history if e["timestamp"] >= cutoff_str]
 
         print("\n" + "=" * 80)
         print(f"  GPT-5 Cost Report - Last {days} Days")
