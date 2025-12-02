@@ -24,25 +24,25 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
 
     # Handle potential UTF-8 BOM from PowerShell's UTF8 encoding
     try:
-        data = json.loads(json_path.read_text(encoding="utf-8-sig"))
-    except json.JSONDecodeError as e:
-        print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
+        audit_data = json.loads(json_path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError as json_error:
+        print(f"ERROR: Invalid JSON in {json_path}: {json_error}", file=sys.stderr)
         sys.exit(1)
-    except (PermissionError, UnicodeDecodeError) as e:
-        print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
+    except (PermissionError, UnicodeDecodeError) as file_error:
+        print(f"ERROR: Cannot read {json_path}: {file_error}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Unexpected error reading {json_path}: {e}", file=sys.stderr)
+    except Exception as unexpected_error:
+        print(f"ERROR: Unexpected error reading {json_path}: {unexpected_error}", file=sys.stderr)
         sys.exit(1)
-    if isinstance(data, dict):
+    if isinstance(audit_data, dict):
         # In case it's a single object
-        rows = [data]
+        control_records = [audit_data]
     else:
-        rows = data
-    controls_dataframe = pd.DataFrame(rows)
+        control_records = audit_data
+    controls_dataframe = pd.DataFrame(control_records)
 
     # Overview
-    overview = (
+    status_severity_summary = (
         controls_dataframe.groupby(["Status", "Severity"])
         .size()
         .reset_index(name="Count")
@@ -50,22 +50,22 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     )
 
     # By control
-    by_control = controls_dataframe[
+    controls_detail = controls_dataframe[
         ["ControlId", "Title", "Severity", "Expected", "Actual", "Status", "Evidence", "Reference", "Timestamp"]
     ]
 
-    with pd.ExcelWriter(xlsx_path, engine="openpyxl") as writer:
-        overview.to_excel(writer, sheet_name="Overview", index=False)
-        by_control.to_excel(writer, sheet_name="Controls", index=False)
+    with pd.ExcelWriter(xlsx_path, engine="openpyxl") as excel_writer:
+        status_severity_summary.to_excel(excel_writer, sheet_name="Overview", index=False)
+        controls_detail.to_excel(excel_writer, sheet_name="Controls", index=False)
 
     print("Excel report written:", xlsx_path)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=DEFAULT_JSON, help="Path to CIS audit JSON")
-    parser.add_argument(
+    argument_parser = argparse.ArgumentParser()
+    argument_parser.add_argument("--input", type=Path, default=DEFAULT_JSON, help="Path to CIS audit JSON")
+    argument_parser.add_argument(
         "--output", type=Path, default=None, help="Path to Excel output (optional, auto-names from JSON if omitted)"
     )
-    args = parser.parse_args()
-    build_report(args.input, args.output)
+    parsed_args = argument_parser.parse_args()
+    build_report(parsed_args.input, parsed_args.output)

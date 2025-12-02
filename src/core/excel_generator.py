@@ -28,35 +28,35 @@ def create_project_management_workbook(filename=None):
     # Financial Transactions Sheet
     transactions_sheet = workbook.active
     transactions_sheet.title = "Financial Transactions"
-    trans_headers = ["Date", "Description", "Category", "Income", "Expense", "Balance"]
-    for column_index, header in enumerate(trans_headers, 1):
-        cell = transactions_sheet.cell(row=1, column=column_index)
-        cell.value = header
-        cell.font = Font(bold=True)
-        cell.fill = PatternFill(start_color="CCE5FF", end_color="CCE5FF", fill_type="solid")
+    transaction_column_headers = ["Date", "Description", "Category", "Income", "Expense", "Balance"]
+    for column_position, header_text in enumerate(transaction_column_headers, 1):
+        header_cell = transactions_sheet.cell(row=1, column=column_position)
+        header_cell.value = header_text
+        header_cell.font = Font(bold=True)
+        header_cell.fill = PatternFill(start_color="CCE5FF", end_color="CCE5FF", fill_type="solid")
 
     # Project Tasks Sheet
     tasks_sheet = workbook.create_sheet(title="Project Tasks")
-    task_headers = ["Task ID", "Task Name", "Start Date", "Due Date", "Status", "Assigned To", "Notes"]
-    for column_index, header in enumerate(task_headers, 1):
-        cell = tasks_sheet.cell(row=1, column=column_index)
-        cell.value = header
-        cell.font = Font(bold=True)
-        cell.fill = PatternFill(start_color="E6FFE6", end_color="E6FFE6", fill_type="solid")
+    task_column_headers = ["Task ID", "Task Name", "Start Date", "Due Date", "Status", "Assigned To", "Notes"]
+    for column_position, header_text in enumerate(task_column_headers, 1):
+        header_cell = tasks_sheet.cell(row=1, column=column_position)
+        header_cell.value = header_text
+        header_cell.font = Font(bold=True)
+        header_cell.fill = PatternFill(start_color="E6FFE6", end_color="E6FFE6", fill_type="solid")
 
     # Budget Summary Sheet
     budget_sheet = workbook.create_sheet(title="Budget Summary")
-    budget_headers = ["Category", "Budgeted", "Spent", "Remaining", "Percent Spent"]
-    for column_index, header in enumerate(budget_headers, 1):
-        cell = budget_sheet.cell(row=1, column=column_index)
-        cell.value = header
-        cell.font = Font(bold=True)
-        cell.fill = PatternFill(start_color="FFE6CC", end_color="FFE6CC", fill_type="solid")
+    budget_column_headers = ["Category", "Budgeted", "Spent", "Remaining", "Percent Spent"]
+    for column_position, header_text in enumerate(budget_column_headers, 1):
+        header_cell = budget_sheet.cell(row=1, column=column_position)
+        header_cell.value = header_text
+        header_cell.font = Font(bold=True)
+        header_cell.fill = PatternFill(start_color="FFE6CC", end_color="FFE6CC", fill_type="solid")
 
     # Adjust column widths for all sheets
-    for sheet in workbook.worksheets:
-        for column_index in range(1, sheet.max_column + 1):
-            sheet.column_dimensions[get_column_letter(column_index)].width = 15
+    for worksheet in workbook.worksheets:
+        for column_position in range(1, worksheet.max_column + 1):
+            worksheet.column_dimensions[get_column_letter(column_position)].width = 15
 
     # Sample transactions
     sample_transactions = [
@@ -73,9 +73,9 @@ def create_project_management_workbook(filename=None):
 
     # Add sample data
     # Transactions
-    for row, data in enumerate(sample_transactions, 2):
-        for column_index, value in enumerate(data, 1):
-            transactions_sheet.cell(row=row, column=column_index).value = value
+    for row_number, transaction_data in enumerate(sample_transactions, 2):
+        for column_position, cell_value in enumerate(transaction_data, 1):
+            transactions_sheet.cell(row=row_number, column=column_position).value = cell_value
 
     # Tasks
     sample_tasks = [
@@ -98,19 +98,19 @@ def create_project_management_workbook(filename=None):
             "",
         ],
     ]
-    for row, data in enumerate(sample_tasks, 2):
-        for column_index, value in enumerate(data, 1):
-            tasks_sheet.cell(row=row, column=column_index).value = value
+    for row_number, task_data in enumerate(sample_tasks, 2):
+        for column_position, cell_value in enumerate(task_data, 1):
+            tasks_sheet.cell(row=row_number, column=column_position).value = cell_value
 
     # Budget Categories
-    sample_budget = [
+    sample_budget_items = [
         ["Office Supplies", OFFICE_SUPPLIES_BUDGET, OFFICE_SUPPLIES_EXPENSE, "=B2-C2", "=C2/B2*100"],
         ["Marketing", MARKETING_BUDGET, 0, "=B3-C3", "=C3/B3*100"],
         ["Development", DEVELOPMENT_BUDGET, 0, "=B4-C4", "=C4/B4*100"],
     ]
-    for row, data in enumerate(sample_budget, 2):
-        for column_index, value in enumerate(data, 1):
-            budget_sheet.cell(row=row, column=column_index).value = value
+    for row_number, budget_data in enumerate(sample_budget_items, 2):
+        for column_position, cell_value in enumerate(budget_data, 1):
+            budget_sheet.cell(row=row_number, column=column_position).value = cell_value
 
     # Save the workbook
     workbook.save(filename)

@@ -21,7 +21,7 @@ DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xlsx")
 
 
-def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFrame]:
     """
     Create summary DataFrames for the report.
 
@@ -29,10 +29,10 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     - Avoid unnecessary DataFrame copy by working with view
     - Use .astype() only on columns that need it
     """
-    summaries: dict[str, pd.DataFrame] = {}
+    summary_dataframes: dict[str, pd.DataFrame] = {}
 
     # Normalize string columns efficiently (only those that exist and need normalization)
-    str_columns = [
+    string_column_names = [
         "Resource Path",
         "Item Type",
         "Permission",
@@ -45,36 +45,36 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     ]
 
     # Only normalize columns that exist in the DataFrame
-    existing_str_cols = [col for col in str_columns if col in df.columns]
-    
-    if existing_str_cols:
+    existing_string_columns = [col for col in string_column_names if col in permissions_dataframe.columns]
+
+    if existing_string_columns:
         # Create a copy only if we need to modify
-        df = df.copy()
-        for col in existing_str_cols:
-            df[col] = df[col].astype(str).str.strip()
+        permissions_dataframe = permissions_dataframe.copy()
+        for column_name in existing_string_columns:
+            permissions_dataframe[column_name] = permissions_dataframe[column_name].astype(str).str.strip()
 
     # 1) Counts by Item Type
-    if "Item Type" in df.columns:
-        summaries["by_item_type"] = (
-            df.groupby("Item Type")
+    if "Item Type" in permissions_dataframe.columns:
+        summary_dataframes["by_item_type"] = (
+            permissions_dataframe.groupby("Item Type")
             .size()
             .reset_index(name="Count")
             .sort_values("Count", ascending=False)
         )
 
     # 2) Counts by Permission
-    if "Permission" in df.columns:
-        summaries["by_permission"] = (
-            df.groupby("Permission")
+    if "Permission" in permissions_dataframe.columns:
+        summary_dataframes["by_permission"] = (
+            permissions_dataframe.groupby("Permission")
             .size()
             .reset_index(name="Count")
             .sort_values("Count", ascending=False)
         )
 
     # 3) Top users by occurrences
-    if "User Email" in df.columns:
-        summaries["top_users"] = (
-            df[df["User Email"].str.len() > 0]
+    if "User Email" in permissions_dataframe.columns:
+        summary_dataframes["top_users"] = (
+            permissions_dataframe[permissions_dataframe["User Email"].str.len() > 0]
             .groupby(["User Email", "User Name"])
             .size()
             .reset_index(name="Count")
@@ -83,9 +83,9 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
         )
 
     # 4) Top resources by occurrences
-    if "Resource Path" in df.columns:
-        summaries["top_resources"] = (
-            df[df["Resource Path"].str.len() > 0]
+    if "Resource Path" in permissions_dataframe.columns:
+        summary_dataframes["top_resources"] = (
+            permissions_dataframe[permissions_dataframe["Resource Path"].str.len() > 0]
             .groupby("Resource Path")
             .size()
             .reset_index(name="Count")
@@ -93,44 +93,44 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
             .head(25)
         )
 
-    return summaries
+    return summary_dataframes
 
 
-def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) -> None:
+def write_excel_report(summary_dataframes: dict[str, pd.DataFrame], output_path: Path) -> None:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+    with pd.ExcelWriter(output_path, engine="openpyxl") as excel_writer:
         # Overview sheet
         overview_rows = []
-        for key, df in summaries.items():
+        for summary_name, summary_df in summary_dataframes.items():
             overview_rows.append(
                 {
-                    "Summary": key,
-                    "Rows": len(df),
-                    "Columns": len(df.columns),
+                    "Summary": summary_name,
+                    "Rows": len(summary_df),
+                    "Columns": len(summary_df.columns),
                 }
             )
-        pd.DataFrame(overview_rows).to_excel(writer, sheet_name="Overview", index=False)
+        pd.DataFrame(overview_rows).to_excel(excel_writer, sheet_name="Overview", index=False)
 
         # Individual sheets
-        for name, summary_dataframe in summaries.items():
+        for summary_name, summary_dataframe in summary_dataframes.items():
             # Limit sheet name to 31 chars
-            sheet = name[:31]
-            summary_dataframe.to_excel(writer, sheet_name=sheet, index=False)
+            sheet_name = summary_name[:31]
+            summary_dataframe.to_excel(excel_writer, sheet_name=sheet_name, index=False)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
-    args = parser.parse_args()
+    argument_parser = argparse.ArgumentParser()
+    argument_parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
+    argument_parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
+    parsed_args = argument_parser.parse_args()
 
-    permissions_dataframe = pd.read_csv(args.input)
-    summaries = build_summaries(permissions_dataframe)
-    write_excel_report(summaries, args.output)
+    permissions_dataframe = pd.read_csv(parsed_args.input)
+    summary_dataframes = build_summaries(permissions_dataframe)
+    write_excel_report(summary_dataframes, parsed_args.output)
 
-    print("Report written:", args.output)
+    print("Report written:", parsed_args.output)
 
 
 if __name__ == "__main__":

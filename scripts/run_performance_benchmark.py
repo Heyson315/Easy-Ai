@@ -32,14 +32,14 @@ except ImportError as e:
     sys.exit(1)
 
 
-def benchmark_operation(name: str, func: Callable, *args, **kwargs) -> Dict[str, Any]:
+def benchmark_operation(operation_name: str, operation_func: Callable, *args, **kwargs) -> Dict[str, Any]:
     """
     Benchmark a single operation with timing and memory tracking.
 
     Returns:
         Dict with operation name, time_seconds, memory_mb, and success status
     """
-    print(f"\n🔬 Benchmarking: {name}")
+    print(f"\n🔬 Benchmarking: {operation_name}")
     print("-" * 60)
 
     # Start memory tracking
@@ -47,77 +47,77 @@ def benchmark_operation(name: str, func: Callable, *args, **kwargs) -> Dict[str,
     start_time = time.perf_counter()
 
     try:
-        result = func(*args, **kwargs)
-        success = True
-        error = None
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        result = None
-        success = False
-        error = str(e)
+        _operation_result = operation_func(*args, **kwargs)
+        operation_succeeded = True
+        error_message = None
+    except Exception as operation_error:
+        print(f"❌ Error: {operation_error}")
+        _operation_result = None
+        operation_succeeded = False
+        error_message = str(operation_error)
 
     # End timing and memory tracking
     end_time = time.perf_counter()
-    current, peak = tracemalloc.get_traced_memory()
+    current_memory, peak_memory = tracemalloc.get_traced_memory()
     tracemalloc.stop()
 
-    elapsed = end_time - start_time
-    memory_mb = peak / (1024 * 1024)
+    elapsed_time = end_time - start_time
+    peak_memory_mb = peak_memory / (1024 * 1024)
 
-    print(f"⏱️  Time: {elapsed:.4f}s")
-    print(f"💾 Peak Memory: {memory_mb:.2f}MB")
-    print(f"✅ Status: {'Success' if success else 'Failed'}")
+    print(f"⏱️  Time: {elapsed_time:.4f}s")
+    print(f"💾 Peak Memory: {peak_memory_mb:.2f}MB")
+    print(f"✅ Status: {'Success' if operation_succeeded else 'Failed'}")
 
     return {
-        "name": name,
-        "time_seconds": elapsed,
-        "memory_mb": memory_mb,
-        "success": success,
-        "error": error,
+        "name": operation_name,
+        "time_seconds": elapsed_time,
+        "memory_mb": peak_memory_mb,
+        "success": operation_succeeded,
+        "error": error_message,
     }
 
 
-def create_test_csv(path: Path, rows: int = 1000) -> None:
+def create_test_csv(file_path: Path, rows: int = 1000) -> None:
     """Create a test CSV file for benchmarking."""
     import csv
 
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Resource Path", "Item Type", "Permission", "User Name", "User Email"])
-        for i in range(rows):
-            writer.writerow(
+    with open(file_path, "w", encoding="utf-8", newline="") as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow(["Resource Path", "Item Type", "Permission", "User Name", "User Email"])
+        for row_index in range(rows):
+            csv_writer.writerow(
                 [
-                    f"/sites/test/path{i}",
-                    "File" if i % 2 == 0 else "Folder",
-                    "Full Control" if i % 3 == 0 else "Read",
-                    f"User {i}",
-                    f"user{i}@example.com",
+                    f"/sites/test/path{row_index}",
+                    "File" if row_index % 2 == 0 else "Folder",
+                    "Full Control" if row_index % 3 == 0 else "Read",
+                    f"User {row_index}",
+                    f"user{row_index}@example.com",
                 ]
             )
 
 
-def create_test_audit_json(path: Path, controls: int = 100) -> None:
+def create_test_audit_json(file_path: Path, controls: int = 100) -> None:
     """Create a test audit JSON file for benchmarking."""
     import json
 
-    data = []
-    for i in range(controls):
-        data.append(
+    audit_data = []
+    for control_index in range(controls):
+        audit_data.append(
             {
-                "ControlId": f"CIS-{i+1}",
-                "Title": f"Test Control {i+1}",
-                "Severity": ["High", "Medium", "Low"][i % 3],
-                "Status": ["Pass", "Fail", "Manual"][i % 3],
+                "ControlId": f"CIS-{control_index+1}",
+                "Title": f"Test Control {control_index+1}",
+                "Severity": ["High", "Medium", "Low"][control_index % 3],
+                "Status": ["Pass", "Fail", "Manual"][control_index % 3],
                 "Expected": "Enabled",
-                "Actual": "Enabled" if i % 3 == 0 else "Disabled",
+                "Actual": "Enabled" if control_index % 3 == 0 else "Disabled",
                 "Evidence": "Test evidence",
                 "Reference": "https://example.com",
                 "Timestamp": "2025-01-01T00:00:00Z",
             }
         )
 
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+    with open(file_path, "w", encoding="utf-8") as json_file:
+        json.dump(audit_data, json_file, indent=2)
 
 
 def run_performance_benchmarks() -> Dict[str, Any]:
@@ -126,68 +126,68 @@ def run_performance_benchmarks() -> Dict[str, Any]:
     print("🚀 M365 Security Toolkit - Performance Benchmarks")
     print("=" * 60)
 
-    results = []
+    benchmark_results = []
 
-    with TemporaryDirectory() as tmpdir:
-        tmp_path = Path(tmpdir)
+    with TemporaryDirectory() as temp_directory:
+        temp_path = Path(temp_directory)
 
         # 1. Benchmark CSV cleaning
         from scripts.clean_csv import clean_csv
 
-        test_csv_input = tmp_path / "test_input.csv"
-        test_csv_output = tmp_path / "test_output.csv"
-        create_test_csv(test_csv_input, rows=5000)
+        test_csv_input_path = temp_path / "test_input.csv"
+        test_csv_output_path = temp_path / "test_output.csv"
+        create_test_csv(test_csv_input_path, rows=5000)
 
-        result = benchmark_operation(
+        benchmark_result = benchmark_operation(
             "CSV Cleaning (5000 rows)",
             clean_csv,
-            test_csv_input,
-            test_csv_output,
+            test_csv_input_path,
+            test_csv_output_path,
         )
-        results.append(result)
+        benchmark_results.append(benchmark_result)
 
         # 2. Benchmark M365 CIS report generation
         from scripts.m365_cis_report import build_report
 
-        test_json = tmp_path / "test_audit.json"
-        test_excel = tmp_path / "test_report.xlsx"
-        create_test_audit_json(test_json, controls=200)
+        test_json_path = temp_path / "test_audit.json"
+        test_excel_path = temp_path / "test_report.xlsx"
+        create_test_audit_json(test_json_path, controls=200)
 
-        result = benchmark_operation(
+        benchmark_result = benchmark_operation(
             "M365 CIS Excel Report (200 controls)",
             build_report,
-            test_json,
-            test_excel,
+            test_json_path,
+            test_excel_path,
         )
-        results.append(result)
+        benchmark_results.append(benchmark_result)
 
         # 3. Benchmark statistics calculation
         from scripts.generate_security_dashboard import calculate_statistics
 
         import json
 
-        with open(test_json, "r") as f:
-            audit_data = json.load(f)
+        with open(test_json_path, "r") as json_file:
+            audit_data = json.load(json_file)
 
-        result = benchmark_operation(
+        benchmark_result = benchmark_operation(
             "Statistics Calculation (200 controls)",
             calculate_statistics,
             audit_data,
         )
-        results.append(result)
+        benchmark_results.append(benchmark_result)
 
         # 4. Benchmark SharePoint summary generation
         try:
             from src.integrations.sharepoint_connector import build_summaries
 
             # Create test DataFrame
-            df = pd.read_csv(test_csv_output)
-            result = benchmark_operation(
+            permissions_dataframe = pd.read_csv(test_csv_output_path)
+            benchmark_result = benchmark_operation(
                 "SharePoint Summaries (5000 rows)",
                 build_summaries,
-                df,
+                permissions_dataframe,
             )
-            results.append(result)
+            benchmark_results.append(benchmark_result)
         except ImportError:
             print("⚠️  Skipping SharePoint benchmark (module not available)")
 
@@ -196,43 +196,43 @@ def run_performance_benchmarks() -> Dict[str, Any]:
     print("📊 Benchmark Summary")
     print("=" * 60)
 
-    total_time = sum(r["time_seconds"] for r in results)
-    total_memory = max(r["memory_mb"] for r in results)
-    success_count = sum(1 for r in results if r["success"])
+    total_execution_time = sum(result["time_seconds"] for result in benchmark_results)
+    max_peak_memory = max(result["memory_mb"] for result in benchmark_results)
+    successful_operations_count = sum(1 for result in benchmark_results if result["success"])
 
-    print(f"\nTotal Operations: {len(results)}")
-    print(f"Successful: {success_count}/{len(results)}")
-    print(f"Total Time: {total_time:.4f}s")
-    print(f"Peak Memory: {total_memory:.2f}MB")
+    print(f"\nTotal Operations: {len(benchmark_results)}")
+    print(f"Successful: {successful_operations_count}/{len(benchmark_results)}")
+    print(f"Total Time: {total_execution_time:.4f}s")
+    print(f"Peak Memory: {max_peak_memory:.2f}MB")
 
     print("\n📋 Detailed Results:")
-    for r in results:
-        status = "✅" if r["success"] else "❌"
-        print(f"{status} {r['name']:45} {r['time_seconds']:8.4f}s  {r['memory_mb']:8.2f}MB")
+    for result in benchmark_results:
+        status_indicator = "✅" if result["success"] else "❌"
+        print(f"{status_indicator} {result['name']:45} {result['time_seconds']:8.4f}s  {result['memory_mb']:8.2f}MB")
 
     # Check for performance issues
     print("\n🔍 Performance Analysis:")
-    slow_operations = [r for r in results if r["time_seconds"] > 1.0]
+    slow_operations = [result for result in benchmark_results if result["time_seconds"] > 1.0]
     if slow_operations:
         print("⚠️  Slow operations detected (>1.0s):")
-        for r in slow_operations:
-            print(f"   - {r['name']}: {r['time_seconds']:.4f}s")
+        for result in slow_operations:
+            print(f"   - {result['name']}: {result['time_seconds']:.4f}s")
     else:
         print("✅ All operations completed in under 1 second")
 
-    high_memory = [r for r in results if r["memory_mb"] > 100]
-    if high_memory:
+    high_memory_operations = [result for result in benchmark_results if result["memory_mb"] > 100]
+    if high_memory_operations:
         print("⚠️  High memory usage detected (>100MB):")
-        for r in high_memory:
-            print(f"   - {r['name']}: {r['memory_mb']:.2f}MB")
+        for result in high_memory_operations:
+            print(f"   - {result['name']}: {result['memory_mb']:.2f}MB")
     else:
         print("✅ All operations used less than 100MB")
 
     return {
-        "results": results,
-        "total_time": total_time,
-        "peak_memory": total_memory,
-        "success_rate": success_count / len(results) if results else 0,
+        "results": benchmark_results,
+        "total_time": total_execution_time,
+        "peak_memory": max_peak_memory,
+        "success_rate": successful_operations_count / len(benchmark_results) if benchmark_results else 0,
     }
 
 
