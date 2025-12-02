@@ -1,0 +1,6 @@
+{
+  "name": "sharepoint_tools",
+  "version": "1.0.0",
+  "description": "A toolset for analyzing SharePoint Online sites and permissions.",
+  "entry_point": "tools:register_tools"
+}
