@@ -46,14 +46,14 @@ jobs:
         echo "🚀 Running Performance Benchmarks..."
         python scripts/run_performance_benchmark.py
 
-    - name: Lint Python code
+    - name: Lint Python code with flake8
       run: |
-        echo "🔍 Linting Python code..."
+        echo "🔍 Linting Python code with flake8..."
         flake8 scripts/ src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
-    - name: Check code formatting
+    - name: Check code formatting with black
       run: |
-        echo "🎨 Checking code formatting..."
+        echo "🎨 Checking code formatting with black..."
         black --check scripts/ src/ tests/
 
     - name: Run Python tests
@@ -66,6 +66,65 @@ jobs:
       with:
         file: ./coverage.xml
         fail_ci_if_error: false
+
+  # New: Static type checking with mypy
+  python-static-analysis:
+    name: Python Static Analysis (mypy & pylint)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Cache Python packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-static-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install mypy pylint types-requests
+
+    - name: Run mypy type checking
+      run: |
+        echo "🔬 Running mypy static type checking..."
+        mypy src/ scripts/ --ignore-missing-imports --no-strict-optional --show-error-codes || true
+
+    - name: Run pylint deep analysis
+      run: |
+        echo "🔍 Running pylint deep static analysis..."
+        pylint src/ scripts/ --rcfile=.pylintrc --output-format=text --reports=yes || true
+
+    - name: Generate static analysis report
+      if: always()
+      run: |
+        echo "## 📊 Static Analysis Report" > static-analysis-report.md
+        echo "" >> static-analysis-report.md
+        echo "### mypy Type Checking" >> static-analysis-report.md
+        mypy src/ scripts/ --ignore-missing-imports --no-strict-optional 2>&1 | head -50 >> static-analysis-report.md || echo "mypy completed" >> static-analysis-report.md
+        echo "" >> static-analysis-report.md
+        echo "### pylint Analysis" >> static-analysis-report.md
+        pylint src/ scripts/ --rcfile=.pylintrc --output-format=text 2>&1 | tail -30 >> static-analysis-report.md || echo "pylint completed" >> static-analysis-report.md
+
+    - name: Upload static analysis report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: static-analysis-report
+        path: static-analysis-report.md
+        retention-days: 30
 
   powershell-security-checks:
     name: PowerShell Security & Quality
@@ -108,6 +167,41 @@ jobs:
           exit 1
         }
 
+    - name: Run Pester unit tests
+      shell: pwsh
+      run: |
+        Write-Host "🧪 Running Pester unit tests..."
+        # Check if Pester tests exist
+        $testPath = "tests/powershell"
+        if (Test-Path $testPath) {
+          $config = New-PesterConfiguration
+          $config.Run.Path = $testPath
+          $config.Output.Verbosity = 'Detailed'
+          $config.TestResult.Enabled = $true
+          $config.TestResult.OutputPath = "pester-results.xml"
+          $config.TestResult.OutputFormat = 'NUnitXml'
+          $results = Invoke-Pester -Configuration $config
+          if ($results.FailedCount -gt 0) {
+            Write-Host "❌ Pester tests failed: $($results.FailedCount) failures"
+            exit 1
+          } else {
+            Write-Host "✅ All Pester tests passed: $($results.PassedCount) tests"
+          }
+        } else {
+          Write-Host "⚠️ No Pester tests found in $testPath - creating placeholder"
+          # Create test directory for future tests
+          New-Item -ItemType Directory -Path $testPath -Force | Out-Null
+          Write-Host "✅ Pester test directory created"
+        }
+
+    - name: Upload Pester test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: pester-results
+        path: pester-results.xml
+        if-no-files-found: ignore
+
   security-vulnerability-scan:
     name: Security Vulnerability Scan
     runs-on: ubuntu-latest
@@ -124,17 +218,28 @@ jobs:
     - name: Install security tools
       run: |
         python -m pip install --upgrade pip
-        pip install safety bandit semgrep
+        pip install safety bandit semgrep pip-audit
 
-    - name: Check Python dependencies for vulnerabilities
+    - name: Check Python dependencies for vulnerabilities with safety
       run: |
-        echo "🔍 Scanning Python dependencies for vulnerabilities..."
+        echo "🔍 Scanning Python dependencies with safety..."
         safety check --json --output safety-report.json || true
         if [ -s safety-report.json ]; then
           echo "⚠️ Security vulnerabilities found in dependencies!"
           cat safety-report.json
         else
-          echo "✅ No vulnerabilities found in Python dependencies"
+          echo "✅ No vulnerabilities found by safety"
+        fi
+
+    - name: Check Python dependencies with pip-audit (redundant check)
+      run: |
+        echo "🔍 Scanning Python dependencies with pip-audit (redundant check)..."
+        pip-audit --format=json --output=pip-audit-report.json || true
+        if [ -s pip-audit-report.json ] && [ "$(cat pip-audit-report.json)" != "[]" ]; then
+          echo "⚠️ Security vulnerabilities found by pip-audit!"
+          cat pip-audit-report.json
+        else
+          echo "✅ No vulnerabilities found by pip-audit"
         fi
 
     - name: Run bandit security linter
@@ -148,6 +253,17 @@ jobs:
           echo "✅ No security issues found by bandit"
         fi
 
+    - name: Run semgrep advanced security scanning
+      run: |
+        echo "🔍 Running semgrep advanced security scanning..."
+        semgrep scan --config=auto --json --output=semgrep-report.json scripts/ src/ || true
+        if [ -s semgrep-report.json ] && [ "$(jq '.results | length' semgrep-report.json 2>/dev/null)" -gt 0 ]; then
+          echo "⚠️ Security issues found by semgrep!"
+          jq '.results[] | {path: .path, message: .extra.message, severity: .extra.severity}' semgrep-report.json 2>/dev/null || cat semgrep-report.json
+        else
+          echo "✅ No security issues found by semgrep"
+        fi
+
     - name: Upload security reports
       uses: actions/upload-artifact@v4
       id: upload-security-reports
@@ -156,7 +272,9 @@ jobs:
         name: security-reports
         path: |
           safety-report.json
+          pip-audit-report.json
           bandit-report.json
+          semgrep-report.json
 
     - name: Attest security reports
       uses: actions/attest-build-provenance@v3
@@ -243,7 +361,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    needs: [python-quality-checks, powershell-security-checks, security-vulnerability-scan, documentation-checks, integration-tests]
+    needs: [python-quality-checks, python-static-analysis, powershell-security-checks, security-vulnerability-scan, documentation-checks, integration-tests]
     if: always()
 
     steps:
@@ -256,8 +374,9 @@ jobs:
         echo "" >> build-summary.md
         echo "### Build Status:" >> build-summary.md
         echo "- **Python Quality**: ${{ needs.python-quality-checks.result }}" >> build-summary.md
-        echo "- **PowerShell Security**: ${{ needs.powershell-security-checks.result }}" >> build-summary.md
-        echo "- **Security Scan**: ${{ needs.security-vulnerability-scan.result }}" >> build-summary.md
+        echo "- **Python Static Analysis (mypy & pylint)**: ${{ needs.python-static-analysis.result }}" >> build-summary.md
+        echo "- **PowerShell Security & Pester Tests**: ${{ needs.powershell-security-checks.result }}" >> build-summary.md
+        echo "- **Security Scan (bandit, safety, pip-audit, semgrep)**: ${{ needs.security-vulnerability-scan.result }}" >> build-summary.md
         echo "- **Documentation**: ${{ needs.documentation-checks.result }}" >> build-summary.md
         echo "- **Integration Tests**: ${{ needs.integration-tests.result }}" >> build-summary.md
         echo "" >> build-summary.md
@@ -266,6 +385,12 @@ jobs:
         echo "- SharePoint permissions analysis" >> build-summary.md
         echo "- Performance benchmarking capabilities" >> build-summary.md
         echo "- Automated security reporting" >> build-summary.md
+        echo "" >> build-summary.md
+        echo "### 🔒 Redundant Security Checks:" >> build-summary.md
+        echo "- **Dependency Scanning**: safety + pip-audit" >> build-summary.md
+        echo "- **Code Security**: bandit + semgrep" >> build-summary.md
+        echo "- **Static Analysis**: flake8 + pylint + mypy" >> build-summary.md
+        echo "- **PowerShell**: PSScriptAnalyzer + Pester" >> build-summary.md
         echo "" >> build-summary.md
         echo "Generated at: $(date)" >> build-summary.md
 
