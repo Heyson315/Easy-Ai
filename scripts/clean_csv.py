@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import argparse
 import csv
-from io import StringIO
 from pathlib import Path
+from typing import Generator
 
 DEFAULT_INPUT_PATH = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
 DEFAULT_OUTPUT_PATH = Path("data/processed/sharepoint_permissions_clean.csv")
@@ -23,6 +23,8 @@ DEFAULT_OUTPUT_PATH = Path("data/processed/sharepoint_permissions_clean.csv")
 def clean_csv(input_csv_path: Path, output_csv_path: Path) -> dict:
     """
     Clean CSV file by removing comments, blank lines, and repeated headers.
+
+    Uses a streaming approach to minimize memory usage for large files.
 
     Args:
         input_csv_path: Path to the input CSV file to clean.
@@ -50,9 +52,12 @@ def clean_csv(input_csv_path: Path, output_csv_path: Path) -> dict:
         "header": None,
     }
 
-    # First pass: filter out comment and blank lines, keep original quoting intact
-    non_comment_lines = []
-    with input_csv_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
+    def filter_lines_generator(input_file) -> Generator[str, None, None]:
+        """
+        Generator that filters out comments and blank lines while counting them.
+
+        This streaming approach minimizes memory usage for large files.
+        """
         for raw_line in input_file:
             cleaning_statistics["input_lines"] += 1
             stripped_line = raw_line.strip()
@@ -62,42 +67,42 @@ def clean_csv(input_csv_path: Path, output_csv_path: Path) -> dict:
             if stripped_line.startswith("#"):
                 cleaning_statistics["comment_lines"] += 1
                 continue
-            non_comment_lines.append(raw_line)
+            yield raw_line
 
-    # Second pass: parse CSV properly respecting quotes
-    csv_content_buffer = StringIO("".join(non_comment_lines))
-    csv_reader = csv.reader(csv_content_buffer)
+    with input_csv_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
+        # Use generator to stream filtered lines to csv.reader
+        csv_reader = csv.reader(filter_lines_generator(input_file))
 
-    with output_csv_path.open("w", encoding="utf-8", newline="") as output_file:
-        csv_writer = csv.writer(output_file, lineterminator="\n")
+        with output_csv_path.open("w", encoding="utf-8", newline="") as output_file:
+            csv_writer = csv.writer(output_file, lineterminator="\n")
 
-        header_row = None
+            header_row = None
 
-        for data_row in csv_reader:
-            # Normalize whitespace in each cell
-            for cell_index in range(len(data_row)):
-                data_row[cell_index] = data_row[cell_index].strip()
+            for data_row in csv_reader:
+                # Normalize whitespace in each cell
+                for cell_index in range(len(data_row)):
+                    data_row[cell_index] = data_row[cell_index].strip()
 
-            if header_row is None:
-                header_row = data_row
-                # Strip potential BOM from first header column if still present
-                if header_row and header_row[0].startswith("\ufeff"):
-                    header_row[0] = header_row[0].lstrip("\ufeff")
-                cleaning_statistics["header"] = header_row
-                csv_writer.writerow(header_row)
-                continue
+                if header_row is None:
+                    header_row = data_row
+                    # Strip potential BOM from first header column if still present
+                    if header_row and header_row[0].startswith("\ufeff"):
+                        header_row[0] = header_row[0].lstrip("\ufeff")
+                    cleaning_statistics["header"] = header_row
+                    csv_writer.writerow(header_row)
+                    continue
 
-            # Skip repeated header rows
-            if data_row == header_row:
-                cleaning_statistics["skipped_repeated_headers"] += 1
-                continue
+                # Skip repeated header rows
+                if data_row == header_row:
+                    cleaning_statistics["skipped_repeated_headers"] += 1
+                    continue
 
-            # Guard against BOM in first data column
-            if data_row and data_row[0].startswith("\ufeff"):
-                data_row[0] = data_row[0].lstrip("\ufeff")
+                # Guard against BOM in first data column
+                if data_row and data_row[0].startswith("\ufeff"):
+                    data_row[0] = data_row[0].lstrip("\ufeff")
 
-            csv_writer.writerow(data_row)
-            cleaning_statistics["output_rows"] += 1
+                csv_writer.writerow(data_row)
+                cleaning_statistics["output_rows"] += 1
 
     return cleaning_statistics
 

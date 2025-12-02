@@ -50,15 +50,19 @@ def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFra
     """
     summary_dataframes: dict[str, pd.DataFrame] = {}
 
-    # Create a working copy to avoid modifying the original
-    working_dataframe = permissions_dataframe.copy()
-
-    # Normalize string columns - only those that exist in the DataFrame
+    # Check which columns need normalization (only existing columns)
     existing_columns_to_normalize = [
-        column_name for column_name in PERMISSION_COLUMNS_TO_NORMALIZE if column_name in working_dataframe.columns
+        column_name for column_name in PERMISSION_COLUMNS_TO_NORMALIZE if column_name in permissions_dataframe.columns
     ]
-    for column_name in existing_columns_to_normalize:
-        working_dataframe[column_name] = working_dataframe[column_name].astype(str).str.strip()
+
+    # Only create a copy if we need to normalize columns
+    if existing_columns_to_normalize:
+        working_dataframe = permissions_dataframe.copy()
+        for column_name in existing_columns_to_normalize:
+            working_dataframe[column_name] = working_dataframe[column_name].astype(str).str.strip()
+    else:
+        # No normalization needed, use original DataFrame directly
+        working_dataframe = permissions_dataframe
 
     # 1) Counts by Item Type
     if "Item Type" in working_dataframe.columns:
