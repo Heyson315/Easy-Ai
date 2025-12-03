@@ -3,7 +3,7 @@
 
 ## Overview
 
-This guide covers the integration of OpenAI GPT-5 models into the share-report toolkit for CPA firm workflows. GPT-5 is OpenAI's latest reasoning model family, designed for complex analytical tasks requiring multi-step reasoning.
+This guide covers the integration of OpenAI GPT-5 models into the Easy-Ai toolkit for CPA firm workflows. GPT-5 is OpenAI's latest reasoning model family, designed for complex analytical tasks requiring multi-step reasoning.
 
 ## Key Features
 

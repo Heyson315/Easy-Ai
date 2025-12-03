@@ -4,7 +4,7 @@
 This document validates that the GitHub Copilot instructions for this repository are properly configured according to GitHub's best practices.
 
 **Validation Date**: November 14, 2025  
-**Repository**: Heyson315/share-report  
+**Repository**: Heyson315/Easy-Ai  
 **Instructions File**: `.github/copilot-instructions.md`
 
 ## Validation Results ✅

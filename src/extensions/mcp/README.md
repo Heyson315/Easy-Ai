@@ -61,7 +61,7 @@ Add to your AI assistant configuration (e.g., VS Code settings or Claude Desktop
   "mcpServers": {
     "m365-security": {
       "command": "python",
-      "args": ["C:/path/to/share-report/src/extensions/mcp/server.py"],
+      "args": ["C:/path/to/Easy-Ai/src/extensions/mcp/server.py"],
       "env": {
         "M365_TENANT_ID": "your-tenant-id",
         "M365_CLIENT_ID": "your-client-id",

@@ -26,7 +26,7 @@ To verify the provenance of an artifact:
 # gh auth login
 
 # Download and verify an artifact
-gh attestation verify <artifact-path> --owner Heyson315 --repo share-report
+gh attestation verify <artifact-path> --owner Heyson315 --repo Easy-Ai
 ```
 
 All security reports, audit results, and build artifacts include attestations automatically.

@@ -244,7 +244,7 @@ wb.save(output_path)
 
 ```bash
 # 1. Run tests
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 python -m pytest tests/ -v --cov=scripts --cov=src
 
 # 2. Run linters (if code changes)
@@ -438,7 +438,7 @@ git push origin branch-name
 
 ```bash
 # Ensure you're in repo root
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"

@@ -264,7 +264,7 @@ For detailed guidance, see [AI Development Issue Template Guide](ISSUE_TEMPLATE/
 
 ```bash
 # Essential Commands
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 pip install -r requirements-dev.txt
 python -m pytest tests/ -v
 black --check --line-length 120 scripts/ src/
