@@ -81,8 +81,8 @@ mypy>=0.991             # Type checking
 ### **Quick Start Commands**
 ```bash
 # 1. Clone and setup
-git clone https://github.com/Heyson315/share-report.git
-cd share-report
+git clone https://github.com/Heyson315/Easy-Ai.git
+cd Easy-Ai
 
 # 2. Python environment
 python -m venv .venv

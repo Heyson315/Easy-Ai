@@ -38,8 +38,8 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Heyson315/share-report.git
-   cd share-report
+   git clone https://github.com/Heyson315/Easy-Ai.git
+   cd Easy-Ai
    ```
 
 2. **Checkout develop branch**

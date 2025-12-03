@@ -125,7 +125,7 @@ def audit_security():
    **Impact**: Automated quality checks on every commit
 
 3. **Change GitHub default branch**:
-   - Go to: https://github.com/Heyson315/share-report/settings/branches
+   - Go to: https://github.com/Heyson315/Easy-Ai/settings/branches
    - Change default from `evidence/2025-10-25` to `main`
    **Impact**: Aligns GitHub with new Git Flow structure
 

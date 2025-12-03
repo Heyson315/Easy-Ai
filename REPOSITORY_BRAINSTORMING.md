@@ -1,7 +1,7 @@
 # Repository Brainstorming & Strategic Improvement Plan
 
 **Date**: November 14, 2025  
-**Repository**: Heyson315/share-report  
+**Repository**: Heyson315/Easy-Ai  
 **Focus**: M365 Security & SharePoint Analysis Toolkit  
 **Status**: Comprehensive Review & Strategic Planning
 

@@ -249,7 +249,7 @@ Based on comprehensive repository analysis, we've identified **8 strategic impro
 **Want to Contribute?** See [CONTRIBUTING.md](../CONTRIBUTING.md) (coming soon)
 
 **Maintainers**: @Heyson315  
-**Community**: [GitHub Discussions](https://github.com/Heyson315/share-report/discussions)
+**Community**: [GitHub Discussions](https://github.com/Heyson315/Easy-Ai/discussions)
 
 ---
 

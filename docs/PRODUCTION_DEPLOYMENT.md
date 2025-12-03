@@ -108,8 +108,8 @@ pip install -r requirements-dev.txt  # For development/testing
 
 ```bash
 # Clone the repository
-git clone https://github.com/Heyson315/share-report.git
-cd share-report
+git clone https://github.com/Heyson315/Easy-Ai.git
+cd Easy-Ai
 
 # Verify the toolkit structure
 ls -la
@@ -423,7 +423,7 @@ act -j automated-audit --secret-file .secrets
 
 ### Support Resources
 
-- **GitHub Issues**: [Repository Issues](https://github.com/Heyson315/share-report/issues)
+- **GitHub Issues**: [Repository Issues](https://github.com/Heyson315/Easy-Ai/issues)
 - **Documentation**: All guides in `docs/` directory
 - **Community**: PowerShell Gallery and Microsoft Tech Community
 - **Microsoft Support**: For M365 API and service-related issues
