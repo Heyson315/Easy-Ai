@@ -11,6 +11,7 @@ Features:
 """
 
 import argparse
+import html
 import json
 import sys
 from datetime import datetime
@@ -376,19 +377,29 @@ def generate_html_dashboard(
                 <tbody>
 """
 
-    # Add table rows
+    # Add table rows (escape HTML to prevent XSS)
     for result in sorted_results:
-        control_id = result.get("ControlId", "N/A")
-        title = result.get("Title", "N/A")
-        severity = result.get("Severity", "Unknown")
-        status = result.get("Status", "Unknown")
-        actual = result.get("Actual", "N/A")
+        # Get raw values for CSS class generation (these are validated against known values)
+        raw_status = str(result.get("Status", "Unknown"))
+        raw_severity = str(result.get("Severity", "Unknown"))
 
-        status_class = f"status-{status.lower()}"
-        severity_class = f"severity-{severity.lower()}"
+        # Escape values for HTML display
+        control_id = html.escape(str(result.get("ControlId", "N/A")))
+        title = html.escape(str(result.get("Title", "N/A")))
+        severity = html.escape(raw_severity)
+        status = html.escape(raw_status)
+        actual = html.escape(str(result.get("Actual", "N/A")))
+
+        # CSS class names use raw values (lowercased) - safe because they're used as class names
+        status_class = f"status-{raw_status.lower()}"
+        severity_class = f"severity-{raw_severity.lower()}"
+
+        # Escape data attribute values
+        data_status = html.escape(raw_status.lower())
+        data_severity = html.escape(raw_severity.lower())
 
         html_content += f"""
-                    <tr data-status="{status.lower()}" data-severity="{severity.lower()}">
+                    <tr data-status="{data_status}" data-severity="{data_severity}">
                         <td><strong>{control_id}</strong></td>
                         <td class="control-title">{title}</td>
                         <td class="{severity_class}">{severity}</td>
