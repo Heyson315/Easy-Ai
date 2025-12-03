@@ -6,6 +6,11 @@
 # https://github.com/actions/labeler
 
 name: Labeler
+# Note: pull_request_target is used (not pull_request) because:
+# 1. It provides write access to pull-requests needed for labeling
+# 2. It uses the labeler.yml from the base branch (not the PR branch)
+# 3. This prevents malicious PRs from modifying label rules
+# SECURITY: Never checkout PR code in this workflow, as that would introduce a vulnerability.
 on: [pull_request_target]
 
 jobs:
@@ -17,6 +22,4 @@ jobs:
       pull-requests: write
 
     steps:
-    - uses: actions/labeler@v4
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+    - uses: actions/labeler@v5

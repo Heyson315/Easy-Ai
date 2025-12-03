@@ -1,0 +1,15 @@
+python:
+  - changed-files:
+    - any-glob-to-any-file: ['scripts/**/*.py', 'src/**/*.py', 'tests/**/*.py']
+
+powershell:
+  - changed-files:
+    - any-glob-to-any-file: ['scripts/**/*.ps1', 'scripts/**/*.psm1']
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['docs/**/*', '**/*.md']
+
+workflows:
+  - changed-files:
+    - any-glob-to-any-file: ['.github/workflows/**']
