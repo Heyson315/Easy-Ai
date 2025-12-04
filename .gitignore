@@ -55,3 +55,6 @@ output/reports/security/test_*.csv
 
 # Test data
 data/test/
+
+# Codacy generated files
+results.sarif

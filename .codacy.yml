@@ -1,3 +1,9 @@
 ---
 exclude_paths:
   - 'scripts/powershell/**'
+  - 'data/**'
+  - 'output/**'
+  - '**/__pycache__/**'
+  - '**/*.pyc'
+  - '**/*.xlsx'
+  - '**/*.csv'
