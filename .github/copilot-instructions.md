@@ -1,5 +1,7 @@
 # Copilot Instructions: M365 Security & SharePoint Analysis Toolkit
 
+**Last Updated**: 2025-12-03 (v1.1.0 - Added Docker, CI/CD, Performance, Multi-Root Workspace patterns)
+
 > 🤖 **Quick Start for AI Agents**: New to this project? 
 > - **Fast Track** (15 min): [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
 > - **Complete Index**: [AI Development Index](AI_DEVELOPMENT_INDEX.md) - Navigate all AI resources
@@ -119,6 +121,21 @@ class MyToolPlugin:
 - Pester tests use `Should -Be` syntax (not `Should Be` - proper PowerShell)
 - Parameterized test cases via `-TestCases` for DRY principles
 - Coverage reporting integrated into CI artifacts
+
+### v1.1.0 Enhancements (Dec 2025)
+**New Development Patterns:**
+- **Docker Development** - Containerized environments for consistency (`docker-compose.yml`)
+- **AI Extensions** - Optional ML integrations with graceful fallback (`requirements-extensions.txt`)
+- **Performance Optimization** - Chunked processing and parallel execution patterns
+- **CI/CD Error Resolution** - Documented solutions for common GitHub Actions failures
+- **Multi-Root Workspace** - VS Code workspace configuration for cleaner development
+
+**Why This Matters:**
+- Docker ensures reproducible builds across platforms
+- AI features are optional and don't break core functionality
+- Performance patterns support enterprise-scale deployments (500k+ rows)
+- CI/CD patterns prevent common pipeline failures
+- Multi-root workspace improves file navigation and git operations
 
 ## Development & Testing Workflow
 
@@ -382,6 +399,275 @@ for col in range(1, len(summary.columns) + 1):
 # 6. Save with directory creation
 output_path.parent.mkdir(parents=True, exist_ok=True)
 wb.save(output_path)
+```
+
+### Docker Development Pattern (NEW v1.1.0)
+**Problem:** Inconsistent development environments across platforms and dependency conflicts.
+
+**Solution:** Use Docker Compose for reproducible environments:
+```bash
+# Start development environment
+docker-compose up -d
+
+# Run tests in container
+docker-compose exec mcp-server python -m pytest tests/ -v
+
+# Run audit in container (requires M365 credentials in .env)
+docker-compose exec mcp-server powershell -File scripts/powershell/Invoke-M365CISAudit.ps1
+
+# Stop environment
+docker-compose down
+```
+
+**Container Structure (`docker-compose.yml`):**
+```yaml
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - .:/workspace:delegated  # Live code reloading
+    env_file:
+      - .env  # M365 credentials, API keys
+    ports:
+      - "8080:8080"
+    command: ["python", "src/extensions/mcp/server.py"]
+```
+
+**Conventions:**
+- ✅ Mount workspace as volume for live development
+- ✅ Use `.dockerignore` to exclude `.venv/`, `__pycache__/`, `output/`
+- ✅ Run CI/CD tests in same container as local development
+- ✅ Store credentials in `.env` file (never commit!)
+- ❌ Don't commit sensitive data to docker-compose.yml
+
+### AI Extensions Pattern (NEW v1.1.0)
+**Optional AI/ML integrations** via `requirements-extensions.txt`:
+
+**Installation:**
+```bash
+# Install AI extensions (optional - core toolkit works without these)
+pip install -r requirements-extensions.txt
+```
+
+**Pattern: Graceful Degradation**
+```python
+# Always make AI features optional
+try:
+    from openai import AsyncOpenAI
+    USE_AI = True
+except ImportError:
+    USE_AI = False
+    print("AI extensions not installed. Using standard analysis.")
+
+async def analyze_with_ai_optional(data):
+    """Analyze with AI if available, fallback to standard."""
+    if USE_AI:
+        # AI-enhanced analysis
+        client = AsyncOpenAI()
+        result = await client.chat.completions.create(...)
+        return result
+    else:
+        # Fallback to standard analysis
+        return standard_analyze(data)
+```
+
+**Conventions:**
+- ✅ Make AI features optional (don't break core functionality)
+- ✅ Cache AI responses to avoid redundant API calls (see `src/core/cost_tracker.py`)
+- ✅ Set timeouts for AI API calls (30-60s)
+- ✅ Log token usage for cost tracking
+- ✅ Load API keys from environment variables only
+- ❌ Don't block standard workflows if AI extensions missing
+- ❌ Never hardcode API keys in code
+
+### Performance Optimization Pattern (NEW v1.1.0)
+**Large Dataset Handling:**
+
+**Pattern 1: Chunked CSV Processing**
+```python
+import pandas as pd
+from pathlib import Path
+
+def process_large_sharepoint_export(csv_path: Path, chunk_size: int = 10000):
+    """
+    Process SharePoint exports >100k rows without memory issues.
+    
+    SharePoint permission exports can be massive (500k+ rows).
+    Chunked processing keeps memory usage constant.
+    """
+    results = []
+    
+    for chunk in pd.read_csv(csv_path, chunksize=chunk_size):
+        # Process each chunk independently
+        processed = transform_permissions(chunk)
+        results.append(processed)
+    
+    # Combine results
+    return pd.concat(results, ignore_index=True)
+```
+
+**Pattern 2: Parallel Tenant Audits**
+```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def audit_multiple_tenants(tenant_ids: list[str], max_workers: int = 5):
+    """
+    Audit multiple M365 tenants concurrently.
+    
+    Useful for MSPs managing multiple client tenants.
+    Max 5 workers to avoid API rate limits.
+    """
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all audits
+        futures = {
+            executor.submit(run_audit, tid): tid 
+            for tid in tenant_ids
+        }
+        
+        # Collect results as they complete
+        results = {}
+        for future in as_completed(futures):
+            tenant_id = futures[future]
+            try:
+                results[tenant_id] = future.result(timeout=600)
+            except Exception as e:
+                results[tenant_id] = {'error': str(e), 'status': 'failed'}
+        
+        return results
+```
+
+**Benchmarking:**
+```bash
+# Run performance benchmarks (scripts/run_performance_benchmark.py)
+python scripts/run_performance_benchmark.py --baseline
+
+# Compare after optimization
+python scripts/run_performance_benchmark.py --compare
+
+# Profile specific script
+python -m cProfile -o profile.stats scripts/my_script.py
+python -m pstats profile.stats
+```
+
+**Performance Targets:**
+- CSV cleaning: <2s for 10k rows
+- Excel generation: <5s for 100 controls
+- Dashboard generation: <3s
+- Full M365 audit: <10 minutes
+
+### CI/CD Error Resolution Pattern (NEW v1.1.0)
+**Common CI/CD Failures** (learned from `CI_CD_ERROR_RESOLUTION_REPORT.md`):
+
+**Issue 1: PowerShell Module Import in GitHub Actions**
+```yaml
+# .github/workflows/*.yml
+- name: Run M365 Audit
+  run: |
+    # Fix: Explicitly set PSModulePath
+    $env:PSModulePath += ";$PWD/scripts/powershell/modules"
+    Import-Module M365CIS -Force
+    ./scripts/powershell/Invoke-M365CISAudit.ps1 -Timestamped
+  shell: pwsh
+```
+
+**Issue 2: Python Dependencies Installation**
+```yaml
+- name: Install all dependencies
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+    # Optional: Only install if AI features needed
+    pip install -r requirements-extensions.txt || echo "AI extensions skipped"
+```
+
+**Issue 3: Artifact Upload Safety**
+```yaml
+- name: Upload test reports
+  if: always()  # Upload even on test failures
+  uses: actions/upload-artifact@v3
+  with:
+    name: test-reports
+    path: output/reports/
+    if-no-files-found: warn  # Don't fail if no files generated
+```
+
+**Issue 4: Test Timeout**
+```python
+# For long-running integration tests
+import pytest
+
+@pytest.mark.timeout(300)  # 5 minute timeout
+@pytest.mark.integration
+def test_full_m365_audit():
+    """Full audit can take several minutes."""
+    result = run_audit()
+    assert result['status'] == 'success'
+```
+
+**Local CI Reproduction:**
+```bash
+# Reproduce CI environment locally with Docker
+docker-compose run --rm mcp-server python -m pytest tests/ -v --tb=short
+
+# Check workflow syntax before commit
+gh workflow view m365-security-ci
+
+# Re-run failed CI jobs only
+gh run rerun <run-id> --failed
+```
+
+### Multi-Root Workspace Pattern (NEW v1.1.0)
+**VS Code Multi-Root Setup** (`Easy-Ai.code-workspace`):
+
+The project uses a multi-root workspace to separate code from virtual environment:
+
+```json
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Easy-Ai"
+    },
+    {
+      "path": "../venv",
+      "name": "Python Environment"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:venv}/Scripts/python.exe"
+  }
+}
+```
+
+**Why Multi-Root?**
+- Keeps `.venv/` out of primary workspace (cleaner file explorer)
+- Prevents accidental commits of virtual environment
+- Faster file search and indexing
+- Easier to reset environment (just delete `../venv` folder)
+
+**Conventions:**
+- ✅ Run terminal commands from `Easy-Ai` root, not `venv` folder
+- ✅ Git operations only affect `Easy-Ai` folder (`.git` is there)
+- ✅ Python interpreter path: `../venv/Scripts/python.exe` (Windows) or `../venv/bin/python` (Linux/Mac)
+- ✅ Use `Ctrl+Shift+` ` to open terminal in correct folder
+- ❌ Don't commit `venv/` contents to git
+- ❌ Don't run scripts from `venv` folder as working directory
+
+**Folder Structure:**
+```
+e:\source\Heyson315\
+├── Easy-Ai\              # Main project (in git)
+│   ├── .git\
+│   ├── scripts\
+│   ├── src\
+│   └── Easy-Ai.code-workspace
+└── venv\                 # Python environment (not in git)
+    ├── Scripts\
+    ├── Lib\
+    └── Include\
 ```
 
 ### Error Handling Pattern
