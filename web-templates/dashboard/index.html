@@ -1,114 +1,470 @@
-        // Dashboard state
-        let auditData = null;
-        let allControls = [];
-        let currentFilter = 'all';
-        
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M365 CIS Security Audit Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .metric-subtitle {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .metric-card.pass .metric-value { color: #10b981; }
+        .metric-card.fail .metric-value { color: #ef4444; }
+        .metric-card.manual .metric-value { color: #f59e0b; }
+        .metric-card.compliance .metric-value { color: #667eea; }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .controls-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .controls-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .controls-table thead {
+            background: #f9fafb;
+            position: sticky;
+            top: 0;
+        }
+
+        .controls-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .controls-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .controls-table tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        .controls-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pass {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.manual {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .severity-badge.high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .severity-badge.medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .severity-badge.low {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .evidence-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-header {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ M365 CIS Security Audit Dashboard</h1>
+            <p class="subtitle">Microsoft 365 Security Compliance Monitoring</p>
+        </header>
+
+        <div class="metrics-grid" id="metrics">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading audit data...</p>
+            </div>
+        </div>
+
+        <div class="charts-grid" id="charts" style="display: none;">
+            <div class="chart-card">
+                <h3>Status Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Severity Breakdown</h3>
+                <canvas id="severityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="controls-section" id="controls" style="display: none;">
+            <div class="controls-header">
+                <h2>Control Details</h2>
+                <input type="text" class="search-box" id="searchBox" placeholder="Search controls...">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pass">Pass</button>
+                    <button class="filter-btn" data-filter="fail">Fail</button>
+                    <button class="filter-btn" data-filter="manual">Manual</button>
+                    <button class="filter-btn" data-filter="high">High Severity</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="controls-table">
+                    <thead>
+                        <tr>
+                            <th>Control ID</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Severity</th>
+                            <th>Actual</th>
+                            <th>Evidence</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="controlsTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let auditData = [];
+        let statusChart, severityChart;
+
         // Load audit data
         async function loadAuditData() {
             try {
-                // Try to load from multiple possible locations
-                const possiblePaths = [
-                    'data/m365_cis_audit.json',
-                    '../output/reports/security/m365_cis_audit.json',
-                    'output/reports/security/m365_cis_audit.json',
-                    'm365_cis_audit.json'
+                // Try multiple possible paths
+                const paths = [
+                    'sample-data.json',
+                    '../output/test-run/m365_cis_audit.json',
+                    '../../output/test-run/m365_cis_audit.json'
                 ];
-                
-                for (const path of possiblePaths) {
+
+                for (const path of paths) {
                     try {
                         const response = await fetch(path);
                         if (response.ok) {
                             auditData = await response.json();
-                            console.log('Loaded audit data from:', path);
-                            return auditData;
+                            console.log('Loaded data from:', path);
+                            break;
                         }
                     } catch (e) {
                         continue;
                     }
                 }
-                
-                throw new Error('Could not find audit data file. Please ensure m365_cis_audit.json is available.');
+
+                if (auditData.length === 0) {
+                    throw new Error('No data found');
+                }
+
+                renderDashboard();
             } catch (error) {
-                showError(error.message);
-                throw error;
+                console.error('Error loading audit data:', error);
+                document.getElementById('metrics').innerHTML = `
+                    <div class="loading">
+                        <p style="color: #ef4444;">Failed to load audit data. Please ensure sample-data.json exists.</p>
+                    </div>
+                `;
             }
         }
-        
-        // Calculate metrics
-        function calculateMetrics(data) {
-            const controls = Array.isArray(data) ? data : data.controls || [];
-            allControls = controls;
-            
-            const total = controls.length;
-            const passed = controls.filter(c => c.Status === 'Pass').length;
-            const failed = controls.filter(c => c.Status === 'Fail').length;
-            const manual = controls.filter(c => c.Status === 'Manual').length;
-            
-            const complianceScore = total > 0 ? Math.round((passed / total) * 100) : 0;
-            
-            // Calculate risk score (severity-weighted failures)
-            const severityWeights = { Critical: 10, High: 7, Medium: 4, Low: 2 };
-            let totalRisk = 0;
-            let maxRisk = 0;
-            
-            controls.forEach(c => {
-                const weight = severityWeights[c.Severity] || 1;
-                maxRisk += weight;
-                if (c.Status === 'Fail') {
-                    totalRisk += weight;
-                }
-            });
-            
-            const riskScore = maxRisk > 0 ? Math.round((totalRisk / maxRisk) * 100) : 0;
-            
-            // Severity breakdown
-            const severityBreakdown = {
-                Critical: controls.filter(c => c.Status === 'Fail' && c.Severity === 'Critical').length,
-                High: controls.filter(c => c.Status === 'Fail' && c.Severity === 'High').length,
-                Medium: controls.filter(c => c.Status === 'Fail' && c.Severity === 'Medium').length,
-                Low: controls.filter(c => c.Status === 'Fail' && c.Severity === 'Low').length
-            };
-            
-            return {
-                total,
-                passed,
-                failed,
-                manual,
-                complianceScore,
-                riskScore,
-                severityBreakdown
-            };
+
+        function renderDashboard() {
+            renderMetrics();
+            renderCharts();
+            renderControls();
+            setupFilters();
         }
-        
-        // Update dashboard UI
-        function updateDashboard(metrics) {
-            document.getElementById('compliance-score').textContent = metrics.complianceScore + '%';
-            document.getElementById('risk-score').textContent = metrics.riskScore + '/100';
-            document.getElementById('total-controls').textContent = metrics.total;
-            document.getElementById('critical-findings').textContent = metrics.severityBreakdown.Critical;
-            
-            document.getElementById('controls-breakdown').innerHTML = `
-                <span style="color: var(--success);">${metrics.passed} passed</span> · 
-                <span style="color: var(--danger);">${metrics.failed} failed</span> · 
-                <span style="color: var(--warning);">${metrics.manual} manual</span>
+
+        function renderMetrics() {
+            const pass = auditData.filter(c => c.Status === 'Pass').length;
+            const fail = auditData.filter(c => c.Status === 'Fail').length;
+            const manual = auditData.filter(c => c.Status === 'Manual').length;
+            const total = auditData.length;
+            const compliance = total > 0 ? Math.round((pass / total) * 100) : 0;
+
+            document.getElementById('metrics').innerHTML = `
+                <div class="metric-card compliance">
+                    <div class="metric-label">Compliance Score</div>
+                    <div class="metric-value">${compliance}%</div>
+                    <div class="metric-subtitle">Based on ${total} controls</div>
+                </div>
+                <div class="metric-card pass">
+                    <div class="metric-label">Passed</div>
+                    <div class="metric-value">${pass}</div>
+                    <div class="metric-subtitle">${total > 0 ? Math.round((pass/total)*100) : 0}% of total</div>
+                </div>
+                <div class="metric-card fail">
+                    <div class="metric-label">Failed</div>
+                    <div class="metric-value">${fail}</div>
+                    <div class="metric-subtitle">${total > 0 ? Math.round((fail/total)*100) : 0}% of total</div>
+                </div>
+                <div class="metric-card manual">
+                    <div class="metric-label">Manual Review</div>
+                    <div class="metric-value">${manual}</div>
+                    <div class="metric-subtitle">${total > 0 ? Math.round((manual/total)*100) : 0}% of total</div>
+                </div>
             `;
-            
-            const criticalText = metrics.severityBreakdown.Critical > 0 ? 
-                `${metrics.severityBreakdown.Critical + metrics.severityBreakdown.High} high priority` : 
-                'No critical issues';
-            document.getElementById('findings-trend').textContent = criticalText;
         }
-        
-        // Create charts
-        function createCharts(metrics) {
-            // Status distribution chart
+
+        function renderCharts() {
+            document.getElementById('charts').style.display = 'grid';
+
+            // Status Distribution Chart
             const statusCtx = document.getElementById('statusChart').getContext('2d');
-            new Chart(statusCtx, {
+            const pass = auditData.filter(c => c.Status === 'Pass').length;
+            const fail = auditData.filter(c => c.Status === 'Fail').length;
+            const manual = auditData.filter(c => c.Status === 'Manual').length;
+
+            statusChart = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Passed', 'Failed', 'Manual Review'],
+                    labels: ['Pass', 'Fail', 'Manual'],
                     datasets: [{
-                        data: [metrics.passed, metrics.failed, metrics.manual],
+                        data: [pass, fail, manual],
                         backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
                         borderWidth: 0
                     }]
@@ -118,147 +474,103 @@
                     maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            labels: { color: '#ffffff' }
+                            position: 'bottom'
                         }
                     }
                 }
             });
-            
-            // Severity breakdown chart
+
+            // Severity Distribution Chart
             const severityCtx = document.getElementById('severityChart').getContext('2d');
-            new Chart(severityCtx, {
+            const high = auditData.filter(c => c.Severity === 'High').length;
+            const medium = auditData.filter(c => c.Severity === 'Medium').length;
+            const low = auditData.filter(c => c.Severity === 'Low').length;
+
+            severityChart = new Chart(severityCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    labels: ['High', 'Medium', 'Low'],
                     datasets: [{
-                        label: 'Failed Controls',
-                        data: [
-                            metrics.severityBreakdown.Critical,
-                            metrics.severityBreakdown.High,
-                            metrics.severityBreakdown.Medium,
-                            metrics.severityBreakdown.Low
-                        ],
-                        backgroundColor: ['#dc2626', '#ef4444', '#f59e0b', '#10b981'],
+                        label: 'Number of Controls',
+                        data: [high, medium, low],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#a0a0a0', stepSize: 1 },
-                            grid: { color: '#404040' }
-                        },
-                        x: {
-                            ticks: { color: '#a0a0a0' },
-                            grid: { display: false }
+                            ticks: {
+                                stepSize: 1
+                            }
                         }
-                    },
-                    plugins: {
-                        legend: { labels: { color: '#ffffff' } }
                     }
                 }
             });
         }
-        
-        // Populate controls table
-        function populateControlsTable(controls) {
-            const tbody = document.getElementById('controls-tbody');
-            tbody.innerHTML = '';
+
+        function renderControls() {
+            document.getElementById('controls').style.display = 'block';
+            const tbody = document.getElementById('controlsTable');
             
-            controls.forEach(control => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td><strong>${control.ControlId || 'N/A'}</strong></td>
-                    <td>${control.Title || 'Untitled'}</td>
-                    <td><span class="status-badge status-${(control.Status || 'manual').toLowerCase()}">${control.Status || 'Manual'}</span></td>
-                    <td><span class="severity-badge severity-${(control.Severity || 'low').toLowerCase()}">${control.Severity || 'Low'}</span></td>
-                    <td style="font-size: 0.9rem; color: var(--text-secondary);">
-                        ${control.Evidence || control.Actual || 'No details available'}
-                    </td>
-                `;
-            });
+            tbody.innerHTML = auditData.map(control => `
+                <tr data-status="${control.Status.toLowerCase()}" data-severity="${control.Severity.toLowerCase()}">
+                    <td><strong>${control.ControlId}</strong></td>
+                    <td>${control.Title}</td>
+                    <td><span class="status-badge ${control.Status.toLowerCase()}">${control.Status}</span></td>
+                    <td><span class="severity-badge ${control.Severity.toLowerCase()}">${control.Severity}</span></td>
+                    <td>${control.Actual || 'N/A'}</td>
+                    <td class="evidence-cell" title="${control.Evidence}">${control.Evidence}</td>
+                    <td class="timestamp">${new Date(control.Timestamp).toLocaleString()}</td>
+                </tr>
+            `).join('');
         }
-        
-        // Filter controls
-        function filterControls() {
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            
-            let filtered = allControls;
-            
-            // Apply status filter
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(c => (c.Status || 'manual').toLowerCase() === currentFilter);
-            }
-            
-            // Apply search
-            if (searchTerm) {
-                filtered = filtered.filter(c => 
-                    (c.ControlId || '').toLowerCase().includes(searchTerm) ||
-                    (c.Title || '').toLowerCase().includes(searchTerm) ||
-                    (c.Evidence || '').toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            populateControlsTable(filtered);
-        }
-        
-        // Setup event listeners
-        function setupEventListeners() {
-            // Filter buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentFilter = e.target.getAttribute('data-filter');
-                    filterControls();
+
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const searchBox = document.getElementById('searchBox');
+            const rows = document.querySelectorAll('#controlsTable tr');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+                    rows.forEach(row => {
+                        const status = row.dataset.status;
+                        const severity = row.dataset.severity;
+                        
+                        if (filter === 'all') {
+                            row.style.display = '';
+                        } else if (filter === 'high') {
+                            row.style.display = severity === 'high' ? '' : 'none';
+                        } else {
+                            row.style.display = status === filter ? '' : 'none';
+                        }
+                    });
                 });
             });
-            
-            // Search box
-            document.getElementById('search').addEventListener('input', filterControls);
+
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
         }
-        
-        // Show error
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.innerHTML = `
-                <strong>⚠️ Error Loading Data</strong><br>
-                ${message}<br><br>
-                <strong>Troubleshooting:</strong><br>
-                • Ensure m365_cis_audit.json is in the same directory<br>
-                • Check browser console for details<br>
-                • Verify the JSON file is valid
-            `;
-            errorDiv.style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-        }
-        
-        // Initialize dashboard
-        async function init() {
-            try {
-                await loadAuditData();
-                const metrics = calculateMetrics(auditData);
-                
-                // Hide loading, show dashboard
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                
-                // Update UI
-                updateDashboard(metrics);
-                createCharts(metrics);
-                populateControlsTable(allControls);
-                setupEventListeners();
-                
-            } catch (error) {
-                console.error('Dashboard initialization failed:', error);
-            }
-        }
-        
-        // Start when page loads
-        document.addEventListener('DOMContentLoaded', init);
+
+        // Load data when page loads
+        loadAuditData();
     </script>
 </body>
 </html>

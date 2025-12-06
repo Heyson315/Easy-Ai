@@ -1,86 +1,69 @@
-# M365 CIS Security Dashboard
+# M365 CIS Security Audit Dashboard
 
-Interactive web dashboard for visualizing Microsoft 365 CIS security audit results.
+Interactive, single-page web dashboard for visualizing Microsoft 365 CIS security audit results.
 
 ## Features
 
-- 📊 **Real-time Metrics**: Compliance score, risk score, control statistics
-- 📈 **Interactive Charts**: Status distribution and severity breakdown
-- 🔍 **Search & Filter**: Find specific controls quickly
-- 🎨 **Modern Design**: Dark theme with smooth animations
-- �� **Responsive**: Works on desktop, tablet, and mobile
+### 📊 Real-Time Metrics
 
-## Usage
+- **Compliance Score**: Overall pass percentage
+- **Passed Controls**: Count and percentage
+- **Failed Controls**: Count and percentage  
+- **Manual Review Required**: Count and percentage
 
-### Option 1: Local Viewing
+### 📈 Interactive Charts
 
-1. Run the M365 CIS audit to generate `m365_cis_audit.json`
-2. Copy the JSON file to the dashboard directory:
-   ```powershell
-   Copy-Item output/reports/security/m365_cis_audit.json web-templates/dashboard/data/
-   ```
-3. Open `index.html` in your browser
+- **Status Distribution**: Doughnut chart showing Pass/Fail/Manual breakdown
+- **Severity Breakdown**: Bar chart showing High/Medium/Low severity counts
+- Powered by Chart.js for smooth animations
 
-### Option 2: GitHub Pages
+### 🔍 Searchable Control Table
 
-The dashboard is automatically published to GitHub Pages after each audit run.
+- All CIS controls in a sortable table
+- Real-time search across all columns
+- Filter buttons: All, Pass, Fail, Manual, High Severity
+- Color-coded status badges
+- Severity indicators
+- Evidence tooltips on hover
+- Responsive design for mobile/tablet
 
-Access it at: `https://[your-username].github.io/[your-repo]/`
+## Quick Start
 
-## Dashboard Sections
+### Open Dashboard Locally
 
-### Key Metrics
-- **Compliance Score**: Percentage of passed controls
-- **Risk Score**: Severity-weighted failure score (0-100)
-- **Total Controls**: Number of CIS controls audited
-- **Critical Findings**: Number of critical and high-severity failures
+```bash
+# Option 1: Direct open
+start web-templates/dashboard/index.html
 
-### Charts
-- **Status Distribution**: Pie chart showing passed/failed/manual controls
-- **Severity Breakdown**: Bar chart of failures by severity level
+# Option 2: Python server
+cd web-templates/dashboard
+python -m http.server 8000
+# Open http://localhost:8000
 
-### Controls Table
-- Filterable and searchable list of all controls
-- Status badges (Pass/Fail/Manual)
-- Severity indicators (Critical/High/Medium/Low)
-- Detailed evidence and recommendations
-
-## File Structure
-
-```
-web-templates/dashboard/
-├── index.html          # Main dashboard
-├── data/               # JSON data files
-│   └── m365_cis_audit.json
-└── README.md          # This file
+# Option 3: VS Code Live Server
+# Right-click index.html -> Open with Live Server
 ```
 
-## Requirements
+## Files
 
-- Modern web browser (Chrome, Firefox, Edge, Safari)
-- Internet connection (for Chart.js CDN)
-- Valid m365_cis_audit.json file
+- `index.html` - Complete dashboard (single-page app, ~20KB)
+- `sample-data.json` - Latest audit results from GitHub Actions
+- `README.md` - This file
 
-## Customization
+## How It Works
 
-The dashboard uses CSS variables for easy theming. Edit the `:root` section in `index.html`:
+The dashboard loads `sample-data.json` and displays:
 
-```css
-:root {
-    --primary: #0078d4;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    /* ... */
-}
-```
+- **4 metric cards** with compliance statistics
+- **2 interactive charts** (doughnut + bar)
+- **1 filterable table** with all 15 CIS controls
 
-## Troubleshooting
+No backend required - runs entirely in the browser!
 
-**"Error Loading Data"**: Ensure m365_cis_audit.json is in the correct location
-**Charts not showing**: Check browser console for JavaScript errors
-**Slow performance**: Large audit files (1000+ controls) may take a few seconds to load
+## Next Steps
 
-## License
+Deploy to:
 
-Part of the Easy-Ai project. See main repository LICENSE file.
+- ✅ **GitHub Pages** (already configured in workflow)
+- ✅ **SharePoint** (see `../sharepoint/README.md`)
+- ✅ **Custom Domain** (see `../godaddy/README.md`)
