@@ -258,7 +258,7 @@ runs:
         New-Item -Path $outputPath -ItemType Directory -Force | Out-Null
         
         Write-Host "🔍 Executing CIS controls audit..." -ForegroundColor Cyan
-        . "${{ github.action_path }}/scripts/powershell/Invoke-M365CISAudit.ps1" -OutJson (Join-Path $outputPath "m365_cis_audit.json") -OutCsv (Join-Path $outputPath "m365_cis_audit.csv") -SkipExchange
+        . "${{ github.action_path }}/scripts/powershell/Invoke-M365CISAudit.ps1" -OutJson (Join-Path $outputPath "m365_cis_audit.json") -OutCsv (Join-Path $outputPath "m365_cis_audit.csv") -SkipExchange -SkipPurview
         
 
         # Define report paths
