@@ -10,7 +10,9 @@ on: [pull_request_target]
 
 jobs:
   label:
-
+    # Only run if this is a pull request (extra safety check)
+    if: github.event.pull_request != null
+    
     runs-on: ubuntu-latest
     permissions:
       contents: read

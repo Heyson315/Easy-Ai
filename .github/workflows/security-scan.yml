@@ -33,7 +33,7 @@ jobs:
 
       - name: Run Bandit
         run: |
-          bandit -r src -f json -o bandit-report.json || true
+          bandit -r src -f json -o bandit-report.json --ini .bandit || true
 
       - name: Run Safety
         run: |
