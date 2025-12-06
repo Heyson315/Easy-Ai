@@ -116,6 +116,44 @@ jobs:
       - name: Upload Reports
         uses: actions/upload-artifact@v4
         with:
+          name: compliance-baseline-audit
+          path: |
+            ${{ steps.audit.outputs.json-report }}
+            ${{ steps.audit.outputs.csv-report }}
+            ${{ steps.audit.outputs.excel-report }}
+          retention-days: 365
+      
+      - name: Prepare Dashboard
+        if: success()
+        run: |
+          Write-Host "📊 Preparing web dashboard..." -ForegroundColor Cyan
+          # Copy JSON report to dashboard data directory
+          Copy-Item "${{ steps.audit.outputs.json-report }}" web-templates/dashboard/data/m365_cis_audit.json -Force
+          Write-Host "✅ Dashboard ready for deployment" -ForegroundColor Green
+        shell: pwsh
+      
+      - name: Deploy to GitHub Pages
+        if: success() && github.ref == 'refs/heads/Primary'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
           name: test-audit-reports
           path: output/reports/
           retention-days: 30
+
+      # Deploy Web Dashboard
+      - name: Prepare Dashboard
+        if: success()
+        run: |
+          Write-Host "📊 Preparing web dashboard..." -ForegroundColor Cyan
+          Copy-Item "${{ steps.audit.outputs.json-report }}" web-templates/dashboard/data/m365_cis_audit.json -Force
+          Write-Host "✅ Dashboard data copied" -ForegroundColor Green
+        shell: pwsh
+      
+      - name: Deploy to GitHub Pages
+        if: success() && github.ref == 'refs/heads/Primary'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web-templates/dashboard
+          destination_dir: dashboard
+          commit_message: 'docs: Update M365 security dashboard'

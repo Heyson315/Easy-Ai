@@ -1,0 +1,264 @@
+        // Dashboard state
+        let auditData = null;
+        let allControls = [];
+        let currentFilter = 'all';
+        
+        // Load audit data
+        async function loadAuditData() {
+            try {
+                // Try to load from multiple possible locations
+                const possiblePaths = [
+                    'data/m365_cis_audit.json',
+                    '../output/reports/security/m365_cis_audit.json',
+                    'output/reports/security/m365_cis_audit.json',
+                    'm365_cis_audit.json'
+                ];
+                
+                for (const path of possiblePaths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            auditData = await response.json();
+                            console.log('Loaded audit data from:', path);
+                            return auditData;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                
+                throw new Error('Could not find audit data file. Please ensure m365_cis_audit.json is available.');
+            } catch (error) {
+                showError(error.message);
+                throw error;
+            }
+        }
+        
+        // Calculate metrics
+        function calculateMetrics(data) {
+            const controls = Array.isArray(data) ? data : data.controls || [];
+            allControls = controls;
+            
+            const total = controls.length;
+            const passed = controls.filter(c => c.Status === 'Pass').length;
+            const failed = controls.filter(c => c.Status === 'Fail').length;
+            const manual = controls.filter(c => c.Status === 'Manual').length;
+            
+            const complianceScore = total > 0 ? Math.round((passed / total) * 100) : 0;
+            
+            // Calculate risk score (severity-weighted failures)
+            const severityWeights = { Critical: 10, High: 7, Medium: 4, Low: 2 };
+            let totalRisk = 0;
+            let maxRisk = 0;
+            
+            controls.forEach(c => {
+                const weight = severityWeights[c.Severity] || 1;
+                maxRisk += weight;
+                if (c.Status === 'Fail') {
+                    totalRisk += weight;
+                }
+            });
+            
+            const riskScore = maxRisk > 0 ? Math.round((totalRisk / maxRisk) * 100) : 0;
+            
+            // Severity breakdown
+            const severityBreakdown = {
+                Critical: controls.filter(c => c.Status === 'Fail' && c.Severity === 'Critical').length,
+                High: controls.filter(c => c.Status === 'Fail' && c.Severity === 'High').length,
+                Medium: controls.filter(c => c.Status === 'Fail' && c.Severity === 'Medium').length,
+                Low: controls.filter(c => c.Status === 'Fail' && c.Severity === 'Low').length
+            };
+            
+            return {
+                total,
+                passed,
+                failed,
+                manual,
+                complianceScore,
+                riskScore,
+                severityBreakdown
+            };
+        }
+        
+        // Update dashboard UI
+        function updateDashboard(metrics) {
+            document.getElementById('compliance-score').textContent = metrics.complianceScore + '%';
+            document.getElementById('risk-score').textContent = metrics.riskScore + '/100';
+            document.getElementById('total-controls').textContent = metrics.total;
+            document.getElementById('critical-findings').textContent = metrics.severityBreakdown.Critical;
+            
+            document.getElementById('controls-breakdown').innerHTML = `
+                <span style="color: var(--success);">${metrics.passed} passed</span> · 
+                <span style="color: var(--danger);">${metrics.failed} failed</span> · 
+                <span style="color: var(--warning);">${metrics.manual} manual</span>
+            `;
+            
+            const criticalText = metrics.severityBreakdown.Critical > 0 ? 
+                `${metrics.severityBreakdown.Critical + metrics.severityBreakdown.High} high priority` : 
+                'No critical issues';
+            document.getElementById('findings-trend').textContent = criticalText;
+        }
+        
+        // Create charts
+        function createCharts(metrics) {
+            // Status distribution chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Passed', 'Failed', 'Manual Review'],
+                    datasets: [{
+                        data: [metrics.passed, metrics.failed, metrics.manual],
+                        backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        }
+                    }
+                }
+            });
+            
+            // Severity breakdown chart
+            const severityCtx = document.getElementById('severityChart').getContext('2d');
+            new Chart(severityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    datasets: [{
+                        label: 'Failed Controls',
+                        data: [
+                            metrics.severityBreakdown.Critical,
+                            metrics.severityBreakdown.High,
+                            metrics.severityBreakdown.Medium,
+                            metrics.severityBreakdown.Low
+                        ],
+                        backgroundColor: ['#dc2626', '#ef4444', '#f59e0b', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#a0a0a0', stepSize: 1 },
+                            grid: { color: '#404040' }
+                        },
+                        x: {
+                            ticks: { color: '#a0a0a0' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } }
+                    }
+                }
+            });
+        }
+        
+        // Populate controls table
+        function populateControlsTable(controls) {
+            const tbody = document.getElementById('controls-tbody');
+            tbody.innerHTML = '';
+            
+            controls.forEach(control => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><strong>${control.ControlId || 'N/A'}</strong></td>
+                    <td>${control.Title || 'Untitled'}</td>
+                    <td><span class="status-badge status-${(control.Status || 'manual').toLowerCase()}">${control.Status || 'Manual'}</span></td>
+                    <td><span class="severity-badge severity-${(control.Severity || 'low').toLowerCase()}">${control.Severity || 'Low'}</span></td>
+                    <td style="font-size: 0.9rem; color: var(--text-secondary);">
+                        ${control.Evidence || control.Actual || 'No details available'}
+                    </td>
+                `;
+            });
+        }
+        
+        // Filter controls
+        function filterControls() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            
+            let filtered = allControls;
+            
+            // Apply status filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(c => (c.Status || 'manual').toLowerCase() === currentFilter);
+            }
+            
+            // Apply search
+            if (searchTerm) {
+                filtered = filtered.filter(c => 
+                    (c.ControlId || '').toLowerCase().includes(searchTerm) ||
+                    (c.Title || '').toLowerCase().includes(searchTerm) ||
+                    (c.Evidence || '').toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            populateControlsTable(filtered);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentFilter = e.target.getAttribute('data-filter');
+                    filterControls();
+                });
+            });
+            
+            // Search box
+            document.getElementById('search').addEventListener('input', filterControls);
+        }
+        
+        // Show error
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <strong>⚠️ Error Loading Data</strong><br>
+                ${message}<br><br>
+                <strong>Troubleshooting:</strong><br>
+                • Ensure m365_cis_audit.json is in the same directory<br>
+                • Check browser console for details<br>
+                • Verify the JSON file is valid
+            `;
+            errorDiv.style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Initialize dashboard
+        async function init() {
+            try {
+                await loadAuditData();
+                const metrics = calculateMetrics(auditData);
+                
+                // Hide loading, show dashboard
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                // Update UI
+                updateDashboard(metrics);
+                createCharts(metrics);
+                populateControlsTable(allControls);
+                setupEventListeners();
+                
+            } catch (error) {
+                console.error('Dashboard initialization failed:', error);
+            }
+        }
+        
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
