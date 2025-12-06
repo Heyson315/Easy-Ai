@@ -492,6 +492,7 @@ runs:
         name: ${{ inputs.baseline-artifact-name }}
         path: ${{ steps.audit.outputs.json-report }}
         retention-days: 365
+        overwrite: true
 
     # Step 12: Automated Remediation (Optional)
     - name: Auto-Remediate Issues
