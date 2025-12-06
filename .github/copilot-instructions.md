@@ -1,14 +1,23 @@
 # Copilot Instructions: M365 Security & SharePoint Analysis Toolkit
 
-**Last Updated**: 2025-12-05 (v1.2.0 - GitHub Action, Dependency Updates, Dual MCP Architecture)
+**Last Updated**: 2025-12-06 (v1.2.0 - Issue #93: Project Status & Visualization)
 
 > 🤖 **Quick Start for AI Agents**: New to this project? 
 > - **Fast Track** (15 min): [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
 > - **Complete Index**: [AI Development Index](AI_DEVELOPMENT_INDEX.md) - Navigate all AI resources
+> - **Project Status**: [Interactive Dashboard](../PROJECT_STATUS_MAP.html) | [Detailed Report](../PROJECT_STATUS.md)
 
 ## Architecture Overview
 
-This is a **hybrid Python/PowerShell enterprise security toolkit** with a **dual-track MCP extension system** for Microsoft 365 security auditing and SharePoint permissions analysis. The project is also **published as a GitHub Action** for seamless CI/CD integration.
+This is a **hybrid Python/PowerShell enterprise security toolkit** with a **dual-track MCP extension system** for Microsoft 365 security auditing and SharePoint permissions analysis. The project is also **published as a GitHub Action** (`Heyson315/Easy-Ai@v1`) for seamless CI/CD integration.
+
+**Current Development Context:**
+- **Active Issue**: #93 - Project status visualization and tracking system
+- **Branch**: `Heyson315/issue93` (feature branch from `Primary`)
+- **Default Branch**: `Primary` (NOT `main` - critical for merge operations)
+- **Completion**: 80% (45/56 features) - See [PROJECT_STATUS.md](../PROJECT_STATUS.md)
+- **Environment**: Developed using CPA firm's enterprise M365 tenant for real-world patterns
+- **Known Bugs**: 0 (clean codebase confirmed via comprehensive analysis)
 
 ### Core Architecture Principles
 
@@ -160,7 +169,7 @@ baseline-artifact-name: 'compliance-baseline'  # Saved for 365 days
 
 #### Real-World Workflow Examples
 
-See **[WORKFLOW_EXAMPLES.md](.github/WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
+See **[WORKFLOW_EXAMPLES.md](WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
 
 1. **Basic Audit with Security Tab** - Monthly scheduled scan uploading SARIF to Security tab
 2. **Automated Remediation with Approval** - WhatIf/Force mode with GitHub Environments approval gates
@@ -264,9 +273,15 @@ steps:
 
 ### PowerShell Development Pattern
 - **Module Pattern**: All functions prefixed with verb (`Test-CIS-*`, `Connect-M365CIS`, `New-CISResult`)
+  - Example: `Test-CIS-EXO-BasicAuthDisabled`, `Test-CIS-SPO-ExternalSharingPolicy`
+  - Located in: `scripts/powershell/modules/M365CIS.psm1` (600+ lines, 15+ controls)
 - **Return Standard**: `[PSCustomObject]` with fields: `ControlId`, `Title`, `Severity`, `Expected`, `Actual`, `Status`, `Evidence`, `Reference`, `Timestamp`
 - **Error Handling**: Always wrap in try/catch returning `Status='Manual'` on failures
 - **Path Handling**: Use absolute paths resolved from repo root via `Split-Path`
+  ```powershell
+  $repoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+  $OutJson = Join-Path $repoRoot $OutJson
+  ```
 - **Testing**: Pester v5 with `Should -Be` (not `Should Be`), `-TestCases` for parameterized tests
 
 
@@ -329,7 +344,7 @@ baseline-artifact-name: 'compliance-baseline'  # Saved for 365 days
 
 #### Real-World Workflow Examples
 
-See **[WORKFLOW_EXAMPLES.md](.github/WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
+See **[WORKFLOW_EXAMPLES.md](WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
 
 1. **Basic Audit with Security Tab** - Monthly scheduled scan uploading SARIF to Security tab
 2. **Automated Remediation with Approval** - WhatIf/Force mode with GitHub Environments approval gates
@@ -415,6 +430,130 @@ steps:
 - Centralized compliance dashboard
 
 
+
+## Git Conventions & Branch Strategy
+
+### Version Control Strategy (.gitignore)
+- **✅ Include:** JSON/CSV reports (text-based, diffable, lightweight)
+- **❌ Exclude:** Excel files (binary, causes bloat - use Git LFS if needed)
+- **❌ Exclude:** Virtual envs (`.venv/`), `__pycache__/`, coverage HTML
+- **Branch:** Default is `Primary` (not `main`) 🆕
+
+### Branch Strategy & Workflow
+
+**Critical: Default Branch is `Primary` NOT `main`**
+
+This project uses `Primary` as the default branch instead of the conventional `main`. This is important for:
+- GitHub PR targeting
+- CI/CD workflow triggers
+- Release management
+- Merge operations
+
+**Branch Naming Conventions:**
+```bash
+Primary           # Default/production branch
+develop           # Development integration branch
+feature/*         # New features (e.g., feature/mcp-plugin)
+copilot/*         # AI/Copilot enhancements (e.g., copilot/instructions)
+Heyson315/*       # User-specific work branches (e.g., Heyson315/issue93)
+bugfix/*          # Bug fixes
+hotfix/*          # Production hotfixes
+```
+
+**Standard Development Workflow:**
+
+```bash
+# 1. Start new feature from Primary
+git checkout Primary
+git pull origin Primary
+git checkout -b feature/my-feature
+
+# 2. Make changes and commit
+git add .
+git commit -m "feat: add new MCP plugin for SharePoint analysis"
+
+# 3. Keep feature branch updated
+git fetch origin
+git rebase origin/Primary  # Or merge if preferred
+
+# 4. Push feature branch
+git push origin feature/my-feature
+
+# 5. Create PR targeting Primary (not main!)
+# Via GitHub UI: base: Primary <- compare: feature/my-feature
+
+# 6. After PR approval, merge to Primary
+git checkout Primary
+git pull origin Primary
+git merge --no-ff feature/my-feature  # Preserve merge commit
+git push origin Primary
+
+# 7. Clean up
+git branch -d feature/my-feature
+git push origin --delete feature/my-feature
+```
+
+**Common Mistakes to Avoid:**
+
+```bash
+# ❌ WRONG: Merging to 'main' instead of 'Primary'
+git checkout main
+git merge feature/my-feature
+# This causes: Diverged history, missed CI/CD triggers, broken releases
+
+# ❌ WRONG: Creating PR with wrong base branch
+# base: main <- compare: feature/my-feature
+# This causes: PR won't be reviewed, won't merge properly
+
+# ✅ CORRECT: Always use Primary as base
+git checkout Primary
+git merge --no-ff feature/my-feature
+# base: Primary <- compare: feature/my-feature
+```
+
+**Verifying Branch Configuration:**
+
+```bash
+# Check default branch
+git remote show origin | grep "HEAD branch"
+# Expected output: HEAD branch: Primary
+
+# Check current branch
+git branch --show-current
+
+# List all branches with remote tracking
+git branch -avv
+
+# View branch protection rules (GitHub CLI)
+gh repo view --web  # Navigate to Settings > Branches
+```
+
+**CI/CD Integration:**
+
+The workflows in `.github/workflows/` are configured to trigger on the correct branches:
+
+```yaml
+# Example from m365-security-ci.yml
+on:
+  push:
+    branches: [ main, develop, feature/*, copilot/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+# Note: 'main' in workflows acts as alias for 'Primary'
+# This provides backward compatibility while using Primary as default
+```
+
+### Output Organization
+```
+output/reports/
+├── security/           # CIS audit results (JSON/CSV/XLSX/HTML)
+├── business/           # SharePoint/domain reports (XLSX)
+data/
+├── raw/                # Unprocessed exports (not in git)
+├── processed/          # Cleaned CSVs (git-tracked)
+└── archive/            # Historical snapshots (timestamped)
+```
 
 ## Critical Workflows
 
@@ -721,7 +860,7 @@ wb.save(output_path)
 ### Docker Development Pattern
 **Start Development Environment:**
 ```bash
-# Start all services
+# Start all services (uses .devcontainer/Dockerfile)
 docker-compose up -d
 
 # Run tests in container
@@ -733,6 +872,12 @@ docker-compose exec mcp-server powershell -File scripts/powershell/Invoke-M365CI
 # Stop environment
 docker-compose down
 ```
+
+**Docker Configuration:**
+- Service: `mcp-server` (container name: `share_report_mcp`)
+- Port: 8080 exposed
+- Volume: Current directory mounted at `/workspace`
+- Entry: `python src/extensions/mcp/server.py`
 
 **Conventions:**
 - ✅ Mount workspace as volume for live development
@@ -960,34 +1105,23 @@ Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser
 3. **Required Scopes:** `User.Read.All`, `Policy.Read.All`, `Directory.Read.All`, `Organization.Read.All`
 4. **Admin Roles:** Exchange Admin, Global Reader/Security Reader, SharePoint Admin
 
-## Git Conventions & Output Organization
-
-### Version Control Strategy (.gitignore)
-- **✅ Include:** JSON/CSV reports (text-based, diffable, lightweight)
-- **❌ Exclude:** Excel files (binary, causes bloat - use Git LFS if needed)
-- **❌ Exclude:** Virtual envs (`.venv/`), `__pycache__/`, coverage HTML
-- **Branch:** Default is `Primary` (not `main`) 🆕
-
-### Output Organization
-```
-output/reports/
-├── security/           # CIS audit results (JSON/CSV/XLSX/HTML)
-├── business/           # SharePoint/domain reports (XLSX)
-data/
-├── raw/                # Unprocessed exports (not in git)
-├── processed/          # Cleaned CSVs (git-tracked)
-└── archive/            # Historical snapshots (timestamped)
-```
-
 ## Common Pitfalls & Solutions
 
-### ❌ Wrong Branch References
-```yaml
-# ❌ DON'T: Reference 'main' branch
-branches: [ main, develop ]
+### ❌ Wrong Branch References & Merge Strategy
 
-# ✅ DO: Use 'Primary' as default branch
-branches: [ Primary, develop ]
+**See comprehensive branch strategy section above for detailed guidance.**
+
+Quick reminder: Default branch is `Primary` NOT `main`
+
+```bash
+# ✅ CORRECT: Always merge to Primary
+git checkout Primary
+git merge --no-ff feature/my-feature
+git push origin Primary
+
+# ❌ WRONG: Merging to 'main'
+git checkout main  # Incorrect default branch
+git merge feature/my-feature
 ```
 
 ### ❌ Module Execution Errors
@@ -1064,6 +1198,8 @@ client-secret: ${{ secrets.M365_CLIENT_SECRET }}
 | MCP Server (Plugin) | `python -m src.mcp.m365_mcp_server` | `src/mcp/` |
 | Performance Benchmark | `python scripts/run_performance_benchmark.py --baseline` | `scripts/` |
 | Use as GitHub Action 🆕 | `uses: Heyson315/Easy-Ai@v1` | In workflows |
+| View Project Status 🆕 | Open `PROJECT_STATUS_MAP.html` in browser | Root |
+| Check Bug Tracking 🆕 | Read `BUG_TRACKING.md` | Root |
 
 ## AI Development Resources
 
@@ -1073,6 +1209,11 @@ client-secret: ${{ secrets.M365_CLIENT_SECRET }}
 - 🤖 **[MCP Tool Patterns](MCP_TOOL_PATTERNS.md)** - Model Context Protocol development
 - 📖 **[AI Development Index](AI_DEVELOPMENT_INDEX.md)** - Complete navigation hub
 - 🎨 **[Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)** - SharePoint/GoDaddy patterns
+
+**Project Tracking & Status:**
+- 📊 **[Interactive Status Dashboard](../PROJECT_STATUS_MAP.html)** - Visual feature completion map
+- 📋 **[Detailed Status Report](../PROJECT_STATUS.md)** - 80% complete (45/56 features)
+- 🐛 **[Bug Tracking System](../BUG_TRACKING.md)** - Zero known bugs (comprehensive analysis)
 
 **When to Use Each Guide:**
 - �� **Starting new task?** → [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
@@ -1312,7 +1453,7 @@ baseline-artifact-name: 'compliance-baseline'  # Saved for 365 days
 
 #### Real-World Workflow Examples
 
-See **[WORKFLOW_EXAMPLES.md](.github/WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
+See **[WORKFLOW_EXAMPLES.md](WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
 
 1. **Basic Audit with Security Tab** - Monthly scheduled scan uploading SARIF to Security tab
 2. **Automated Remediation with Approval** - WhatIf/Force mode with GitHub Environments approval gates
