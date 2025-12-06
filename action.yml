@@ -248,7 +248,7 @@ runs:
         # Connect to Exchange Online using App-only authentication (NO CertificateThumbprint)
         Write-Host "📧 Connecting to Exchange Online..." -ForegroundColor Cyan
         try {
-          Connect-ExchangeOnline -Organization $env:TENANT_ID -AppId $env:CLIENT_ID -CertificateThumbprint $null -AccessToken (Get-MgAccessToken)
+          # Exchange Online requires certificate auth - skipping
         } catch {
           Write-Host "⚠️  Exchange Online connection failed (may not be required for all controls): $_" -ForegroundColor Yellow
         }
@@ -258,11 +258,11 @@ runs:
         New-Item -Path $outputPath -ItemType Directory -Force | Out-Null
         
         Write-Host "🔍 Executing CIS controls audit..." -ForegroundColor Cyan
-        $results = Invoke-M365CISAudit -OutputPath $outputPath
+        . "${{ github.action_path }}/scripts/powershell/Invoke-M365CISAudit.ps1" -OutJson (Join-Path $outputPath "m365_cis_audit.json") -OutCsv (Join-Path $outputPath "m365_cis_audit.csv")
         
-        # Generate reports
+
+        # Define report paths
         $jsonReport = Join-Path $outputPath "m365_cis_audit.json"
-        $excelReport = Join-Path $outputPath "m365_cis_audit.xlsx"
         
         $results | ConvertTo-Json -Depth 10 | Set-Content $jsonReport -Encoding UTF8
         
