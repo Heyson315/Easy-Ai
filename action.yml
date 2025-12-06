@@ -233,7 +233,7 @@ runs:
                 # Connect to Microsoft Graph using Service Principal (Access Token method)
         Write-Host "🔐 Connecting to Microsoft Graph..." -ForegroundColor Cyan
         
-        # Create body for token request
+        # Get OAuth2 access token using client credentials
         $body = @{
             Grant_Type    = "client_credentials"
             Scope         = "https://graph.microsoft.com/.default"
@@ -241,13 +241,10 @@ runs:
             Client_Secret = $env:CLIENT_SECRET
         }
         
-        # Get access token
         $tokenResponse = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$($env:TENANT_ID)/oauth2/v2.0/token" -Method POST -Body $body
         $accessToken = $tokenResponse.access_token | ConvertTo-SecureString -AsPlainText -Force
         
-        # Connect using access token
-        Connect-MgGraph -AccessToken $accessToken -NoWelcome
-        
+        Connect-MgGraph -AccessToken $accessToken -NoWelcome        
         # Connect to Exchange Online using App-only authentication (NO CertificateThumbprint)
         Write-Host "📧 Connecting to Exchange Online..." -ForegroundColor Cyan
         try {
@@ -645,4 +642,5 @@ runs:
         "@
         
         $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding UTF8
+
 
