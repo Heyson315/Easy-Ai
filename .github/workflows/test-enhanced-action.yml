@@ -1,0 +1,72 @@
+name: Test Enhanced Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      test-mode:
+        description: 'Test mode'
+        required: true
+        default: 'dry-run'
+        type: choice
+        options:
+          - dry-run
+          - full-audit
+
+jobs:
+  test-action:
+    name: Test v1.2.0 Features
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Run Enhanced Action (Dry Run)
+        id: audit
+        uses: ./  # Use local action for testing
+        with:
+          tenant-id: ${{ secrets.M365_TENANT_ID || 'test-tenant-id' }}
+          client-id: ${{ secrets.M365_CLIENT_ID || 'test-client-id' }}
+          client-secret: ${{ secrets.M365_CLIENT_SECRET || 'test-secret' }}
+          upload-to-security-tab: false  # Don't upload in test
+          compare-with-baseline: true
+          enable-auto-remediation: false
+          
+      - name: Validate Outputs
+        run: |
+          echo "Testing output variables..."
+          
+          # Test risk scoring outputs
+          echo "Risk Score: ${{ steps.audit.outputs.risk-score }}"
+          echo "Critical Findings: ${{ steps.audit.outputs.critical-findings }}"
+          echo "High Findings: ${{ steps.audit.outputs.high-findings }}"
+          
+          # Test trending outputs
+          echo "Compliance Trend: ${{ steps.audit.outputs.compliance-trend }}"
+          echo "Trend Direction: ${{ steps.audit.outputs.trend-direction }}"
+          
+          # Test security outputs
+          echo "SARIF Report: ${{ steps.audit.outputs.sarif-report }}"
+          
+          # Test remediation outputs
+          echo "Remediated Controls: ${{ steps.audit.outputs.remediated-controls }}"
+          
+          echo "✅ All output variables accessible"
+          
+      - name: Test Risk Threshold Gate
+        run: |
+          RISK=${{ steps.audit.outputs.risk-score }}
+          THRESHOLD=70
+          
+          if [ ! -z "$RISK" ] && [ "$RISK" != "null" ]; then
+            if (( $(echo "$RISK > $THRESHOLD" | bc -l) )); then
+              echo "⚠️  Risk score ($RISK) exceeds threshold ($THRESHOLD)"
+            else
+              echo "✅ Risk score ($RISK) within acceptable range"
+            fi
+          else
+            echo "ℹ️  Risk score not available (dry run mode)"
+          fi

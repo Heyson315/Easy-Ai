@@ -1,5 +1,5 @@
 name: "M365 Security & Compliance Audit"
-description: "Automated Microsoft 365 CIS compliance auditing with comprehensive reporting and SharePoint permissions analysis"
+description: "Automated Microsoft 365 CIS compliance auditing with comprehensive reporting, risk scoring, and GitHub Security integration"
 author: "Heyson315"
 
 branding:
@@ -7,6 +7,7 @@ branding:
   color: "blue"
 
 inputs:
+  # Authentication
   tenant-id:
     description: "Azure AD Tenant ID for authentication"
     required: true
@@ -16,10 +17,20 @@ inputs:
   client-secret:
     description: "Service Principal Client Secret"
     required: true
+  
+  # Multi-Tenant Support 🆕
+  tenant-config:
+    description: "JSON array of tenant configurations for batch audits (e.g., '[{\"id\":\"...\",\"name\":\"client1\"},{...}]')"
+    required: false
+    default: ""
+  
+  # SharePoint Configuration
   spo-admin-url:
     description: "SharePoint Admin URL (e.g., https://tenant-admin.sharepoint.com)"
     required: false
     default: ""
+  
+  # Audit Options
   timestamped:
     description: "Include timestamp in output filenames for versioning"
     required: false
@@ -32,6 +43,42 @@ inputs:
     description: "Generate interactive HTML dashboard after audit"
     required: false
     default: "true"
+  
+  # Advanced Features 🆕
+  enable-auto-remediation:
+    description: "Enable automated remediation for fixable issues (requires approval if auto-approve-remediation is false)"
+    required: false
+    default: "false"
+  auto-approve-remediation:
+    description: "Automatically approve and apply remediations (CAUTION: modifies tenant)"
+    required: false
+    default: "false"
+  remediation-controls:
+    description: "Comma-separated list of control IDs to remediate (e.g., '1.1.1,1.1.3'). Empty = all fixable controls"
+    required: false
+    default: ""
+  
+  # GitHub Security Integration 🆕
+  upload-to-security-tab:
+    description: "Upload findings to GitHub Security tab (SARIF format)"
+    required: false
+    default: "true"
+  security-severity-threshold:
+    description: "Minimum severity to include in Security tab (low, medium, high, critical)"
+    required: false
+    default: "medium"
+  
+  # Trending & Analytics 🆕
+  compare-with-baseline:
+    description: "Compare results with previous audit baseline"
+    required: false
+    default: "true"
+  baseline-artifact-name:
+    description: "Name of artifact containing baseline audit (leave empty to use latest from default branch)"
+    required: false
+    default: ""
+  
+  # Output Configuration
   output-path:
     description: "Custom output path for audit reports"
     required: false
@@ -42,6 +89,7 @@ inputs:
     default: "90"
 
 outputs:
+  # Existing Outputs
   audit-report-json:
     description: "Path to JSON audit report"
     value: ${{ steps.audit.outputs.json-report }}
@@ -63,6 +111,53 @@ outputs:
   controls-manual:
     description: "Number of controls requiring manual review"
     value: ${{ steps.audit.outputs.controls-manual }}
+  
+  # 🆕 Risk Scoring Outputs
+  risk-score:
+    description: "Overall risk score (0-100, higher = more risk)"
+    value: ${{ steps.calculate-metrics.outputs.risk-score }}
+  critical-findings:
+    description: "Number of critical severity findings"
+    value: ${{ steps.calculate-metrics.outputs.critical-findings }}
+  high-findings:
+    description: "Number of high severity findings"
+    value: ${{ steps.calculate-metrics.outputs.high-findings }}
+  medium-findings:
+    description: "Number of medium severity findings"
+    value: ${{ steps.calculate-metrics.outputs.medium-findings }}
+  low-findings:
+    description: "Number of low severity findings"
+    value: ${{ steps.calculate-metrics.outputs.low-findings }}
+  
+  # 🆕 Trending Outputs
+  compliance-trend:
+    description: "Compliance change vs baseline (+5.2%, -2.1%, etc.)"
+    value: ${{ steps.calculate-metrics.outputs.compliance-trend }}
+  new-failures:
+    description: "Number of controls that failed since baseline"
+    value: ${{ steps.calculate-metrics.outputs.new-failures }}
+  fixed-issues:
+    description: "Number of controls that passed since baseline"
+    value: ${{ steps.calculate-metrics.outputs.fixed-issues }}
+  trend-direction:
+    description: "Overall trend: 'improving', 'declining', or 'stable'"
+    value: ${{ steps.calculate-metrics.outputs.trend-direction }}
+  
+  # 🆕 Remediation Outputs
+  remediated-controls:
+    description: "Number of controls automatically remediated"
+    value: ${{ steps.remediate.outputs.remediated-count }}
+  remediation-report:
+    description: "Path to remediation report"
+    value: ${{ steps.remediate.outputs.remediation-report }}
+  
+  # 🆕 Security Tab Outputs
+  sarif-report:
+    description: "Path to SARIF report for GitHub Security"
+    value: ${{ steps.generate-sarif.outputs.sarif-path }}
+  security-findings-count:
+    description: "Number of findings uploaded to Security tab"
+    value: ${{ steps.generate-sarif.outputs.findings-count }}
 
 runs:
   using: "composite"
@@ -70,8 +165,8 @@ runs:
     - name: Validate Inputs
       shell: pwsh
       run: |
-        if ([string]::IsNullOrWhiteSpace("${{ inputs.tenant-id }}")) {
-          Write-Error "tenant-id is required"
+        if ([string]::IsNullOrWhiteSpace("${{ inputs.tenant-id }}") -and [string]::IsNullOrWhiteSpace("${{ inputs.tenant-config }}")) {
+          Write-Error "Either tenant-id or tenant-config is required"
           exit 1
         }
         if ([string]::IsNullOrWhiteSpace("${{ inputs.client-id }}")) {
@@ -82,6 +177,19 @@ runs:
           Write-Error "client-secret is required"
           exit 1
         }
+        
+        # Validate multi-tenant config if provided
+        if (-not [string]::IsNullOrWhiteSpace("${{ inputs.tenant-config }}")) {
+          try {
+            $config = '${{ inputs.tenant-config }}' | ConvertFrom-Json
+            Write-Host "✓ Multi-tenant config validated: $($config.Count) tenants"
+          }
+          catch {
+            Write-Error "Invalid tenant-config JSON: $_"
+            exit 1
+          }
+        }
+        
         Write-Host "✓ Input validation passed"
 
     - name: Setup Python
@@ -106,6 +214,14 @@ runs:
         Install-Module Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser -Force -AllowClobber
         Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser -Force -AllowClobber
         Write-Host "✓ PowerShell modules installed"
+
+    - name: Download Baseline Audit (if enabled)
+      if: inputs.compare-with-baseline == 'true'
+      uses: actions/download-artifact@v4
+      continue-on-error: true
+      with:
+        name: ${{ inputs.baseline-artifact-name || 'baseline-audit' }}
+        path: ${{ inputs.output-path }}/baseline/
 
     - name: Authenticate to M365
       shell: pwsh
@@ -148,8 +264,8 @@ runs:
         & "${{ github.action_path }}/scripts/powershell/Invoke-M365CISAudit.ps1" @auditParams
 
         # Find the generated JSON report
-        $jsonReport = Get-ChildItem "${{ inputs.output-path }}" -Filter "m365_cis_audit*.json" | 
-                      Sort-Object LastWriteTime -Descending | 
+        $jsonReport = Get-ChildItem "${{ inputs.output-path }}" -Filter "m365_cis_audit*.json" |
+                      Sort-Object LastWriteTime -Descending |
                       Select-Object -First 1
 
         if (-not $jsonReport) {
@@ -177,14 +293,93 @@ runs:
 
         Write-Host "✓ Audit completed: $passed/$total controls passed ($complianceScore%)"
 
+    - name: Calculate Advanced Metrics 🆕
+      id: calculate-metrics
+      shell: pwsh
+      run: |
+        Write-Host "Calculating risk scores and trending metrics..."
+        
+        $jsonReport = "${{ steps.audit.outputs.json-report }}"
+        $auditData = Get-Content $jsonReport | ConvertFrom-Json
+        $controls = $auditData.Controls
+        
+        # Calculate risk score (0-100, weighted by severity)
+        $severityWeights = @{
+            "Critical" = 10
+            "High" = 7
+            "Medium" = 4
+            "Low" = 1
+        }
+        
+        $criticalCount = ($controls | Where-Object { $_.Status -eq "Fail" -and $_.Severity -eq "Critical" }).Count
+        $highCount = ($controls | Where-Object { $_.Status -eq "Fail" -and $_.Severity -eq "High" }).Count
+        $mediumCount = ($controls | Where-Object { $_.Status -eq "Fail" -and $_.Severity -eq "Medium" }).Count
+        $lowCount = ($controls | Where-Object { $_.Status -eq "Fail" -and $_.Severity -eq "Low" }).Count
+        
+        $totalRiskPoints = ($criticalCount * $severityWeights["Critical"]) + 
+                           ($highCount * $severityWeights["High"]) + 
+                           ($mediumCount * $severityWeights["Medium"]) + 
+                           ($lowCount * $severityWeights["Low"])
+        
+        $maxRiskPoints = $controls.Count * $severityWeights["Critical"]
+        $riskScore = if ($maxRiskPoints -gt 0) { [math]::Round(($totalRiskPoints / $maxRiskPoints) * 100, 2) } else { 0 }
+        
+        echo "risk-score=$riskScore" >> $env:GITHUB_OUTPUT
+        echo "critical-findings=$criticalCount" >> $env:GITHUB_OUTPUT
+        echo "high-findings=$highCount" >> $env:GITHUB_OUTPUT
+        echo "medium-findings=$mediumCount" >> $env:GITHUB_OUTPUT
+        echo "low-findings=$lowCount" >> $env:GITHUB_OUTPUT
+        
+        # Compare with baseline if available
+        $baselinePath = "${{ inputs.output-path }}/baseline/m365_cis_audit*.json"
+        if (Test-Path $baselinePath) {
+            $baselineReport = Get-ChildItem $baselinePath | Select-Object -First 1
+            $baselineData = Get-Content $baselineReport.FullName | ConvertFrom-Json
+            $baselineControls = $baselineData.Controls
+            
+            $baselinePassed = ($baselineControls | Where-Object { $_.Status -eq "Pass" }).Count
+            $baselineTotal = $baselineControls.Count
+            $baselineScore = if ($baselineTotal -gt 0) { ($baselinePassed / $baselineTotal) * 100 } else { 0 }
+            
+            $currentScore = ${{ steps.audit.outputs.compliance-score }}
+            $scoreDiff = [math]::Round($currentScore - $baselineScore, 2)
+            $trendSign = if ($scoreDiff -gt 0) { "+" } else { "" }
+            $complianceTrend = "$trendSign$scoreDiff%"
+            
+            # Calculate new failures and fixes
+            $currentFailedIds = ($controls | Where-Object { $_.Status -eq "Fail" }).ControlId
+            $baselineFailedIds = ($baselineControls | Where-Object { $_.Status -eq "Fail" }).ControlId
+            
+            $newFailures = ($currentFailedIds | Where-Object { $_ -notin $baselineFailedIds }).Count
+            $fixedIssues = ($baselineFailedIds | Where-Object { $_ -notin $currentFailedIds }).Count
+            
+            $trendDirection = if ($scoreDiff -gt 2) { "improving" } elseif ($scoreDiff -lt -2) { "declining" } else { "stable" }
+            
+            echo "compliance-trend=$complianceTrend" >> $env:GITHUB_OUTPUT
+            echo "new-failures=$newFailures" >> $env:GITHUB_OUTPUT
+            echo "fixed-issues=$fixedIssues" >> $env:GITHUB_OUTPUT
+            echo "trend-direction=$trendDirection" >> $env:GITHUB_OUTPUT
+            
+            Write-Host "✓ Trend analysis: $trendDirection ($complianceTrend)"
+        } else {
+            echo "compliance-trend=N/A" >> $env:GITHUB_OUTPUT
+            echo "new-failures=0" >> $env:GITHUB_OUTPUT
+            echo "fixed-issues=0" >> $env:GITHUB_OUTPUT
+            echo "trend-direction=baseline" >> $env:GITHUB_OUTPUT
+            Write-Host "ℹ No baseline found for trend analysis"
+        }
+        
+        Write-Host "✓ Risk Score: $riskScore/100"
+        Write-Host "✓ Critical: $criticalCount | High: $highCount | Medium: $mediumCount | Low: $lowCount"
+
     - name: Generate Excel Report
       shell: pwsh
       run: |
         Write-Host "Generating Excel report..."
         python "${{ github.action_path }}/scripts/m365_cis_report.py"
 
-        $excelReport = Get-ChildItem "${{ inputs.output-path }}" -Filter "*.xlsx" | 
-                       Sort-Object LastWriteTime -Descending | 
+        $excelReport = Get-ChildItem "${{ inputs.output-path }}" -Filter "*.xlsx" |
+                       Sort-Object LastWriteTime -Descending |
                        Select-Object -First 1
 
         if ($excelReport) {
@@ -199,14 +394,159 @@ runs:
         Write-Host "Generating interactive HTML dashboard..."
         python "${{ github.action_path }}/scripts/generate_security_dashboard.py"
 
-        $dashboard = Get-ChildItem "${{ inputs.output-path }}" -Filter "dashboard*.html" | 
-                     Sort-Object LastWriteTime -Descending | 
+        $dashboard = Get-ChildItem "${{ inputs.output-path }}" -Filter "dashboard*.html" |
+                     Sort-Object LastWriteTime -Descending |
                      Select-Object -First 1
 
         if ($dashboard) {
             echo "dashboard=$($dashboard.FullName)" >> $env:GITHUB_OUTPUT
             Write-Host "✓ Dashboard generated: $($dashboard.Name)"
         }
+
+    - name: Generate SARIF Report 🆕
+      if: inputs.upload-to-security-tab == 'true'
+      id: generate-sarif
+      shell: pwsh
+      run: |
+        Write-Host "Generating SARIF report for GitHub Security..."
+        
+        $jsonReport = "${{ steps.audit.outputs.json-report }}"
+        $auditData = Get-Content $jsonReport | ConvertFrom-Json
+        $controls = $auditData.Controls
+        
+        # Filter by severity threshold
+        $severityLevels = @("low", "medium", "high", "critical")
+        $thresholdIndex = $severityLevels.IndexOf("${{ inputs.security-severity-threshold }}".ToLower())
+        
+        $filteredControls = $controls | Where-Object { 
+            $_.Status -eq "Fail" -and 
+            $severityLevels.IndexOf($_.Severity.ToLower()) -ge $thresholdIndex
+        }
+        
+        # Build SARIF structure
+        $sarif = @{
+            version = "2.1.0"
+            `$schema = "https://json.schemastore.org/sarif-2.1.0.json"
+            runs = @(
+                @{
+                    tool = @{
+                        driver = @{
+                            name = "M365 CIS Security Audit"
+                            version = "1.2.0"
+                            informationUri = "https://github.com/Heyson315/Easy-Ai"
+                            rules = @()
+                        }
+                    }
+                    results = @()
+                }
+            )
+        }
+        
+        foreach ($control in $filteredControls) {
+            # Add rule definition
+            $rule = @{
+                id = $control.ControlId
+                name = $control.Title
+                shortDescription = @{
+                    text = $control.Title
+                }
+                fullDescription = @{
+                    text = "Expected: $($control.Expected). Actual: $($control.Actual)"
+                }
+                helpUri = $control.Reference
+                properties = @{
+                    "security-severity" = switch ($control.Severity) {
+                        "Critical" { "9.0" }
+                        "High" { "7.0" }
+                        "Medium" { "5.0" }
+                        "Low" { "3.0" }
+                        default { "5.0" }
+                    }
+                }
+            }
+            $sarif.runs[0].tool.driver.rules += $rule
+            
+            # Add finding
+            $result = @{
+                ruleId = $control.ControlId
+                level = switch ($control.Severity) {
+                    "Critical" { "error" }
+                    "High" { "error" }
+                    "Medium" { "warning" }
+                    "Low" { "note" }
+                    default { "warning" }
+                }
+                message = @{
+                    text = "CIS Control $($control.ControlId) failed: $($control.Title)"
+                }
+                locations = @(
+                    @{
+                        physicalLocation = @{
+                            artifactLocation = @{
+                                uri = "M365-Tenant"
+                            }
+                        }
+                    }
+                )
+                properties = @{
+                    evidence = $control.Evidence
+                    timestamp = $control.Timestamp
+                }
+            }
+            $sarif.runs[0].results += $result
+        }
+        
+        $sarifPath = "${{ inputs.output-path }}/m365-security-findings.sarif"
+        $sarif | ConvertTo-Json -Depth 10 | Set-Content $sarifPath
+        
+        echo "sarif-path=$sarifPath" >> $env:GITHUB_OUTPUT
+        echo "findings-count=$($filteredControls.Count)" >> $env:GITHUB_OUTPUT
+        
+        Write-Host "✓ SARIF report generated: $($filteredControls.Count) findings"
+
+    - name: Upload to GitHub Security Tab 🆕
+      if: inputs.upload-to-security-tab == 'true'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.generate-sarif.outputs.sarif-path }}
+        category: "M365-Security-Audit"
+
+    - name: Auto-Remediate Issues 🆕
+      if: inputs.enable-auto-remediation == 'true'
+      id: remediate
+      shell: pwsh
+      run: |
+        Write-Host "Starting automated remediation..."
+        
+        $whatIfMode = -not $${{ inputs.auto-approve-remediation }}
+        $controlFilter = "${{ inputs.remediation-controls }}"
+        
+        $remediateParams = @{}
+        if ($whatIfMode) {
+            $remediateParams.WhatIf = $true
+            Write-Host "ℹ Running in WhatIf mode (preview only)"
+        } else {
+            $remediateParams.Force = $true
+            Write-Host "⚠ Running with Force (will modify tenant)"
+        }
+        
+        if (-not [string]::IsNullOrWhiteSpace($controlFilter)) {
+            $remediateParams.ControlIds = $controlFilter -split ','
+            Write-Host "ℹ Filtering to controls: $controlFilter"
+        }
+        
+        # Execute remediation
+        $result = & "${{ github.action_path }}/scripts/powershell/PostRemediateM365CIS.ps1" @remediateParams
+        
+        $remediationReport = "${{ inputs.output-path }}/remediation-report.json"
+        $result | ConvertTo-Json -Depth 10 | Set-Content $remediationReport
+        
+        $remediatedCount = ($result | Where-Object { $_.Status -eq "Remediated" }).Count
+        
+        echo "remediated-count=$remediatedCount" >> $env:GITHUB_OUTPUT
+        echo "remediation-report=$remediationReport" >> $env:GITHUB_OUTPUT
+        
+        Write-Host "✓ Remediation complete: $remediatedCount controls fixed"
 
     - name: Upload Audit Reports
       uses: actions/upload-artifact@v4
@@ -216,40 +556,82 @@ runs:
           ${{ inputs.output-path }}/*.json
           ${{ inputs.output-path }}/*.xlsx
           ${{ inputs.output-path }}/*.html
+          ${{ inputs.output-path }}/*.sarif
         retention-days: ${{ inputs.artifact-retention-days }}
         if-no-files-found: warn
 
-    - name: Create Summary
+    - name: Save as Baseline
+      if: github.ref == 'refs/heads/Primary' || github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: baseline-audit
+        path: ${{ steps.audit.outputs.json-report }}
+        retention-days: 365
+
+    - name: Create Enhanced Summary 🆕
       shell: pwsh
       run: |
-        Write-Host "Creating GitHub Actions summary..."
+        Write-Host "Creating enhanced GitHub Actions summary..."
 
         $passed = "${{ steps.audit.outputs.controls-passed }}"
         $failed = "${{ steps.audit.outputs.controls-failed }}"
         $manual = "${{ steps.audit.outputs.controls-manual }}"
         $score = "${{ steps.audit.outputs.compliance-score }}"
+        $riskScore = "${{ steps.calculate-metrics.outputs.risk-score }}"
+        $trend = "${{ steps.calculate-metrics.outputs.compliance-trend }}"
+        $trendDirection = "${{ steps.calculate-metrics.outputs.trend-direction }}"
+        
+        $trendEmoji = switch ($trendDirection) {
+            "improving" { "📈" }
+            "declining" { "📉" }
+            "stable" { "➡️" }
+            default { "🆕" }
+        }
+        
+        $riskLevel = if ($riskScore -ge 70) { "🔴 CRITICAL" } 
+                     elseif ($riskScore -ge 50) { "�� HIGH" }
+                     elseif ($riskScore -ge 30) { "🟡 MEDIUM" }
+                     else { "🟢 LOW" }
 
         @"
         ## 🛡️ M365 Security Audit Results
 
-        ### Compliance Score: **$score%**
-
-        | Status | Count |
+        ### Compliance Score: **$score%** $trendEmoji
+        
+        | Metric | Value |
         |--------|-------|
         | ✅ Passed | $passed |
         | ❌ Failed | $failed |
         | ⚠️ Manual Review | $manual |
+        | 📊 Trend | $trend |
+        | 🎯 Risk Score | $riskScore/100 ($riskLevel) |
+
+        ### Severity Breakdown
+        
+        | Severity | Count |
+        |----------|-------|
+        | 🔴 Critical | ${{ steps.calculate-metrics.outputs.critical-findings }} |
+        | 🟠 High | ${{ steps.calculate-metrics.outputs.high-findings }} |
+        | 🟡 Medium | ${{ steps.calculate-metrics.outputs.medium-findings }} |
+        | 🟢 Low | ${{ steps.calculate-metrics.outputs.low-findings }} |
 
         ### Artifacts
+        
         - 📄 JSON Report: ``${{ steps.audit.outputs.json-report }}``
         - 📊 Excel Report: ``${{ steps.audit.outputs.excel-report }}``
         - 🌐 Dashboard: ``${{ steps.audit.outputs.dashboard }}``
+        - 🔒 SARIF Report: ``${{ steps.generate-sarif.outputs.sarif-path }}``
+
+        ### Actions Taken
+        
+        - 🔍 Security findings: ${{ steps.generate-sarif.outputs.findings-count }} uploaded to Security tab
+        - 🔧 Auto-remediated: ${{ steps.remediate.outputs.remediated-count }} controls
 
         ---
-        *Generated by [M365 Security Toolkit](https://github.com/Heyson315/Easy-Ai)*
+        *Generated by [M365 Security Toolkit v1.2.0](https://github.com/Heyson315/Easy-Ai)*
         "@ >> $env:GITHUB_STEP_SUMMARY
 
-        Write-Host "✓ Summary created"
+        Write-Host "✓ Enhanced summary created"
 
     - name: Disconnect M365 Sessions
       if: always()
