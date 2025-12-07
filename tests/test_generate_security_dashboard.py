@@ -392,19 +392,11 @@ def test_dashboard_special_characters():
         # Verify escaping
         html_content = output_html.read_text(encoding="utf-8")
 
-        # Check ampersands are escaped (unless they're part of an escape sequence)
-        # Count raw & vs escaped &amp;
-        raw_ampersand_count = (
-            html_content.count("&")
-            - html_content.count("&amp;")
-            - html_content.count("&lt;")
-            - html_content.count("&gt;")
-            - html_content.count("&quot;")
-        )
-
-        # Check angle brackets are escaped
-        assert "&lt;" in html_content, "< should be escaped to &lt;"
-        assert "&gt;" in html_content, "> should be escaped to &gt;"
+        # Check that special characters are properly escaped in the output
+        # This validates all character escaping in context
+        assert "Test &amp; &lt;Special&gt; Characters" in html_content
+        assert "Quote test: &quot;double&quot; and &#x27;single&#x27;" in html_content
+        assert "Value with &amp; and &lt; and &gt; symbols" in html_content
 
 
 def test_dashboard_empty_results():
