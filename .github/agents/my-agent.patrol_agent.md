@@ -134,10 +134,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install safety
-        run: pip install safety
-      - name: Run safety check
-        run: safety check
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Run dependency audit
+        run: pip-audit
 
   secret-scan:
     runs-on: ubuntu-latest
