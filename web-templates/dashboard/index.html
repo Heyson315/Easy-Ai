@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M365 CIS Security Audit Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .metric-subtitle {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .metric-card.pass .metric-value { color: #10b981; }
+        .metric-card.fail .metric-value { color: #ef4444; }
+        .metric-card.manual .metric-value { color: #f59e0b; }
+        .metric-card.compliance .metric-value { color: #667eea; }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .controls-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .controls-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .controls-table thead {
+            background: #f9fafb;
+            position: sticky;
+            top: 0;
+        }
+
+        .controls-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .controls-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .controls-table tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        .controls-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pass {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.manual {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .severity-badge.high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .severity-badge.medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .severity-badge.low {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .evidence-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-header {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ M365 CIS Security Audit Dashboard</h1>
+            <p class="subtitle">Microsoft 365 Security Compliance Monitoring</p>
+        </header>
+
+        <div class="metrics-grid" id="metrics">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading audit data...</p>
+            </div>
+        </div>
+
+        <div class="charts-grid" id="charts" style="display: none;">
+            <div class="chart-card">
+                <h3>Status Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Severity Breakdown</h3>
+                <canvas id="severityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="controls-section" id="controls" style="display: none;">
+            <div class="controls-header">
+                <h2>Control Details</h2>
+                <input type="text" class="search-box" id="searchBox" placeholder="Search controls...">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pass">Pass</button>
+                    <button class="filter-btn" data-filter="fail">Fail</button>
+                    <button class="filter-btn" data-filter="manual">Manual</button>
+                    <button class="filter-btn" data-filter="high">High Severity</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="controls-table">
+                    <thead>
+                        <tr>
+                            <th>Control ID</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Severity</th>
+                            <th>Actual</th>
+                            <th>Evidence</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="controlsTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let auditData = [];
+        let statusChart, severityChart;
+
+        // Embedded fallback data (works without web server)
+        const EMBEDDED_DATA = [{"ControlId":"CIS-EXO-1","Title":"Ensure modern auth is enabled and basic auth blocked (EXO)","Severity":"High","Expected":"OAuth2 on; basic off","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to EXO","Reference":"CIS M365 Foundations v3.0 L1; EXO Auth Policies","Timestamp":"12/06/25 04:59:17 AM"},{"ControlId":"CIS-EXO-2","Title":"Disable external auto-forwarding (TransportConfig)","Severity":"High","Expected":"External forwarding disabled","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to EXO","Reference":"CIS M365 Foundations v3.0 L1; EXO TransportConfig","Timestamp":"12/06/25 04:59:17 AM"},{"ControlId":"CIS-EXO-3","Title":"Ensure mailbox auditing is enabled","Severity":"Medium","Expected":"Mailbox auditing enabled","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to EXO","Reference":"CIS M365 Foundations v3.0 L1; EXO Auditing","Timestamp":"12/06/25 04:59:17 AM"},{"ControlId":"CIS-EXO-4","Title":"Ensure legacy protocols disabled per mailbox (sample check)","Severity":"Medium","Expected":"Legacy protocols disabled","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to EXO","Reference":"CIS M365 Foundations v3.0 L1; EXO Mailbox Protocols","Timestamp":"12/06/25 04:59:18 AM"},{"ControlId":"CIS-SPO-1","Title":"Restrict SharePoint external sharing (Tenant)","Severity":"High","Expected":"Restrictive external sharing","Actual":"Unknown","Status":"Manual","Evidence":"Microsoft.Online.SharePoint.PowerShell module not found. Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser","Reference":"CIS M365 Foundations v3.0 L1; SPO Sharing","Timestamp":"12/06/25 04:59:18 AM"},{"ControlId":"CIS-AAD-1","Title":"Limit Global Administrator role assignments","Severity":"High","Expected":"Global Admin assignments minimal (<= 2-4)","Actual":"GlobalAdminCount=3","Status":"Pass","Evidence":"\r\nPrincipalId                          RoleDefinitionId                    \r\n-----------                          ----------------                    \r\n6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10\r\n727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10\r\n2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10\r\n\r\n","Reference":"CIS M365 Foundations v3.0 L1; AAD Roles","Timestamp":"12/06/25 04:59:23 AM"},{"ControlId":"CIS-DEF-1","Title":"Ensure Safe Links policy is enabled","Severity":"High","Expected":"Safe Links enabled","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to EXO","Reference":"CIS M365 Foundations v3.0 L1; Defender for Office","Timestamp":"12/06/25 04:59:24 AM"},{"ControlId":"CIS-DEF-2","Title":"Ensure Safe Attachments policy is enabled","Severity":"High","Expected":"Safe Attachments enabled","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to EXO","Reference":"CIS M365 Foundations v3.0 L1; Defender for Office","Timestamp":"12/06/25 04:59:24 AM"},{"ControlId":"CIS-CA-1","Title":"Ensure Conditional Access MFA policy exists for all users","Severity":"High","Expected":"At least one enabled CA policy requiring MFA for all users","Actual":"MFAPolicies=7","Status":"Pass","Evidence":"\r\nDisplayName                                               State  \r\n-----------                                               -----  \r\nRequire multifactor authentication for guest access       enabled\r\nRequire multifactor authentication for all users          enabled\r\nconditional access 1`                                     enabled\r\nRequire multifactor authentication for \u200eAzure\u200e management enabled\r\nRequire multifactor authentication for Azure management   enabled\r\nBlock Risky Sign-Ins (High/Medium Risk)                   enabled\r\nRequire Password Change for High Risk Users               enabled\r\n\r\n","Reference":"CIS M365 Foundations v3.0 L1; Conditional Access","Timestamp":"12/06/25 04:59:25 AM"},{"ControlId":"CIS-PURVIEW-1","Title":"Ensure DLP policies are enabled for data protection","Severity":"High","Expected":"DLP policies enabled","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to Purview or DLP cmdlets unavailable","Reference":"CIS M365 Foundations v3.0 L1; Purview DLP","Timestamp":"12/06/25 04:59:25 AM"},{"ControlId":"CIS-AAD-2","Title":"Ensure Azure AD Identity Protection risk policies are configured","Severity":"High","Expected":"At least one risk-based CA policy enabled (user or sign-in risk)","Actual":"RiskBasedPolicies=2","Status":"Pass","Evidence":"\r\nDisplayName                                 State  \r\n-----------                                 -----  \r\nBlock Risky Sign-Ins (High/Medium Risk)     enabled\r\nRequire Password Change for High Risk Users enabled\r\n\r\n","Reference":"CIS M365 Foundations v3.0 L1; AAD Identity Protection","Timestamp":"12/06/25 04:59:26 AM"},{"ControlId":"CIS-INTUNE-1","Title":"Ensure Intune device compliance policies exist and are enforced","Severity":"Medium","Expected":"Compliance policies configured","Actual":"Unknown","Status":"Manual","Evidence":"Intune cmdlets unavailable or insufficient permissions","Reference":"CIS M365 Foundations v3.0 L1; Intune MDM","Timestamp":"12/06/25 04:59:28 AM"},{"ControlId":"CIS-AAD-3","Title":"Ensure guest user access restrictions are configured","Severity":"Medium","Expected":"Guest user role is restrictive (not Member role)","Actual":"GuestUserRoleId=10dae51f-b6af-4016-8d66-8c2a99b929b3","Status":"Pass","Evidence":"\r\nDeletedDateTime Description                                                       DisplayName          Id                  \r\n--------------- -----------                                                       -----------          --                  \r\n                Used to manage authorization related settings across the company. Authorization Policy authorizationPolicy\r\n\r\n","Reference":"CIS M365 Foundations v3.0 L1; AAD Guest Access","Timestamp":"12/06/25 04:59:28 AM"},{"ControlId":"CIS-PURVIEW-2","Title":"Ensure audit logs are retained for compliance (90+ days recommended)","Severity":"Medium","Expected":"Audit log retention 90+ days","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to Purview or audit cmdlets unavailable","Reference":"CIS M365 Foundations v3.0 L1; Purview Auditing","Timestamp":"12/06/25 04:59:29 AM"},{"ControlId":"CIS-PURVIEW-3","Title":"Ensure sensitivity labels are published and enforced","Severity":"Medium","Expected":"Sensitivity labels published","Actual":"Unknown","Status":"Manual","Evidence":"Not connected to Purview or label cmdlets unavailable","Reference":"CIS M365 Foundations v3.0 L1; Purview Information Protection","Timestamp":"12/06/25 04:59:29 AM"}];
+
+        // Load audit data
+        async function loadAuditData() {
+            try {
+                // Try multiple possible paths
+                const paths = [
+                    'sample-data.json',
+                    '../output/test-run/m365_cis_audit.json',
+                    '../../output/test-run/m365_cis_audit.json'
+                ];
+
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            auditData = await response.json();
+                            console.log('Loaded data from:', path);
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                // Use embedded data as fallback
+                if (auditData.length === 0) {
+                    console.log('Using embedded fallback data');
+                    auditData = EMBEDDED_DATA;
+                }
+
+                renderDashboard();
+            } catch (error) {
+                console.error('Error loading audit data:', error);
+                // Try embedded data one more time
+                auditData = EMBEDDED_DATA;
+                renderDashboard();
+            }
+        }
+
+        function renderDashboard() {
+            renderMetrics();
+            renderCharts();
+            renderControls();
+            setupFilters();
+        }
+
+        function renderMetrics() {
+            const pass = auditData.filter(c => c.Status === 'Pass').length;
+            const fail = auditData.filter(c => c.Status === 'Fail').length;
+            const manual = auditData.filter(c => c.Status === 'Manual').length;
+            const total = auditData.length;
+            const compliance = total > 0 ? Math.round((pass / total) * 100) : 0;
+
+            document.getElementById('metrics').innerHTML = `
+                <div class="metric-card compliance">
+                    <div class="metric-label">Compliance Score</div>
+                    <div class="metric-value">${compliance}%</div>
+                    <div class="metric-subtitle">Based on ${total} controls</div>
+                </div>
+                <div class="metric-card pass">
+                    <div class="metric-label">Passed</div>
+                    <div class="metric-value">${pass}</div>
+                    <div class="metric-subtitle">${total > 0 ? Math.round((pass/total)*100) : 0}% of total</div>
+                </div>
+                <div class="metric-card fail">
+                    <div class="metric-label">Failed</div>
+                    <div class="metric-value">${fail}</div>
+                    <div class="metric-subtitle">${total > 0 ? Math.round((fail/total)*100) : 0}% of total</div>
+                </div>
+                <div class="metric-card manual">
+                    <div class="metric-label">Manual Review</div>
+                    <div class="metric-value">${manual}</div>
+                    <div class="metric-subtitle">${total > 0 ? Math.round((manual/total)*100) : 0}% of total</div>
+                </div>
+            `;
+        }
+
+        function renderCharts() {
+            document.getElementById('charts').style.display = 'grid';
+
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const pass = auditData.filter(c => c.Status === 'Pass').length;
+            const fail = auditData.filter(c => c.Status === 'Fail').length;
+            const manual = auditData.filter(c => c.Status === 'Manual').length;
+
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pass', 'Fail', 'Manual'],
+                    datasets: [{
+                        data: [pass, fail, manual],
+                        backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Severity Distribution Chart
+            const severityCtx = document.getElementById('severityChart').getContext('2d');
+            const high = auditData.filter(c => c.Severity === 'High').length;
+            const medium = auditData.filter(c => c.Severity === 'Medium').length;
+            const low = auditData.filter(c => c.Severity === 'Low').length;
+
+            severityChart = new Chart(severityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['High', 'Medium', 'Low'],
+                    datasets: [{
+                        label: 'Number of Controls',
+                        data: [high, medium, low],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderControls() {
+            document.getElementById('controls').style.display = 'block';
+            const tbody = document.getElementById('controlsTable');
+            
+            tbody.innerHTML = auditData.map(control => `
+                <tr data-status="${control.Status.toLowerCase()}" data-severity="${control.Severity.toLowerCase()}">
+                    <td><strong>${control.ControlId}</strong></td>
+                    <td>${control.Title}</td>
+                    <td><span class="status-badge ${control.Status.toLowerCase()}">${control.Status}</span></td>
+                    <td><span class="severity-badge ${control.Severity.toLowerCase()}">${control.Severity}</span></td>
+                    <td>${control.Actual || 'N/A'}</td>
+                    <td class="evidence-cell" title="${control.Evidence}">${control.Evidence}</td>
+                    <td class="timestamp">${new Date(control.Timestamp).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const searchBox = document.getElementById('searchBox');
+            const rows = document.querySelectorAll('#controlsTable tr');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+                    rows.forEach(row => {
+                        const status = row.dataset.status;
+                        const severity = row.dataset.severity;
+                        
+                        if (filter === 'all') {
+                            row.style.display = '';
+                        } else if (filter === 'high') {
+                            row.style.display = severity === 'high' ? '' : 'none';
+                        } else {
+                            row.style.display = status === filter ? '' : 'none';
+                        }
+                    });
+                });
+            });
+
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+        }
+
+        // Load data when page loads
+        loadAuditData();
+    </script>
+</body>
+</html>

@@ -552,5 +552,5 @@ window.onerror = function(msg, url, line, col, error) {
 
 For deployment assistance:
 - GoDaddy Support: 24/7 phone and chat
-- Repository Issues: https://github.com/Heyson315/share-report/issues
+- Repository Issues: https://github.com/Heyson315/Easy-Ai/issues
 - Community Forums: Stack Overflow, Reddit r/webdev

@@ -1,8 +1,8 @@
 ---
 name: AI Development Enhancement
 about: Improve AI agent support, copilot instructions, or MCP integration
-title: '[AI] '
-labels: 'ai-development, enhancement'
+title: "[AI] "
+labels: enhancement
 assignees: ''
 
 ---

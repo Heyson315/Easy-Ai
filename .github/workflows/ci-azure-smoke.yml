@@ -1,0 +1,14 @@
+name: CI – Azure login smoke test
+on: [push]
+jobs:
+  test-login:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Show subscription
+        run: |
+          az account show --query "{name:name,id:id}" -o table

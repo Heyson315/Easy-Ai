@@ -47,30 +47,10 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
     ) as fout:
 
         writer = csv.writer(fout, lineterminator="\n")
-    # First pass: filter out comment and blank lines, keep original quoting intact
-    filtered_lines = []
-    with in_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
-        for raw_line in input_file:
-            stats["input_lines"] += 1
-            if not raw_line.strip():
-                stats["blank_lines"] += 1
-                continue
-            if raw_line.lstrip().startswith("#"):
-                stats["comment_lines"] += 1
-                continue
-            filtered_lines.append(raw_line)
-
-    # Second pass: parse CSV properly respecting quotes
-    string_buffer = StringIO("".join(filtered_lines))
-    reader = csv.reader(string_buffer)
-
-    with out_path.open("w", encoding="utf-8", newline="") as output_file:
-        writer = csv.writer(output_file, lineterminator="\n")
-
         header = None
 
         # Create a generator that yields filtered lines
-        def filtered_lines():
+        def filtered_lines_gen():
             for raw_line in fin:
                 stats["input_lines"] += 1
                 stripped = raw_line.strip()
@@ -83,7 +63,7 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
                 yield raw_line
 
         # Process CSV from filtered generator
-        reader = csv.reader(filtered_lines())
+        reader = csv.reader(filtered_lines_gen())
 
         for row in reader:
             # Normalize whitespace in each cell (in-place for efficiency)

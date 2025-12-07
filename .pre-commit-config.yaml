@@ -41,6 +41,14 @@ repos:
         args: [-c, pyproject.toml, -r, src/, scripts/]
         additional_dependencies: ["bandit[toml]"]
 
+  # Pylint for redundant linting (additional static analysis)
+  - repo: https://github.com/pylint-dev/pylint
+    rev: v3.3.1
+    hooks:
+      - id: pylint
+        args: [--rcfile=.pylintrc, --exit-zero]
+        additional_dependencies: [pandas, openpyxl]
+
   # YAML/JSON/TOML validation
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

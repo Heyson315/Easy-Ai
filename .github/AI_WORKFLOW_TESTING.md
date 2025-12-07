@@ -26,7 +26,7 @@ This guide provides comprehensive testing strategies specifically for AI coding 
 
 ```bash
 # From repository root
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 
 # Install test dependencies
 pip install -r requirements-dev.txt
@@ -644,7 +644,7 @@ python -m pytest tests/ -v
 
 ```bash
 # Solution: Run from repository root
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 python -m pytest tests/ -v
 ```
 

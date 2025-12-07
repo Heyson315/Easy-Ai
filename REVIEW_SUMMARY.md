@@ -1,7 +1,7 @@
 # Code Review Summary
 
 **Review Date:** 2025-10-26  
-**Repository:** Heyson315/share-report  
+**Repository:** Heyson315/Easy-Ai  
 **Branch:** copilot/vscode1761438314088
 
 ---

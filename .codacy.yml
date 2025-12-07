@@ -1,0 +1,37 @@
+---
+engines:
+  # Enable Python security and quality scanning
+  pylint:
+    enabled: true
+    python_version: 3
+
+  bandit:
+    enabled: true
+
+  # Disable JavaScript/TypeScript tools (no JS code in this project)
+  eslint:
+    enabled: false
+
+  tslint:
+    enabled: false
+
+  jshint:
+    enabled: false
+
+  # Enable code metrics
+  metrics:
+    enabled: true
+
+exclude_paths:
+  - "scripts/powershell/**"
+  - "data/**"
+  - "output/**"
+  - "htmlcov/**"
+  - ".venv/**"
+  - "venv/**"
+  - "__pycache__/**"
+  - ".git/**"
+  - "tests/**"
+  - ".pytest_cache/**"
+  - "web-templates/**"
+  - "docs/**"

@@ -11,6 +11,7 @@ Features:
 """
 
 import argparse
+import html
 import json
 import sys
 from datetime import datetime
@@ -20,7 +21,7 @@ from typing import Any, Dict, List
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, "r", encoding="utf-8") as f:
+    with open(json_path, "r", encoding="utf-8-sig") as f:
         return json.load(f)
 
 
@@ -376,19 +377,33 @@ def generate_html_dashboard(
                 <tbody>
 """
 
-    # Add table rows
+    # Add table rows (escape HTML to prevent XSS)
     for result in sorted_results:
-        control_id = result.get("ControlId", "N/A")
-        title = result.get("Title", "N/A")
-        severity = result.get("Severity", "Unknown")
-        status = result.get("Status", "Unknown")
-        actual = result.get("Actual", "N/A")
+        # Get raw values for CSS class generation (these are validated against known values)
+        raw_status = str(result.get("Status", "Unknown"))
+        raw_severity = str(result.get("Severity", "Unknown"))
 
-        status_class = f"status-{status.lower()}"
-        severity_class = f"severity-{severity.lower()}"
+        # Escape values for HTML display
+        control_id = html.escape(str(result.get("ControlId", "N/A")))
+        title = html.escape(str(result.get("Title", "N/A")))
+        severity = html.escape(raw_severity)
+        status = html.escape(raw_status)
+        actual = html.escape(str(result.get("Actual", "N/A")))
+
+        # Sanitize class names - only allow alphanumeric and hyphen to prevent XSS
+        # Invalid characters become safe "unknown"
+        safe_status = "".join(c for c in raw_status.lower() if c.isalnum() or c == "-") or "unknown"
+        safe_severity = "".join(c for c in raw_severity.lower() if c.isalnum() or c == "-") or "unknown"
+
+        status_class = f"status-{safe_status}"
+        severity_class = f"severity-{safe_severity}"
+
+        # Escape data attribute values
+        data_status = html.escape(raw_status.lower())
+        data_severity = html.escape(raw_severity.lower())
 
         html_content += f"""
-                    <tr data-status="{status.lower()}" data-severity="{severity.lower()}">
+                    <tr data-status="{data_status}" data-severity="{data_severity}">
                         <td><strong>{control_id}</strong></td>
                         <td class="control-title">{title}</td>
                         <td class="{severity_class}">{severity}</td>

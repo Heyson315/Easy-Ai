@@ -1,6 +1,6 @@
 # CI/CD Error Resolution Report
 **Date**: October 2025  
-**Repository**: Heyson315/share-report  
+**Repository**: Heyson315/Easy-Ai  
 **Branch**: copilot/troubleshoot-errors-and-report
 
 ## Executive Summary
@@ -20,7 +20,7 @@ Successfully identified and resolved all CI/CD pipeline failures affecting the M
 ### 1. Python Code Formatting (CRITICAL)
 **Impact**: Blocked all CI/CD runs  
 **Root Cause**: `tests/test_clean_csv.py` not formatted according to black standards  
-**Error**: `would reformat /home/runner/work/share-report/share-report/tests/test_clean_csv.py`
+**Error**: `would reformat /home/runner/work/Easy-Ai/Easy-Ai/tests/test_clean_csv.py`
 
 ### 2. PowerShell Script Analysis (HIGH)
 **Impact**: Failed PowerShell quality checks  

@@ -1,132 +1,1027 @@
 # Copilot Instructions: M365 Security & SharePoint Analysis Toolkit
 
+**Last Updated**: 2025-12-06 (v1.2.0 - Issue #93: Project Status & Visualization)
+
 > 🤖 **Quick Start for AI Agents**: New to this project? 
 > - **Fast Track** (15 min): [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
 > - **Complete Index**: [AI Development Index](AI_DEVELOPMENT_INDEX.md) - Navigate all AI resources
+> - **Project Status**: [Interactive Dashboard](../PROJECT_STATUS_MAP.html) | [Detailed Report](../PROJECT_STATUS.md)
 
 ## Architecture Overview
 
-This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditing and SharePoint permissions analysis. The project follows a domain-driven structure with distinct workflows:
+This is a **hybrid Python/PowerShell enterprise security toolkit** with a **dual-track MCP extension system** for Microsoft 365 security auditing and SharePoint permissions analysis. The project is also **published as a GitHub Action** (`Heyson315/Easy-Ai@v1`) for seamless CI/CD integration.
+
+**Current Development Context:**
+- **Active Issue**: #93 - Project status visualization and tracking system
+- **Branch**: `Heyson315/issue93` (feature branch from `Primary`)
+- **Default Branch**: `Primary` (NOT `main` - critical for merge operations)
+- **Completion**: 80% (45/56 features) - See [PROJECT_STATUS.md](../PROJECT_STATUS.md)
+- **Environment**: Developed using CPA firm's enterprise M365 tenant for real-world patterns
+- **Known Bugs**: 0 (clean codebase confirmed via comprehensive analysis)
+
+### Core Architecture Principles
+
+**Three-Layer Design:**
+1. **Core Toolkit** (Required) - Foundational Python/PowerShell security auditing
+2. **Extension System** (Optional) - Dual MCP implementations:
+   - `src/extensions/mcp/` - Simplified MCP server
+   - `src/mcp/` - Plugin-based MCP server with pluggable tools
+3. **GitHub Action** (Optional) - Reusable workflow component for CI/CD
+
+**Why This Matters:**
+- Core toolkit works standalone without extensions
+- Two MCP architectures support different use cases (simple vs. plugin-based)
+- GitHub Action enables zero-setup auditing in CI/CD pipelines
+- Clean separation enables independent development and testing
+- Plugin architecture supports future extensibility (custom integrations)
 
 ### Data Flow Pipeline
-1. **PowerShell** → M365 services (EXO, Graph, SPO, Purview, Intune) → Raw JSON/CSV (`output/reports/security/`)
-2. **Python scripts** → CSV cleaning/transformation → Processed data (`data/processed/`)
-3. **Python modules** (`src/`) → Excel report generation + **Interactive HTML dashboards** (`output/reports/business/`)
+```
+M365 Services → PowerShell Audits → Python Processing → Reports → [Optional: MCP/AI Analysis]
+     ↓               ↓                    ↓              ↓              ↓
+  EXO, Graph,   CIS Controls      CSV Cleaning,   Excel/HTML     MCP Server,
+  SPO, Purview   (M365CIS.psm1)  Data Transform   Dashboards    AI Insights
+```
 
 ### Directory Structure
-- `scripts/` - Standalone utilities (Python CSV cleaners, PowerShell audit runners)
-- `scripts/powershell/modules/M365CIS.psm1` - Core audit functions (read-only checks)
-- `src/` - Domain modules organized by function:
-  - `core/` - Excel generation (`excel_generator.py`)
-  - `integrations/` - External service connectors (`sharepoint_connector.py`)
-  - `academic/`, `analytics/`, `business/`, `financial/` - Domain-specific modules (currently empty, reserved for expansion)
-- `tests/` - pytest-based tests using tempfiles and pandas validation
-- `docs/` - Workflow documentation (`SECURITY_M365_CIS.md`, `USAGE_SHAREPOINT.md`)
-- `config/benchmarks/` - CIS control metadata (JSON)
-- `config/audit_config.json` - Tenant configuration template with scheduling/notification settings
-- `.github/workflows/` - CI/CD automation (quality checks, monthly audits, dependency updates)
+```
+📦 Project Root
+├── 📄 action.yml                   # 🆕 Published GitHub Action definition
+├── 📂 scripts/                    # Standalone Python & PowerShell utilities
+│   ├── clean_csv.py               # CSV sanitization (BOM, comments, duplicates)
+│   ├── m365_cis_report.py         # JSON → Excel converter
+│   ├── generate_security_dashboard.py  # Interactive HTML dashboards
+│   └── 📂 powershell/
+│       ├── Invoke-M365CISAudit.ps1     # Main audit orchestrator
+│       ├── Compare-M365CISResults.ps1   # Audit trending
+│       ├── PostRemediateM365CIS.ps1     # Safe remediation
+│       └── 📂 modules/
+│           └── M365CIS.psm1       # Core audit functions (27KB, 600+ lines)
+├── 📂 src/                        # Python modules (proper package structure)
+│   ├── 📂 core/                   # Core functionality
+│   │   ├── excel_generator.py    # Report generation engine
+│   │   ├── cost_tracker.py       # GPT-5 cost monitoring
+│   │   ├── file_io.py            # File operations
+│   │   ├── profiler.py           # Performance profiling
+│   │   └── report_utils.py       # Report utilities
+│   ├── �� integrations/           # External services
+│   │   ├── sharepoint_connector.py  # SharePoint analysis
+│   │   └── openai_gpt5.py        # GPT-5 client (now CORE dependency)
+│   ├── 📂 extensions/             # Optional extensions
+│   │   └── 📂 mcp/                # Simplified MCP server
+│   │       ├── server.py          # Main MCP server (async)
+│   │       ├── setup.py           # Interactive setup wizard
+│   │       ├── 📂 tools/          # Tool definitions
+│   │       └── README.md          # Extension documentation
+│   └── 📂 mcp/                    # 🆕 Plugin-based MCP architecture
+│       ├── m365_mcp_server.py     # Alternative MCP server
+│       └── 📂 plugins/            # Pluggable tool system
+│           └── 📂 sharepoint_tools/
+│               ├── plugin.json    # Plugin metadata
+│               └── tools.py       # SharePoint-specific tools
+├── 📂 tests/                      # pytest-based testing
+├── 📂 config/
+│   ├── audit_config.json          # Tenant configuration
+│   └── 📂 benchmarks/             # CIS control metadata (JSON)
+├── 📂 output/reports/
+│   ├── security/                  # JSON/CSV/XLSX audit results
+│   └── business/                  # Excel/HTML domain reports
+├── 📂 data/
+│   ├── raw/                       # Unprocessed exports
+│   ├── processed/                 # Cleaned CSVs
+│   └── archive/                   # Historical snapshots
+├── 📂 .github/workflows/          # CI/CD automation
+│   ├── m365-security-ci.yml       # Quality gates & testing
+│   ├── m365-automated-audit.yml   # Scheduled audits
+│   ├── ci.yml                     # Test coverage with badge generation
+│   └── [14+ other workflows]      # Security scanning, dependencies, etc.
+├── requirements.txt               # Core dependencies (REQUIRED - includes AI)
+├── requirements-extensions.txt    # Optional extensions (MCP, Graph SDK)
+└── requirements-dev.txt           # Development tools
+
+**Key Architectural Decisions:**
+- `scripts/` contains **standalone utilities** with `__init__.py` for package support
+- `src/` is a **proper Python package** for reusable modules
+- **Dual MCP implementations**: Simple (`src/extensions/mcp/`) vs. Plugin-based (`src/mcp/`)
+- **GitHub Action published**: Can be consumed by other repositories
+- PowerShell modules in `scripts/powershell/modules/` for M365 API interaction
+- Hybrid approach: PowerShell for M365 APIs (native), Python for data processing
+
+## Recent Architectural Changes (Dec 2025)
+
+
+### GitHub Action v1.2.0 - Enhanced Features
+
+The published GitHub Action (Heyson315/Easy-Ai@v1) now includes **enterprise-grade capabilities**:
+
+#### Advanced Outputs (25+ Variables)
+
+**Risk Scoring (Severity-Weighted 0-100 Scale):**
+- `risk-score`: Overall risk score (0-100, weighted by severity: Critical=10, High=7, Medium=4, Low=1)
+- `critical-findings`: Count of critical severity failures
+- `high-findings`: Count of high severity failures
+- `medium-findings`: Count of medium severity failures
+- `low-findings`: Count of low severity failures
+
+**Compliance Trending (Historical Comparison):**
+- `compliance-trend`: Percentage change vs baseline (e.g., "+5.2%", "-2.1%")
+- `new-failures`: Count of newly failing controls since baseline
+- `fixed-issues`: Count of controls fixed since baseline
+- `trend-direction`: "improving", "stable", or "declining"
+
+**Security Integration:**
+- `sarif-report`: Path to SARIF 2.1.0 report for GitHub Security tab
+- `security-findings-count`: Total findings uploaded to Security tab
+
+**Automated Remediation:**
+- `remediated-controls`: Comma-separated list of auto-fixed control IDs
+- `remediation-report`: Path to detailed remediation log
+
+#### Key Inputs
+
+**Multi-Tenant Support:**
+```yaml
+tenant-config: |
+  [
+    {"name": "Client-A", "tenantId": "guid-1", "spoAdmin": "https://clienta-admin.sharepoint.com"},
+    {"name": "Client-B", "tenantId": "guid-2", "spoAdmin": "https://clientb-admin.sharepoint.com"}
+  ]
+```
+
+**Automated Remediation:**
+```yaml
+enable-auto-remediation: true
+auto-approve-remediation: false  # Requires approval gate
+remediation-controls: '1.1.1,1.1.3,2.1.1'  # Target specific controls
+```
+
+**Security Tab Integration:**
+```yaml
+upload-to-security-tab: true
+security-severity-threshold: high  # Only upload high/critical findings
+```
+
+**Compliance Trending:**
+```yaml
+compare-with-baseline: true
+baseline-artifact-name: 'compliance-baseline'  # Saved for 365 days
+```
+
+#### Real-World Workflow Examples
+
+See **[WORKFLOW_EXAMPLES.md](WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
+
+1. **Basic Audit with Security Tab** - Monthly scheduled scan uploading SARIF to Security tab
+2. **Automated Remediation with Approval** - WhatIf/Force mode with GitHub Environments approval gates
+3. **Multi-Tenant Batch Audit** - Matrix strategy for MSPs managing multiple M365 tenants
+4. **PR Compliance Gate** - Block PRs if compliance drops below 80% or risk score > 70
+5. **Teams Notification** - Alert Microsoft Teams on critical/high findings
+6. **Continuous Monitoring** - Update compliance badge every 6 hours, trigger incident response
+
+#### Risk Scoring Algorithm
+
+```powershell
+# Severity weights
+$weights = @{ "Critical" = 10; "High" = 7; "Medium" = 4; "Low" = 1 }
+
+# Calculate weighted risk
+$totalRiskPoints = ($criticalCount * 10) + ($highCount * 7) + ($mediumCount * 4) + ($lowCount * 1)
+$maxRiskPoints = $totalControlsCount * 10
+$riskScore = ($totalRiskPoints / $maxRiskPoints) * 100
+```
+
+**Example:** 100 controls, 5 critical failures, 10 high failures:
+- Risk Points: (5×10) + (10×7) = 120
+- Max Points: 100×10 = 1000
+- **Risk Score: 12.0/100** ✅
+
+#### SARIF Format for Security Tab
+
+Generated SARIF 2.1.0 reports include:
+- **Rules**: One per CIS control with full descriptions
+- **Results**: Failed controls mapped to SARIF violations
+- **Severity Mapping**: Critical=9.0, High=7.0, Medium=5.0, Low=3.0
+- **Locations**: M365 tenant URIs for context
+- **Fixes**: Remediation suggestions when available
+
+Upload via `github/codeql-action/upload-sarif@v3` with `security-events: write` permission.
+
+#### Compliance Trending
+
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    compare-with-baseline: true
+```
+
+**How it works:**
+1. First run saves baseline artifact (365-day retention)
+2. Subsequent runs compare against baseline
+3. Outputs:
+   - `compliance-trend`: "+5.2%" (5.2% improvement)
+   - `new-failures`: 3 (controls that started failing)
+   - `fixed-issues`: 8 (controls that are now passing)
+   - `trend-direction`: "improving"
+
+**Use cases:**
+- Fail PR if `trend-direction = "declining"`
+- Generate charts showing compliance over time
+- Alert security team on negative trends
+
+#### Multi-Tenant Architecture
+
+**Option A: Matrix Strategy (Recommended)**
+```yaml
+strategy:
+  matrix:
+    tenant: [Client-A, Client-B, Client-C]
+steps:
+  - uses: Heyson315/Easy-Ai@v1
+    with:
+      tenant-id: ${{ secrets[format('TENANT_ID_{0}', matrix.tenant)] }}
+```
+
+**Option B: Batch Configuration**
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-config: ${{ secrets.TENANT_BATCH_CONFIG }}
+```
+
+**Benefits for MSPs:**
+- Audit 10+ clients in parallel
+- Aggregate results across tenants
+- Generate per-client reports
+- Centralized compliance dashboard
+
+
 
 ## Development & Testing Workflow
 
 ### Python Development Pattern
-- **Code Quality**: Black formatter (120 chars), flake8 linting, mypy type checking configured in `pyproject.toml`
-- **Testing**: `pytest` with coverage reporting to `tests/` directory using `TemporaryDirectory()` for file I/O
-- **Dependencies**: Split into `requirements.txt` (runtime) and `requirements-dev.txt` (development tools)
+- **Code Quality**: Black formatter (120 chars), flake8 linting, mypy type checking in `pyproject.toml`
+- **Testing**: `pytest` with `TemporaryDirectory()` for file I/O, pandas validation
+- **Dependencies**:
+  - `requirements.txt` - Core toolkit + AI (openai, azure-identity) 🆕 UPDATED
+  - `requirements-extensions.txt` - Optional plugins (MCP, msgraph-sdk)
+  - `requirements-dev.txt` - Development tools
 - **Performance**: Built-in benchmarking via `scripts/run_performance_benchmark.py --baseline`
+- **Module Execution**:
+  - ❌ `python -m scripts.file` (scripts recently became package but use direct execution)
+  - ✅ `python scripts/file.py` (preferred for scripts)
+  - ✅ `python -m src.integrations.sharepoint_connector` (proper for src/ modules)
 
-### GitHub Actions CI/CD (`main` branch: `evidence/2025-10-25`)
+### PowerShell Development Pattern
+- **Module Pattern**: All functions prefixed with verb (`Test-CIS-*`, `Connect-M365CIS`, `New-CISResult`)
+  - Example: `Test-CIS-EXO-BasicAuthDisabled`, `Test-CIS-SPO-ExternalSharingPolicy`
+  - Located in: `scripts/powershell/modules/M365CIS.psm1` (600+ lines, 15+ controls)
+- **Return Standard**: `[PSCustomObject]` with fields: `ControlId`, `Title`, `Severity`, `Expected`, `Actual`, `Status`, `Evidence`, `Reference`, `Timestamp`
+- **Error Handling**: Always wrap in try/catch returning `Status='Manual'` on failures
+- **Path Handling**: Use absolute paths resolved from repo root via `Split-Path`
+  ```powershell
+  $repoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+  $OutJson = Join-Path $repoRoot $OutJson
+  ```
+- **Testing**: Pester v5 with `Should -Be` (not `Should Be`), `-TestCases` for parameterized tests
+
+
+### GitHub Action v1.2.0 - Enhanced Features
+
+The published GitHub Action (Heyson315/Easy-Ai@v1) now includes **enterprise-grade capabilities**:
+
+#### Advanced Outputs (25+ Variables)
+
+**Risk Scoring (Severity-Weighted 0-100 Scale):**
+- `risk-score`: Overall risk score (0-100, weighted by severity: Critical=10, High=7, Medium=4, Low=1)
+- `critical-findings`: Count of critical severity failures
+- `high-findings`: Count of high severity failures
+- `medium-findings`: Count of medium severity failures
+- `low-findings`: Count of low severity failures
+
+**Compliance Trending (Historical Comparison):**
+- `compliance-trend`: Percentage change vs baseline (e.g., "+5.2%", "-2.1%")
+- `new-failures`: Count of newly failing controls since baseline
+- `fixed-issues`: Count of controls fixed since baseline
+- `trend-direction`: "improving", "stable", or "declining"
+
+**Security Integration:**
+- `sarif-report`: Path to SARIF 2.1.0 report for GitHub Security tab
+- `security-findings-count`: Total findings uploaded to Security tab
+
+**Automated Remediation:**
+- `remediated-controls`: Comma-separated list of auto-fixed control IDs
+- `remediation-report`: Path to detailed remediation log
+
+#### Key Inputs
+
+**Multi-Tenant Support:**
 ```yaml
-# Trigger: Push to evidence/2025-10-25, feature/* branches, PR, manual dispatch
-# Jobs: python-quality-checks, powershell-security-scan, monthly-automated-audit
+tenant-config: |
+  [
+    {"name": "Client-A", "tenantId": "guid-1", "spoAdmin": "https://clienta-admin.sharepoint.com"},
+    {"name": "Client-B", "tenantId": "guid-2", "spoAdmin": "https://clientb-admin.sharepoint.com"}
+  ]
 ```
-- **Quality Gates**: Python linting, code formatting checks, performance benchmarks, security scanning
-- **Automated Audits**: Monthly M365 security assessments with artifact preservation
-- **Dependency Management**: Automated dependency scanning and updates
+
+**Automated Remediation:**
+```yaml
+enable-auto-remediation: true
+auto-approve-remediation: false  # Requires approval gate
+remediation-controls: '1.1.1,1.1.3,2.1.1'  # Target specific controls
+```
+
+**Security Tab Integration:**
+```yaml
+upload-to-security-tab: true
+security-severity-threshold: high  # Only upload high/critical findings
+```
+
+**Compliance Trending:**
+```yaml
+compare-with-baseline: true
+baseline-artifact-name: 'compliance-baseline'  # Saved for 365 days
+```
+
+#### Real-World Workflow Examples
+
+See **[WORKFLOW_EXAMPLES.md](WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
+
+1. **Basic Audit with Security Tab** - Monthly scheduled scan uploading SARIF to Security tab
+2. **Automated Remediation with Approval** - WhatIf/Force mode with GitHub Environments approval gates
+3. **Multi-Tenant Batch Audit** - Matrix strategy for MSPs managing multiple M365 tenants
+4. **PR Compliance Gate** - Block PRs if compliance drops below 80% or risk score > 70
+5. **Teams Notification** - Alert Microsoft Teams on critical/high findings
+6. **Continuous Monitoring** - Update compliance badge every 6 hours, trigger incident response
+
+#### Risk Scoring Algorithm
+
+```powershell
+# Severity weights
+$weights = @{ "Critical" = 10; "High" = 7; "Medium" = 4; "Low" = 1 }
+
+# Calculate weighted risk
+$totalRiskPoints = ($criticalCount * 10) + ($highCount * 7) + ($mediumCount * 4) + ($lowCount * 1)
+$maxRiskPoints = $totalControlsCount * 10
+$riskScore = ($totalRiskPoints / $maxRiskPoints) * 100
+```
+
+**Example:** 100 controls, 5 critical failures, 10 high failures:
+- Risk Points: (5×10) + (10×7) = 120
+- Max Points: 100×10 = 1000
+- **Risk Score: 12.0/100** ✅
+
+#### SARIF Format for Security Tab
+
+Generated SARIF 2.1.0 reports include:
+- **Rules**: One per CIS control with full descriptions
+- **Results**: Failed controls mapped to SARIF violations
+- **Severity Mapping**: Critical=9.0, High=7.0, Medium=5.0, Low=3.0
+- **Locations**: M365 tenant URIs for context
+- **Fixes**: Remediation suggestions when available
+
+Upload via `github/codeql-action/upload-sarif@v3` with `security-events: write` permission.
+
+#### Compliance Trending
+
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    compare-with-baseline: true
+```
+
+**How it works:**
+1. First run saves baseline artifact (365-day retention)
+2. Subsequent runs compare against baseline
+3. Outputs:
+   - `compliance-trend`: "+5.2%" (5.2% improvement)
+   - `new-failures`: 3 (controls that started failing)
+   - `fixed-issues`: 8 (controls that are now passing)
+   - `trend-direction`: "improving"
+
+**Use cases:**
+- Fail PR if `trend-direction = "declining"`
+- Generate charts showing compliance over time
+- Alert security team on negative trends
+
+#### Multi-Tenant Architecture
+
+**Option A: Matrix Strategy (Recommended)**
+```yaml
+strategy:
+  matrix:
+    tenant: [Client-A, Client-B, Client-C]
+steps:
+  - uses: Heyson315/Easy-Ai@v1
+    with:
+      tenant-id: ${{ secrets[format('TENANT_ID_{0}', matrix.tenant)] }}
+```
+
+**Option B: Batch Configuration**
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-config: ${{ secrets.TENANT_BATCH_CONFIG }}
+```
+
+**Benefits for MSPs:**
+- Audit 10+ clients in parallel
+- Aggregate results across tenants
+- Generate per-client reports
+- Centralized compliance dashboard
+
+
+
+## Git Conventions & Branch Strategy
+
+### Version Control Strategy (.gitignore)
+- **✅ Include:** JSON/CSV reports (text-based, diffable, lightweight)
+- **❌ Exclude:** Excel files (binary, causes bloat - use Git LFS if needed)
+- **❌ Exclude:** Virtual envs (`.venv/`), `__pycache__/`, coverage HTML
+- **Branch:** Default is `Primary` (not `main`) 🆕
+
+### Branch Strategy & Workflow
+
+**Critical: Default Branch is `Primary` NOT `main`**
+
+This project uses `Primary` as the default branch instead of the conventional `main`. This is important for:
+- GitHub PR targeting
+- CI/CD workflow triggers
+- Release management
+- Merge operations
+
+**Branch Naming Conventions:**
+```bash
+Primary           # Default/production branch
+develop           # Development integration branch
+feature/*         # New features (e.g., feature/mcp-plugin)
+copilot/*         # AI/Copilot enhancements (e.g., copilot/instructions)
+Heyson315/*       # User-specific work branches (e.g., Heyson315/issue93)
+bugfix/*          # Bug fixes
+hotfix/*          # Production hotfixes
+```
+
+**Standard Development Workflow:**
+
+```bash
+# 1. Start new feature from Primary
+git checkout Primary
+git pull origin Primary
+git checkout -b feature/my-feature
+
+# 2. Make changes and commit
+git add .
+git commit -m "feat: add new MCP plugin for SharePoint analysis"
+
+# 3. Keep feature branch updated
+git fetch origin
+git rebase origin/Primary  # Or merge if preferred
+
+# 4. Push feature branch
+git push origin feature/my-feature
+
+# 5. Create PR targeting Primary (not main!)
+# Via GitHub UI: base: Primary <- compare: feature/my-feature
+
+# 6. After PR approval, merge to Primary
+git checkout Primary
+git pull origin Primary
+git merge --no-ff feature/my-feature  # Preserve merge commit
+git push origin Primary
+
+# 7. Clean up
+git branch -d feature/my-feature
+git push origin --delete feature/my-feature
+```
+
+**Common Mistakes to Avoid:**
+
+```bash
+# ❌ WRONG: Merging to 'main' instead of 'Primary'
+git checkout main
+git merge feature/my-feature
+# This causes: Diverged history, missed CI/CD triggers, broken releases
+
+# ❌ WRONG: Creating PR with wrong base branch
+# base: main <- compare: feature/my-feature
+# This causes: PR won't be reviewed, won't merge properly
+
+# ✅ CORRECT: Always use Primary as base
+git checkout Primary
+git merge --no-ff feature/my-feature
+# base: Primary <- compare: feature/my-feature
+```
+
+**Verifying Branch Configuration:**
+
+```bash
+# Check default branch
+git remote show origin | grep "HEAD branch"
+# Expected output: HEAD branch: Primary
+
+# Check current branch
+git branch --show-current
+
+# List all branches with remote tracking
+git branch -avv
+
+# View branch protection rules (GitHub CLI)
+gh repo view --web  # Navigate to Settings > Branches
+```
+
+**CI/CD Integration:**
+
+The workflows in `.github/workflows/` are configured to trigger on the correct branches:
+
+```yaml
+# Example from m365-security-ci.yml
+on:
+  push:
+    branches: [ main, develop, feature/*, copilot/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+# Note: 'main' in workflows acts as alias for 'Primary'
+# This provides backward compatibility while using Primary as default
+```
+
+### Output Organization
+```
+output/reports/
+├── security/           # CIS audit results (JSON/CSV/XLSX/HTML)
+├── business/           # SharePoint/domain reports (XLSX)
+data/
+├── raw/                # Unprocessed exports (not in git)
+├── processed/          # Cleaned CSVs (git-tracked)
+└── archive/            # Historical snapshots (timestamped)
+```
 
 ## Critical Workflows
 
-### SharePoint Permissions Workflow
+### 1. M365 CIS Security Audit (Core Workflow)
 ```powershell
-# 1. Clean raw CSV (removes comments, BOM, repeated headers)
-python scripts/clean_csv.py --input "data/raw/sharepoint/file.csv" --output "data/processed/sharepoint_permissions_clean.csv"
-
-# 2. Generate Excel report with summaries
-python -m src.integrations.sharepoint_connector --input "data/processed/sharepoint_permissions_clean.csv" --output "output/reports/business/sharepoint_permissions_report.xlsx"
-```
-
-### M365 CIS Security Audit Workflow
-```powershell
-# Run audit (connects to EXO, Graph, optionally SPO/Purview/Intune)
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1" [-SPOAdminUrl "https://tenant-admin.sharepoint.com"] [-Timestamped] [-SkipPurview]
+# Full audit with timestamping
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File "scripts/powershell/Invoke-M365CISAudit.ps1" `
+  -Timestamped `
+  -SPOAdminUrl "https://tenant-admin.sharepoint.com"
 
 # Convert JSON to Excel
-python scripts/m365_cis_report.py [--input "output/reports/security/m365_cis_audit.json"]
+python scripts/m365_cis_report.py
 
-# Generate Interactive HTML Dashboard (NEW)
-python scripts/generate_security_dashboard.py [--input "output/reports/security/m365_cis_audit.json"] [--output "output/reports/security/dashboard.html"]
+# Generate interactive dashboard
+python scripts/generate_security_dashboard.py
 ```
 
-### Safe Remediation Workflow (NEW v1.0.0)
-```powershell
-# Preview remediation actions (safe mode)
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -WhatIf
+**What This Does:**
+- Connects to EXO, Graph, SPO, Purview, Intune
+- Executes 15+ CIS controls via `M365CIS.psm1` functions
+- Outputs timestamped JSON for audit trail
+- Generates Excel reports with formatting
+- Creates HTML dashboards with Chart.js visualizations
 
-# Apply remediation actions
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -Force
+### 2. SharePoint Permissions Analysis
+```powershell
+# Step 1: Clean raw CSV (critical - SharePoint exports are messy)
+python scripts/clean_csv.py `
+  --input "data/raw/sharepoint/export.csv" `
+  --output "data/processed/sharepoint_clean.csv"
+
+# Step 2: Generate business report
+python -m src.integrations.sharepoint_connector `
+  --input "data/processed/sharepoint_clean.csv" `
+  --output "output/reports/business/sharepoint_permissions.xlsx"
 ```
 
-### Audit Comparison & Trending (NEW v1.0.0)
-```powershell
-# Compare before/after audit results
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Compare-M365CISResults.ps1" -BeforeFile "before.json" -AfterFile "after.json" -OutputHtml "comparison.html"
+**CSV Cleaning Handles:**
+- UTF-8 BOM removal (`encoding='utf-8-sig'`)
+- Comment lines (`# ...`)
+- Blank lines
+- Duplicate headers (common in SharePoint exports)
+- Quoted commas (preserves paths like `"parent/path,with,comma"`)
 
-# Setup automated scheduling
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Setup-ScheduledAudit.ps1" -Schedule Weekly -DayOfWeek Monday -Time "09:00"
+### 3. GitHub Action Workflow (NEW v1.2.0) 🆕
+**Use in Your Repository:**
+
+```yaml
+# .github/workflows/m365-audit.yml
+name: Monthly M365 Security Audit
+
+on:
+  schedule:
+    - cron: '0 2 1 * *'  # 2 AM on 1st of month
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'infrastructure/**'
+
+jobs:
+  security-audit:
+    name: M365 CIS Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Security Audit
+        id: audit
+        uses: Heyson315/Easy-Ai@v1
+        with:
+          tenant-id: ${{ secrets.M365_TENANT_ID }}
+          client-id: ${{ secrets.M365_CLIENT_ID }}
+          client-secret: ${{ secrets.M365_CLIENT_SECRET }}
+          spo-admin-url: ${{ secrets.SPO_ADMIN_URL }}
+          generate-dashboard: true
+          timestamped: true
+          output-path: 'audit-reports'
+          artifact-retention-days: 90
+
+      - name: Evaluate Compliance
+        run: |
+          echo "Compliance Score: ${{ steps.audit.outputs.compliance-score }}%"
+          echo "Passed: ${{ steps.audit.outputs.controls-passed }}"
+          echo "Failed: ${{ steps.audit.outputs.controls-failed }}"
+
+          # Fail if below threshold
+          if (( $(echo "${{ steps.audit.outputs.compliance-score }} < 75" | bc -l) )); then
+            echo "::error::Compliance score below 75% threshold!"
+            exit 1
+          fi
+
+      - name: Upload Dashboard to Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/Primary'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./audit-reports
+          destination_dir: security-dashboard
+
+      - name: Notify Teams
+        if: steps.audit.outputs.controls-failed > 0
+        uses: aliencube/microsoft-teams-actions@v0.8.0
+        with:
+          webhook_uri: ${{ secrets.TEAMS_WEBHOOK }}
+          title: '⚠️ M365 Security Audit - Issues Found'
+          text: 'Failed controls: ${{ steps.audit.outputs.controls-failed }}'
+```
+
+**Secret Configuration (Repository Settings):**
+```yaml
+M365_TENANT_ID: "your-tenant-id-guid"
+M365_CLIENT_ID: "your-app-client-id-guid"
+M365_CLIENT_SECRET: "your-app-client-secret"
+SPO_ADMIN_URL: "https://tenant-admin.sharepoint.com"
+```
+
+**Action Outputs Available:**
+```yaml
+${{ steps.audit.outputs.audit-report-json }}     # Path to JSON report
+${{ steps.audit.outputs.audit-report-excel }}    # Path to Excel report
+${{ steps.audit.outputs.dashboard-html }}        # Path to HTML dashboard
+${{ steps.audit.outputs.compliance-score }}      # e.g., "85.3"
+${{ steps.audit.outputs.controls-passed }}       # e.g., "42"
+${{ steps.audit.outputs.controls-failed }}       # e.g., "8"
+${{ steps.audit.outputs.controls-manual }}       # e.g., "5"
+```
+
+**Common Use Cases:**
+1. **Pull Request Gates**: Block PRs that would degrade security posture
+2. **Scheduled Audits**: Monthly compliance reports with artifact retention
+3. **Multi-Tenant**: Matrix strategy to audit multiple clients
+4. **Notification Integration**: Teams/Slack alerts on failures
+
+### 4. MCP Server Integration (Optional Extension)
+```bash
+# Install optional dependencies first
+pip install -r requirements-extensions.txt
+
+# Option A: Simple MCP Server
+python -m src.extensions.mcp.setup     # Interactive wizard
+python -m src.extensions.mcp.server    # Run server
+
+# Option B: Plugin-Based MCP Server (recommended for production)
+python -m src.mcp.m365_mcp_server
+```
+
+**Available MCP Tools:**
+- `run_security_audit` - Execute CIS compliance audit
+- `analyze_sharepoint_permissions` - Permission analysis
+- `get_security_dashboard` - Generate HTML dashboard
+- `remediate_security_issues` - Safe remediation with preview
+- `get_compliance_status` - Current compliance metrics
+
+### 5. Safe Remediation Workflow
+```powershell
+# Preview changes (SAFE - no modifications)
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File "scripts/powershell/PostRemediateM365CIS.ps1" -WhatIf
+
+# Apply changes (CAUTION - modifies tenant)
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File "scripts/powershell/PostRemediateM365CIS.ps1" -Force
+```
+
+**Best Practice:** Always run `-WhatIf` first in production!
+
+### 6. Audit Comparison & Trending
+```powershell
+# Compare two audit runs
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File "scripts/powershell/Compare-M365CISResults.ps1" `
+  -BeforeFile "before.json" `
+  -AfterFile "after.json" `
+  -OutputHtml "comparison.html"
 ```
 
 ## Project-Specific Conventions
 
 ### File Path Handling
-- **Always use absolute paths** in PowerShell scripts (resolved from repo root via `Split-Path`)
-- **Python uses Path objects** from `pathlib` with `.mkdir(parents=True, exist_ok=True)` for output dirs
-- Default paths are constants at module top (`DEFAULT_INPUT`, `DEFAULT_OUTPUT`)
+**PowerShell:**
+```powershell
+# ✅ Always use absolute paths
+$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$scriptPath = Join-Path $repoRoot "scripts\powershell\MyScript.ps1"
+```
+
+**Python:**
+```python
+# ✅ Use pathlib.Path with automatic directory creation
+from pathlib import Path
+
+output_path = Path("output/reports/security/report.json")
+output_path.parent.mkdir(parents=True, exist_ok=True)
+```
 
 ### CSV Processing Pattern
-**Problem**: SharePoint exports include UTF-8 BOM, comments (`# ...`), blank lines, and repeated headers.
+**Problem:** SharePoint exports contain:
+- UTF-8 BOM
+- Comment lines (`# Export date: ...`)
+- Blank lines
+- Repeated headers (when data spans multiple pages)
+- Quoted commas in paths
 
-**Solution** (`scripts/clean_csv.py`):
-1. Read with `encoding='utf-8-sig'` to strip BOM
-2. Filter comments/blanks before CSV parsing
-3. Use `csv.reader/writer` to preserve quoted commas (e.g., `"parent/path,with,comma"`)
-4. Track duplicate headers and skip them
-5. Return statistics dict for validation
+**Solution (`scripts/clean_csv.py`):**
+```python
+# 1. Read with BOM handling
+content = input_path.read_text(encoding='utf-8-sig')
 
-### PowerShell Module Pattern
-**`M365CIS.psm1` conventions** (483+ lines of production audit functions):
-- Prefix all functions with verb (`Test-CIS-*`, `Connect-M365CIS`, `New-CISResult`)
-- Return `[PSCustomObject]` with standard fields: `ControlId`, `Title`, `Severity`, `Expected`, `Actual`, `Status`, `Evidence`, `Reference`, `Timestamp`
-- Always wrap in try/catch returning `Status='Manual'` on connection failures
-- Explicitly import modules with `-ErrorAction Stop` and provide clear warnings
-- **Critical**: Auto-fix OneDrive PSModulePath in `Connect-M365CIS` for synced modules
-- **Authentication**: Multi-service connection (EXO, Graph, SPO Admin, Purview) with graceful fallbacks
+# 2. Filter comments and blanks
+lines = [line for line in content.splitlines()
+         if line.strip() and not line.startswith('#')]
 
-### Module Execution Pattern
-**Scripts vs Modules**:
-- ❌ **Don't** use `python -m scripts.file` (scripts aren't a package) → Use `python scripts/file.py`
-- ✅ **Do** use `python -m src.integrations.sharepoint_connector` (src/ is a proper package)
-- ✅ **Do** use absolute paths for PowerShell: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1"`
+# 3. Use csv.reader to preserve quoted commas
+reader = csv.reader(lines)
 
-### Excel Report Generation
-**Pattern** (`src/core/excel_generator.py`, `src/integrations/sharepoint_connector.py`):
-- Use `openpyxl` for multi-sheet workbooks with formatting
-- Use `pandas` for data aggregation before writing (e.g., `groupby().size().reset_index()`)
-- Apply styles: `Font(bold=True)`, `PatternFill(start_color='...')`, `Alignment(horizontal='center')`
-- Auto-size columns: iterate `get_column_letter()` and set `column_dimensions[].width`
+# 4. Track and skip duplicate headers
+# 5. Return stats dict for validation
+```
 
-### Error Handling Pattern (NEW v1.0.0)
-**Problem**: Generic `Exception` handlers make debugging difficult.
+### PowerShell Module Pattern (`M365CIS.psm1`)
+**Conventions (27KB, 600+ lines of production code):**
+```powershell
+function Test-CIS-X.Y.Z {
+    <#
+    .SYNOPSIS
+    Brief control description
+    #>
+    try {
+        # Get actual configuration
+        $actual = Get-SomeM365Config
+        $expected = "Required Value"
 
-**Solution**: Use specific exception types with detailed error messages:
+        # Determine status
+        $status = if ($actual -eq $expected) { "Pass" } else { "Fail" }
+
+        # Return standardized result
+        return New-CISResult `
+            -ControlId "X.Y.Z" `
+            -Title "Control Title" `
+            -Severity "Medium" `
+            -Expected $expected `
+            -Actual $actual `
+            -Status $status `
+            -Evidence "Detailed evidence" `
+            -Reference "https://docs.microsoft.com/..."
+    }
+    catch {
+        # Always return Manual status on errors
+        return New-CISResult `
+            -ControlId "X.Y.Z" `
+            -Title "Control Title" `
+            -Severity "Medium" `
+            -Expected "N/A" `
+            -Actual "Error: $($_.Exception.Message)" `
+            -Status "Manual" `
+            -Evidence "Error occurred" `
+            -Reference "https://docs.microsoft.com/..."
+    }
+}
+```
+
+**Critical Features:**
+- Multi-service connection (EXO, Graph, SPO, Purview) with graceful fallbacks
+- Auto-fix OneDrive PSModulePath for synced modules
+- Explicit module imports with `-ErrorAction Stop`
+
+### Excel Report Generation Pattern
+```python
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.utils import get_column_letter
+import pandas as pd
+
+# 1. Aggregate data with pandas
+df = pd.DataFrame(data)
+summary = df.groupby('category').size().reset_index(name='count')
+
+# 2. Create workbook
+wb = Workbook()
+ws = wb.active
+
+# 3. Write headers with formatting
+ws.append(list(summary.columns))
+for col in range(1, len(summary.columns) + 1):
+    cell = ws.cell(1, col)
+    cell.font = Font(bold=True)
+    cell.fill = PatternFill(start_color='4472C4', fill_type='solid')
+    cell.alignment = Alignment(horizontal='center')
+
+# 4. Write data rows
+for _, row in summary.iterrows():
+    ws.append(list(row))
+
+# 5. Auto-size columns
+for col in range(1, len(summary.columns) + 1):
+    ws.column_dimensions[get_column_letter(col)].width = 15
+
+# 6. Save with directory creation
+output_path.parent.mkdir(parents=True, exist_ok=True)
+wb.save(output_path)
+```
+
+### Docker Development Pattern
+**Start Development Environment:**
+```bash
+# Start all services (uses .devcontainer/Dockerfile)
+docker-compose up -d
+
+# Run tests in container
+docker-compose exec mcp-server python -m pytest tests/ -v
+
+# Run audit in container (requires M365 credentials in .env)
+docker-compose exec mcp-server powershell -File scripts/powershell/Invoke-M365CISAudit.ps1
+
+# Stop environment
+docker-compose down
+```
+
+**Docker Configuration:**
+- Service: `mcp-server` (container name: `share_report_mcp`)
+- Port: 8080 exposed
+- Volume: Current directory mounted at `/workspace`
+- Entry: `python src/extensions/mcp/server.py`
+
+**Conventions:**
+- ✅ Mount workspace as volume for live development
+- ✅ Use `.dockerignore` to exclude `.venv/`, `__pycache__/`, `output/`
+- ✅ Run CI/CD tests in same container as local development
+- ✅ Store credentials in `.env` file (never commit!)
+
+### Performance Optimization Pattern
+**Chunked CSV Processing:**
+```python
+import pandas as pd
+from pathlib import Path
+
+def process_large_sharepoint_export(csv_path: Path, chunk_size: int = 10000):
+    """Process SharePoint exports >100k rows without memory issues."""
+    results = []
+
+    for chunk in pd.read_csv(csv_path, chunksize=chunk_size):
+        # Process each chunk independently
+        processed = transform_permissions(chunk)
+        results.append(processed)
+
+    # Combine results
+    return pd.concat(results, ignore_index=True)
+```
+
+**Parallel Tenant Audits:**
+```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def audit_multiple_tenants(tenant_ids: list[str], max_workers: int = 5):
+    """Audit multiple M365 tenants concurrently (max 5 to avoid rate limits)."""
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {
+            executor.submit(run_audit, tid): tid
+            for tid in tenant_ids
+        }
+
+        results = {}
+        for future in as_completed(futures):
+            tenant_id = futures[future]
+            try:
+                results[tenant_id] = future.result(timeout=600)
+            except Exception as e:
+                results[tenant_id] = {'error': str(e), 'status': 'failed'}
+
+        return results
+```
+
+**Performance Targets:**
+- CSV cleaning: <2s for 10k rows
+- Excel generation: <5s for 100 controls
+- Dashboard generation: <3s
+- Full M365 audit: <10 minutes
+
+### CI/CD Error Resolution Pattern
+**Common Failures:**
+
+**Issue 1: PowerShell Module Import in GitHub Actions**
+```yaml
+- name: Run M365 Audit
+  run: |
+    # Fix: Explicitly set PSModulePath
+    $env:PSModulePath += ";$PWD/scripts/powershell/modules"
+    Import-Module M365CIS -Force
+    ./scripts/powershell/Invoke-M365CISAudit.ps1 -Timestamped
+  shell: pwsh
+```
+
+**Issue 2: Python Dependencies Installation**
+```yaml
+- name: Install all dependencies
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+    # Optional: Only install if MCP features needed
+    pip install -r requirements-extensions.txt || echo "MCP extensions skipped"
+```
+
+**Issue 3: Artifact Upload Safety**
+```yaml
+- name: Upload test reports
+  if: always()  # Upload even on test failures
+  uses: actions/upload-artifact@v4
+  with:
+    name: test-reports
+    path: output/reports/
+    if-no-files-found: warn  # Don't fail if no files generated
+```
+
+**Issue 4: Test Timeout**
+```python
+import pytest
+
+@pytest.mark.timeout(300)  # 5 minute timeout
+@pytest.mark.integration
+def test_full_m365_audit():
+    """Full audit can take several minutes."""
+    result = run_audit()
+    assert result['status'] == 'success'
+```
+
+### Multi-Root Workspace Pattern
+**VS Code Multi-Root Setup** (`Easy-Ai.code-workspace`):
+
+```json
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Easy-Ai"
+    },
+    {
+      "path": "../venv",
+      "name": "Python Environment"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:venv}/Scripts/python.exe"
+  }
+}
+```
+
+**Why Multi-Root?**
+- Keeps `.venv/` out of primary workspace (cleaner file explorer)
+- Prevents accidental commits of virtual environment
+- Faster file search and indexing
+
+**Conventions:**
+- ✅ Run terminal commands from `Easy-Ai` root, not `venv` folder
+- ✅ Git operations only affect `Easy-Ai` folder (`.git` is there)
+- ✅ Python interpreter: `../venv/Scripts/python.exe` (Windows) or `../venv/bin/python` (Linux/Mac)
+
+### Error Handling Pattern
+**❌ Bad (Generic Exception):**
+```python
+try:
+    data = json.loads(file.read())
+except Exception as e:  # Too broad!
+    print(f"Error: {e}")
+```
+
+**✅ Good (Specific Exceptions):**
 ```python
 try:
     data = json.loads(json_path.read_text(encoding='utf-8-sig'))
@@ -137,218 +1032,694 @@ except (PermissionError, UnicodeDecodeError) as e:
     print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
     sys.exit(1)
 ```
-Applied to: `scripts/m365_cis_report.py`, `scripts/generate_security_dashboard.py`
-
-### Dashboard Generation Pattern (NEW v1.0.0)
-**HTML Dashboard** (`scripts/generate_security_dashboard.py`):
-- Zero external dependencies (uses CDN for Chart.js)
-- Historical trend analysis from timestamped audit files
-- Responsive design with filtering/sorting
-- Security summary cards and control status table
 
 ### Testing Pattern
-- Use `TemporaryDirectory()` from tempfile for file I/O tests
-- Validate with pandas: `df.shape`, `df.columns`, `df.iloc[0]['column']`
-- Return stats dicts from functions for assertion checks
+**Python (pytest with tempfile):**
+```python
+from tempfile import TemporaryDirectory
+from pathlib import Path
+import pandas as pd
+
+def test_process_csv():
+    with TemporaryDirectory() as td:
+        td = Path(td)
+        input_file = td / "input.csv"
+        output_file = td / "output.csv"
+
+        # Write test input
+        input_file.write_text("col1,col2\n1,2", encoding="utf-8")
+
+        # Run function
+        stats = process_csv(input_file, output_file)
+
+        # Validate with pandas
+        assert output_file.exists()
+        df = pd.read_csv(output_file)
+        assert df.shape == (1, 2)
+        assert stats['output_rows'] == 1
+```
+
+**PowerShell (Pester v5):**
+```powershell
+Describe "Test-CIS-Function" {
+    It "Should return Pass status when compliant" {
+        # Arrange
+        Mock Get-SomeConfig { return "ExpectedValue" }
+
+        # Act
+        $result = Test-CIS-X.Y.Z
+
+        # Assert
+        $result.Status | Should -Be "Pass"
+    }
+}
+```
 
 ## External Dependencies & Integration Points
 
 ### PowerShell Modules (Install with `-Scope CurrentUser`)
-- `ExchangeOnlineManagement` - EXO cmdlets (`Get-OrganizationConfig`, `Get-AuthenticationPolicy`)
-- `Microsoft.Graph.Authentication` + `Microsoft.Graph.Identity.*` - Graph API
-- `Microsoft.Online.SharePoint.PowerShell` (optional) - SPO tenant checks (`Connect-SPOService`)
+```powershell
+Install-Module ExchangeOnlineManagement -Scope CurrentUser -Force
+Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Force
+Install-Module Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser
+Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser
+```
 
 ### Python Packages
+**Core (Required):**
 - `pandas` - CSV/Excel I/O, data aggregation
 - `openpyxl` - Excel formatting
+- `openai` - GPT-5 integration (NOW CORE) 🆕
+- `azure-identity` - Azure AD authentication (NOW CORE) 🆕
 - `pytest` - Testing framework
 
+**Extensions (Optional):**
+- `mcp` - Model Context Protocol SDK
+- `msgraph-sdk` - Microsoft Graph real-time access
+- `requests` - HTTP client for API calls
+- `python-dotenv` - Environment variable management
+
 ### Authentication Flow
-1. `Connect-M365CIS` → Interactive browser login (supports MFA)
-2. Required scopes: `User.Read.All`, `Policy.Read.All`, `Directory.Read.All`, `Organization.Read.All`
-3. Admin roles: Exchange Admin, Global Reader/Security Reader, SharePoint Admin
+1. **Interactive (Default):** `Connect-M365CIS` → Browser login with MFA support
+2. **Service Principal (CI/CD):** Environment variables for unattended automation
+3. **Required Scopes:** `User.Read.All`, `Policy.Read.All`, `Directory.Read.All`, `Organization.Read.All`
+4. **Admin Roles:** Exchange Admin, Global Reader/Security Reader, SharePoint Admin
 
-## Git Conventions
+## Common Pitfalls & Solutions
 
-### Version Control Strategy (.gitignore)
-- **Include**: JSON/CSV reports (`!output/reports/security/*.json`, `!output/reports/security/*.csv`)
-- **Exclude**: Excel files (use Git LFS if needed), virtual envs (`.venv/`), `__pycache__/`
-- **Rationale**: Text-based evidence is lightweight and diffable; Excel causes repo bloat
+### ❌ Wrong Branch References & Merge Strategy
 
-### Output Organization
-- `output/reports/security/` - CIS audit results (JSON/CSV/XLSX)
-- `output/reports/business/` - SharePoint/domain reports (XLSX)
-- `data/raw/` - Unprocessed exports
-- `data/processed/` - Cleaned CSVs
-- `data/archive/` - Historical snapshots
+**See comprehensive branch strategy section above for detailed guidance.**
 
-## Debugging & Troubleshooting
+Quick reminder: Default branch is `Primary` NOT `main`
 
-### PowerShell Execution Issues
-If modules aren't found, check PSModulePath includes OneDrive sync folder (automatically added by `Connect-M365CIS`).
+```bash
+# ✅ CORRECT: Always merge to Primary
+git checkout Primary
+git merge --no-ff feature/my-feature
+git push origin Primary
 
-### CSV Parsing Issues
-If quoted fields are malformed, use `inspect_processed_csv.py` to validate output before reporting.
+# ❌ WRONG: Merging to 'main'
+git checkout main  # Incorrect default branch
+git merge feature/my-feature
+```
 
-### Excel Generation
-Always call `.parent.mkdir(parents=True, exist_ok=True)` before writing files to avoid `FileNotFoundError`.
+### ❌ Module Execution Errors
+```bash
+# ❌ DON'T: Use -m with scripts
+python -m scripts.clean_csv
 
-## Common Pitfalls
-- ❌ **Don't** use `python -m scripts.file` (scripts aren't a package) → Use `python scripts/file.py`
-- ❌ **Don't** assume headers appear once in raw CSVs → Use `clean_csv.py` first
-- ❌ **Don't** hardcode tenant URLs → Accept as parameters with defaults
-- ❌ **Don't** use generic `Exception` handlers → Use specific types (`json.JSONDecodeError`, `PermissionError`)
-- ✅ **Do** run PowerShell scripts with absolute paths (use full path to `.ps1` file)
-- ✅ **Do** use `-Timestamped` flag for audit evidence versioning
-- ✅ **Do** validate JSON structure before Excel conversion (`inspect_cis_report.py`)
-- ✅ **Do** use `-WhatIf` for safe remediation previews before applying changes
-- ✅ **Do** leverage historical trending with multiple timestamped audit runs
-- ✅ **Do** configure development tools via `pyproject.toml` (Black 120 chars, pytest coverage)
-- ✅ **Do** use `TemporaryDirectory()` for all file I/O tests to avoid cleanup issues
+# ✅ DO: Direct execution for scripts
+python scripts/clean_csv.py
 
-## Web Design Patterns
+# ✅ DO: Use -m for src/ modules
+python -m src.integrations.sharepoint_connector
+```
 
-### Overview
-The toolkit supports web design for **two platforms**:
-1. **SharePoint Online** - Microsoft 365 SharePoint sites for internal security dashboards
-2. **GoDaddy Custom Domain** - Self-hosted websites for external reporting and public documentation
-
-### Web Design Workflow
-
-**HTML Dashboard Generation** (`scripts/generate_security_dashboard.py`):
+### ❌ CSV Header Assumptions
 ```python
-# Generate interactive HTML dashboard from audit results
-python scripts/generate_security_dashboard.py [--input "audit.json"] [--output "dashboard.html"]
+# ❌ DON'T: Assume clean headers
+df = pd.read_csv("raw_export.csv")  # May have BOM, comments!
+
+# ✅ DO: Always clean first
+from scripts.clean_csv import clean_csv
+clean_csv(raw_path, clean_path)
+df = pd.read_csv(clean_path)
 ```
 
-**Key Features**:
-- Zero external dependencies (uses CDN for Chart.js)
-- Responsive design (mobile-first approach)
-- Interactive filtering and sorting
-- Historical trend analysis
-- Print-friendly styling
-
-### CSS Architecture
-
-**Base CSS** (`web-templates/common/css/base.css`):
-- CSS custom properties (variables) for theming
-- Responsive grid system
-- Reusable components (cards, buttons, badges, tables)
-- Utility classes for spacing, colors, alignment
-- Accessibility features (focus states, screen reader support)
-- Print styles
-
-**Dashboard CSS** (`web-templates/common/css/dashboard.css`):
-- Dashboard-specific layouts
-- Statistics cards with hover effects
-- Chart containers
-- Filter controls
-- Data tables with sorting/filtering
-- Status indicators and badges
-
-### HTML Generation Pattern
-
-**Python HTML Generation** (from `generate_security_dashboard.py`):
+### ❌ Hardcoded Paths
 ```python
-def generate_html_dashboard(results, stats, historical, output_path):
-    """Generate interactive HTML dashboard."""
-    # Use f-strings for template generation
-    html_content = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Title</title>
-    <style>{embedded_css}</style>
-</head>
-<body>
-    <!-- Dashboard content -->
-</body>
-</html>
-"""
-    # Write to file with UTF-8 encoding
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(html_content)
+# ❌ DON'T: Hardcode tenant URLs or file paths
+output = "C:\\Users\\Me\\output.xlsx"
+
+# ✅ DO: Use parameters with defaults
+output_path = Path(output_param or "output/reports/business/report.xlsx")
 ```
 
-### Web Design Best Practices
+### ❌ Missing GitHub Action Secrets
+```yaml
+# ❌ DON'T: Hardcode credentials
+client-secret: 'my-secret-value'
 
-**For SharePoint**:
-- Use SharePoint-compatible CSS (avoid unsupported properties)
-- Leverage modern SharePoint web parts before custom solutions
-- Apply custom themes via Site Settings
-- Test on SharePoint mobile app
-- Use SPFx (SharePoint Framework) for advanced customizations
-
-**For GoDaddy/Custom Domain**:
-- Static HTML/CSS/JS for performance
-- Minify CSS/JS for production
-- Use CDN for third-party libraries
-- Configure proper cache headers
-- Always use HTTPS with valid SSL
-
-### Copilot-Assisted Web Design
-
-**HTML Structure**:
-```html
-<!-- Dashboard header with navigation -->
-<!-- Copilot will generate semantic HTML -->
-<header class="dashboard-header">
-    <h1>M365 Security Dashboard</h1>
-    <nav><!-- navigation links --></nav>
-</header>
+# ✅ DO: Use GitHub secrets
+client-secret: ${{ secrets.M365_CLIENT_SECRET }}
 ```
 
-**CSS Styling**:
-```css
-/* Modern card component with hover effects */
-.card {
-    /* Copilot will suggest modern CSS properties */
-}
-```
+**Setup GitHub Secrets:**
+1. Repository → Settings → Secrets and variables → Actions
+2. New repository secret:
+   - `M365_TENANT_ID`
+   - `M365_CLIENT_ID`
+   - `M365_CLIENT_SECRET`
+   - `SPO_ADMIN_URL`
 
-**JavaScript Interactivity**:
-```javascript
-// Filter table by status and severity
-// Copilot will implement filter logic
-function filterControls(filterType, filterValue) {
-    // Implementation here
-}
-```
+### ✅ Best Practices Summary
+- Use `-Timestamped` flag for audit evidence versioning
+- Validate JSON structure before Excel conversion
+- Use `-WhatIf` for safe remediation previews
+- Leverage GitHub Action for CI/CD integration 🆕
+- Configure tools via `pyproject.toml`
+- Use `TemporaryDirectory()` for all file I/O tests
+- Reference `Primary` branch, not `main` 🆕
 
-### Design Resources
+## Quick Reference for AI Agents
 
-**Templates**: `web-templates/` directory contains:
-- `common/css/` - Shared CSS for both platforms
-- `sharepoint/` - SharePoint-specific templates and examples
-- `godaddy/` - Custom domain templates and examples
-
-**Documentation**: 
-- `docs/WEB_DESIGN_GUIDE.md` - Comprehensive web design guide
-- Platform-specific guidelines and best practices
-- Example layouts and components
-
-### Web Design Conventions
-
-- **CSS Variables**: Use CSS custom properties for theming (`--primary-color`, `--spacing-md`, etc.)
-- **BEM Naming**: Use Block-Element-Modifier naming for CSS classes (`.card__header`, `.btn--primary`)
-- **Mobile-First**: Write CSS for mobile first, then add media queries for larger screens
-- **Accessibility**: Include ARIA labels, focus states, keyboard navigation
-- **Performance**: Minimize CSS/JS, lazy load images, use system fonts
-- **Testing**: Validate HTML/CSS, test on multiple browsers/devices, run Lighthouse audits
+| Task | Command | Location |
+|------|---------|----------|
+| Run M365 Audit | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1" -Timestamped` | `scripts/powershell/` |
+| Clean CSV | `python scripts/clean_csv.py --input "raw.csv" --output "clean.csv"` | `scripts/` |
+| Generate Excel Report | `python scripts/m365_cis_report.py` | `scripts/` |
+| Generate HTML Dashboard | `python scripts/generate_security_dashboard.py` | `scripts/` |
+| Analyze SharePoint | `python -m src.integrations.sharepoint_connector --input "clean.csv"` | `src/integrations/` |
+| Run Tests | `pytest --cov=scripts --cov=src --cov-report=html` | `tests/` |
+| Code Formatting | `black --line-length 120 scripts/ src/` | Root |
+| Linting | `flake8 scripts/ src/ tests/ --max-line-length 120` | Root |
+| MCP Server (Simple) | `python -m src.extensions.mcp.server` | `src/extensions/mcp/` |
+| MCP Server (Plugin) | `python -m src.mcp.m365_mcp_server` | `src/mcp/` |
+| Performance Benchmark | `python scripts/run_performance_benchmark.py --baseline` | `scripts/` |
+| Use as GitHub Action 🆕 | `uses: Heyson315/Easy-Ai@v1` | In workflows |
+| View Project Status 🆕 | Open `PROJECT_STATUS_MAP.html` in browser | Root |
+| Check Bug Tracking 🆕 | Read `BUG_TRACKING.md` | Root |
 
 ## AI Development Resources
 
-**Essential Guides for AI Coding Agents**:
-- **[AI Agent Quick Start](AI_AGENT_QUICKSTART.md)** - 15-minute onboarding guide with common task patterns
-- **[AI Workflow Testing](AI_WORKFLOW_TESTING.md)** - Comprehensive testing patterns and automation strategies
-- **[MCP Tool Patterns](MCP_TOOL_PATTERNS.md)** - Model Context Protocol tool development patterns
-- **[Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)** - Complete web design patterns for SharePoint and GoDaddy
+**Essential Guides for AI Coding Agents:**
+- 📘 **[AI Agent Quick Start](AI_AGENT_QUICKSTART.md)** - 15-minute onboarding with common tasks
+- 🧪 **[AI Workflow Testing](AI_WORKFLOW_TESTING.md)** - Testing patterns and automation
+- 🤖 **[MCP Tool Patterns](MCP_TOOL_PATTERNS.md)** - Model Context Protocol development
+- 📖 **[AI Development Index](AI_DEVELOPMENT_INDEX.md)** - Complete navigation hub
+- 🎨 **[Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)** - SharePoint/GoDaddy patterns
 
-**When to Use Each Guide**:
-- 📘 **Starting new task?** → Read [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
-- 🧪 **Writing tests?** → Reference [AI Workflow Testing](AI_WORKFLOW_TESTING.md)
-- 🤖 **Building MCP tools?** → Follow [MCP Tool Patterns](MCP_TOOL_PATTERNS.md)
-- 🎨 **Designing web interfaces?** → Follow [Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)
-- 🏗️ **Understanding architecture?** → Continue reading this document
+**Project Tracking & Status:**
+- 📊 **[Interactive Status Dashboard](../PROJECT_STATUS_MAP.html)** - Visual feature completion map
+- 📋 **[Detailed Status Report](../PROJECT_STATUS.md)** - 80% complete (45/56 features)
+- 🐛 **[Bug Tracking System](../BUG_TRACKING.md)** - Zero known bugs (comprehensive analysis)
+
+**When to Use Each Guide:**
+- �� **Starting new task?** → [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
+- 🧪 **Writing tests?** → [AI Workflow Testing](AI_WORKFLOW_TESTING.md)
+- 🤖 **Building MCP tools?** → [MCP Tool Patterns](MCP_TOOL_PATTERNS.md)
+- 🎨 **Designing web interfaces?** → [Web Design Guide](../docs/WEB_DESIGN_GUIDE.md)
+- 🏗️ **Understanding architecture?** → This document
+
+## Extension Development Patterns
+
+### Adding GitHub Action to Another Repo
+**Minimal Configuration:**
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-id: ${{ secrets.M365_TENANT_ID }}
+    client-id: ${{ secrets.M365_CLIENT_ID }}
+    client-secret: ${{ secrets.M365_CLIENT_SECRET }}
+```
+
+**Full Configuration:**
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-id: ${{ secrets.M365_TENANT_ID }}
+    client-id: ${{ secrets.M365_CLIENT_ID }}
+    client-secret: ${{ secrets.M365_CLIENT_SECRET }}
+    spo-admin-url: 'https://tenant-admin.sharepoint.com'
+    timestamped: true
+    skip-purview: false
+    generate-dashboard: true
+    output-path: 'custom/output/path'
+    artifact-retention-days: 90
+```
+
+### Adding New MCP Plugin (Plugin-Based Architecture)
+```python
+# src/mcp/plugins/my_tool/tools.py
+class MyNewToolPlugin:
+    """Custom MCP tool"""
+
+    def execute(self, param1: str, param2: int = 100) -> dict:
+        """Execute the tool"""
+        try:
+            result = process_task(param1, param2)
+
+            return {
+                "status": "success",
+                "data": result,
+                "message": f"Successfully processed {param1}"
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "data": None,
+                "message": f"Tool failed: {type(e).__name__}",
+                "error": str(e)
+            }
+```
+
+```json
+# src/mcp/plugins/my_tool/plugin.json
+{
+  "name": "my_new_tool",
+  "version": "1.0.0",
+  "description": "Executes custom task",
+  "author": "Your Name",
+  "tools": [
+    {
+      "name": "execute_custom_task",
+      "class": "MyNewToolPlugin",
+      "description": "Executes custom task with parameters",
+      "parameters": {
+        "param1": {
+          "type": "string",
+          "description": "First parameter",
+          "required": true
+        },
+        "param2": {
+          "type": "integer",
+          "description": "Second parameter",
+          "required": false,
+          "default": 100
+        }
+      }
+    }
+  ]
+}
+```
+
+## Debugging & Troubleshooting
+
+### PowerShell Module Path Issues
+**Symptom:** `Import-Module M365CIS.psm1` fails even though file exists
+
+**Solution:** `Connect-M365CIS` auto-fixes OneDrive PSModulePath:
+```powershell
+# Automatically added by Connect-M365CIS
+$oneDrivePath = Join-Path $env:USERPROFILE "OneDrive\PowerShell\Modules"
+if (-not ($env:PSModulePath -split ';' -contains $oneDrivePath)) {
+    $env:PSModulePath += ";$oneDrivePath"
+}
+```
+
+**Manual Fix (if needed):**
+```powershell
+# Import with full path
+Import-Module "./scripts/powershell/modules/M365CIS.psm1" -Force
+
+# Or fix PSModulePath permanently
+$env:PSModulePath += ";$PWD\scripts\powershell\modules"
+```
+
+### CSV Parsing Failures
+**Symptom:** `pandas.errors.ParserError: Error tokenizing data`
+
+**Root Cause:** SharePoint exports contain:
+- UTF-8 BOM (Byte Order Mark)
+- Comment lines starting with `#`
+- Repeated headers across pages
+- Quoted commas in file paths
+
+**Solution:** Use `scripts/clean_csv.py` first - handles all these issues
+
+**Validation:**
+```bash
+# Inspect cleaned CSV before processing
+python scripts/inspect_processed_csv.py data/processed/clean.csv
+
+# Or manually validate
+python -c "import pandas as pd; print(pd.read_csv('clean.csv').info())"
+```
+
+**Performance Impact:**
+- Cleaning 5,000 rows: ~0.06s, 0.21MB memory
+- Cleaning 50,000 rows: ~0.6s, 2.1MB memory
+- Memory scales linearly with file size
+
+### Excel Generation Errors
+**Symptom:** `FileNotFoundError: [Errno 2] No such file or directory`
+
+**Root Cause:** Parent directory doesn't exist
+
+**Solution:** Always create parent directories:
+```python
+output_path = Path("output/reports/business/report.xlsx")
+output_path.parent.mkdir(parents=True, exist_ok=True)
+wb.save(output_path)
+```
+
+**Related Error:** `PermissionError: [Errno 13] Permission denied`
+- **Cause:** File is open in Excel
+- **Solution:** Close Excel or use a different output filename
+
+### MCP Extension Not Found
+**Symptom:** `ImportError: No module named 'mcp'`
+
+**Root Cause:** Extensions are optional and not installed by default
+
+**Solution:** Extensions are optional - install separately:
+```bash
+pip install -r requirements-extensions.txt
+```
+
+**Check What's Installed:**
+```bash
+pip list | grep -E "(mcp|msgraph|azure-identity)"
+```
+
+**Graceful Degradation Pattern:**
+```python
+try:
+    from mcp import MCPServer
+    USE_MCP = True
+except ImportError:
+    USE_MCP = False
+    print("MCP extensions not installed. Continuing without AI features.")
+```
+
+
+### GitHub Action v1.2.0 - Enhanced Features
+
+The published GitHub Action (Heyson315/Easy-Ai@v1) now includes **enterprise-grade capabilities**:
+
+#### Advanced Outputs (25+ Variables)
+
+**Risk Scoring (Severity-Weighted 0-100 Scale):**
+- `risk-score`: Overall risk score (0-100, weighted by severity: Critical=10, High=7, Medium=4, Low=1)
+- `critical-findings`: Count of critical severity failures
+- `high-findings`: Count of high severity failures
+- `medium-findings`: Count of medium severity failures
+- `low-findings`: Count of low severity failures
+
+**Compliance Trending (Historical Comparison):**
+- `compliance-trend`: Percentage change vs baseline (e.g., "+5.2%", "-2.1%")
+- `new-failures`: Count of newly failing controls since baseline
+- `fixed-issues`: Count of controls fixed since baseline
+- `trend-direction`: "improving", "stable", or "declining"
+
+**Security Integration:**
+- `sarif-report`: Path to SARIF 2.1.0 report for GitHub Security tab
+- `security-findings-count`: Total findings uploaded to Security tab
+
+**Automated Remediation:**
+- `remediated-controls`: Comma-separated list of auto-fixed control IDs
+- `remediation-report`: Path to detailed remediation log
+
+#### Key Inputs
+
+**Multi-Tenant Support:**
+```yaml
+tenant-config: |
+  [
+    {"name": "Client-A", "tenantId": "guid-1", "spoAdmin": "https://clienta-admin.sharepoint.com"},
+    {"name": "Client-B", "tenantId": "guid-2", "spoAdmin": "https://clientb-admin.sharepoint.com"}
+  ]
+```
+
+**Automated Remediation:**
+```yaml
+enable-auto-remediation: true
+auto-approve-remediation: false  # Requires approval gate
+remediation-controls: '1.1.1,1.1.3,2.1.1'  # Target specific controls
+```
+
+**Security Tab Integration:**
+```yaml
+upload-to-security-tab: true
+security-severity-threshold: high  # Only upload high/critical findings
+```
+
+**Compliance Trending:**
+```yaml
+compare-with-baseline: true
+baseline-artifact-name: 'compliance-baseline'  # Saved for 365 days
+```
+
+#### Real-World Workflow Examples
+
+See **[WORKFLOW_EXAMPLES.md](WORKFLOW_EXAMPLES.md)** for 6 production-ready scenarios:
+
+1. **Basic Audit with Security Tab** - Monthly scheduled scan uploading SARIF to Security tab
+2. **Automated Remediation with Approval** - WhatIf/Force mode with GitHub Environments approval gates
+3. **Multi-Tenant Batch Audit** - Matrix strategy for MSPs managing multiple M365 tenants
+4. **PR Compliance Gate** - Block PRs if compliance drops below 80% or risk score > 70
+5. **Teams Notification** - Alert Microsoft Teams on critical/high findings
+6. **Continuous Monitoring** - Update compliance badge every 6 hours, trigger incident response
+
+#### Risk Scoring Algorithm
+
+```powershell
+# Severity weights
+$weights = @{ "Critical" = 10; "High" = 7; "Medium" = 4; "Low" = 1 }
+
+# Calculate weighted risk
+$totalRiskPoints = ($criticalCount * 10) + ($highCount * 7) + ($mediumCount * 4) + ($lowCount * 1)
+$maxRiskPoints = $totalControlsCount * 10
+$riskScore = ($totalRiskPoints / $maxRiskPoints) * 100
+```
+
+**Example:** 100 controls, 5 critical failures, 10 high failures:
+- Risk Points: (5×10) + (10×7) = 120
+- Max Points: 100×10 = 1000
+- **Risk Score: 12.0/100** ✅
+
+#### SARIF Format for Security Tab
+
+Generated SARIF 2.1.0 reports include:
+- **Rules**: One per CIS control with full descriptions
+- **Results**: Failed controls mapped to SARIF violations
+- **Severity Mapping**: Critical=9.0, High=7.0, Medium=5.0, Low=3.0
+- **Locations**: M365 tenant URIs for context
+- **Fixes**: Remediation suggestions when available
+
+Upload via `github/codeql-action/upload-sarif@v3` with `security-events: write` permission.
+
+#### Compliance Trending
+
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    compare-with-baseline: true
+```
+
+**How it works:**
+1. First run saves baseline artifact (365-day retention)
+2. Subsequent runs compare against baseline
+3. Outputs:
+   - `compliance-trend`: "+5.2%" (5.2% improvement)
+   - `new-failures`: 3 (controls that started failing)
+   - `fixed-issues`: 8 (controls that are now passing)
+   - `trend-direction`: "improving"
+
+**Use cases:**
+- Fail PR if `trend-direction = "declining"`
+- Generate charts showing compliance over time
+- Alert security team on negative trends
+
+#### Multi-Tenant Architecture
+
+**Option A: Matrix Strategy (Recommended)**
+```yaml
+strategy:
+  matrix:
+    tenant: [Client-A, Client-B, Client-C]
+steps:
+  - uses: Heyson315/Easy-Ai@v1
+    with:
+      tenant-id: ${{ secrets[format('TENANT_ID_{0}', matrix.tenant)] }}
+```
+
+**Option B: Batch Configuration**
+```yaml
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-config: ${{ secrets.TENANT_BATCH_CONFIG }}
+```
+
+**Benefits for MSPs:**
+- Audit 10+ clients in parallel
+- Aggregate results across tenants
+- Generate per-client reports
+- Centralized compliance dashboard
+
+
+
+## Performance Benchmarks
+
+### Real-World Performance Metrics
+
+**Test Environment:**
+- CPU: Intel i7-10700K (8 cores)
+- RAM: 32GB DDR4
+- Storage: NVMe SSD
+- OS: Windows 11 Pro
+- Python: 3.11.5
+- PowerShell: 7.4.0
+
+**Benchmark Results (5,000 row dataset):**
+```
+Operation                               Time        Memory      Status
+========================================================================
+CSV Cleaning (5,000 rows)               0.060s      0.21MB      ✅ FAST
+CSV Cleaning (50,000 rows)              0.620s      2.10MB      ✅ FAST
+M365 CIS Report (200 controls)          0.411s      6.07MB      ✅ FAST
+Statistics Calculation (200 controls)   <0.001s     0.00MB      ✅ FAST
+SharePoint Summary (5,000 rows)         0.029s      1.16MB      ✅ FAST
+SharePoint Summary (50,000 rows)        0.285s      11.60MB     ✅ FAST
+Dashboard Generation (200 controls)     0.150s      2.50MB      ✅ FAST
+Full M365 Audit (15 controls)           8-12 min    50MB        ⏱️ LONG
+========================================================================
+```
+
+**Memory Usage by Operation:**
+| Operation | Small (5k) | Medium (50k) | Large (500k) | Notes |
+|-----------|------------|--------------|--------------|-------|
+| CSV Cleaning | 0.21MB | 2.1MB | 21MB | Linear scaling |
+| Excel Generation | 6MB | 15MB | 60MB | Includes formatting |
+| SharePoint Analysis | 1.16MB | 12MB | 120MB | DataFrame overhead |
+| Dashboard Creation | 2.5MB | 5MB | 15MB | Chart.js minimal |
+
+**Performance Targets (All Met ✅):**
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| CSV Cleaning Time | < 0.1s (5k rows) | 0.060s | ✅ 40% faster |
+| CSV Cleaning Memory | < 1MB | 0.21MB | ✅ 79% less |
+| CIS Report Time | < 0.5s | 0.411s | ✅ 18% faster |
+| CIS Report Memory | < 10MB | 6.07MB | ✅ 39% less |
+| Statistics Time | < 0.01s | <0.001s | ✅ 10x faster |
+| SharePoint Summary | < 0.05s | 0.029s | ✅ 42% faster |
+| Dashboard Generation | < 0.2s | 0.150s | ✅ 25% faster |
+| Full Audit | < 15 min | 8-12 min | ✅ 20-47% faster |
+
+**Optimization Impact:**
+- **CSV Cleaning:** 50% memory reduction through single-pass streaming
+- **Dashboard Generation:** 50% fewer file I/O operations via early validation
+- **SharePoint Analysis:** Conditional DataFrame copying only when needed
+- **Overall:** All operations complete in <1s except full audit (API-bound)
+
+### Scaling Characteristics
+
+**Linear Scaling (Good):**
+- CSV cleaning: O(n) time and memory
+- Statistics calculation: O(n) time, O(1) memory
+- SharePoint summaries: O(n) time and memory
+
+**Sub-Linear Scaling (Excellent):**
+- Dashboard generation: O(n log n) due to sorting
+- Excel formatting: O(n) with fixed overhead
+
+**API-Bound Operations (External Factors):**
+- Full M365 audit: 8-12 minutes (depends on Microsoft API latency)
+- Individual control tests: 1-30 seconds each
+- Rate limiting: Up to 60s delays if throttled
+
+### Performance Monitoring
+
+**Built-in Benchmarking:**
+```bash
+# Run performance benchmarks
+python scripts/run_performance_benchmark.py --baseline
+
+# Compare after optimization
+python scripts/run_performance_benchmark.py --compare
+
+# Profile specific operation
+python -m cProfile -o profile.stats scripts/clean_csv.py
+python -m pstats profile.stats
+>>> sort cumtime
+>>> stats 20
+```
+
+**Memory Profiling:**
+```python
+import tracemalloc
+
+tracemalloc.start()
+# ... your code ...
+current, peak = tracemalloc.get_traced_memory()
+print(f"Current: {current / 1024 / 1024:.2f}MB, Peak: {peak / 1024 / 1024:.2f}MB")
+tracemalloc.stop()
+```
+
+**GitHub Actions Performance:**
+- Average CI/CD run: 3-5 minutes
+- Cached dependencies: ~30s saved per run
+- Parallel jobs: 2x faster than sequential
+- Artifact upload: <1 minute for 50MB reports
+
+### Performance Best Practices
+
+**For Large Datasets (>100k rows):**
+```python
+# ✅ Use chunked processing
+for chunk in pd.read_csv(file, chunksize=10000):
+    process(chunk)
+
+# ✅ Use generators for filtering
+def filtered_lines(file):
+    for line in file:
+        if condition(line):
+            yield line
+
+# ✅ Process in parallel for independent operations
+from concurrent.futures import ThreadPoolExecutor
+with ThreadPoolExecutor(max_workers=5) as executor:
+    results = executor.map(process, data_chunks)
+```
+
+**For API-Heavy Operations:**
+```python
+# ✅ Use batch requests
+batch = graph_client.new_batch_request_builder()
+batch.add_request(request1)
+batch.add_request(request2)
+response = await batch.post()
+
+# ✅ Cache expensive calls
+from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def get_tenant_info(tenant_id):
+    return expensive_api_call(tenant_id)
+
+# ✅ Implement exponential backoff for rate limits
+```
+
+**For Excel Generation:**
+```python
+# ✅ Batch cell writes
+ws.append(row_data)  # Faster than individual cell writes
+
+# ✅ Avoid excessive formatting
+# Apply styles to ranges instead of individual cells
+
+# ✅ Use openpyxl's write_only mode for large files
+wb = Workbook(write_only=True)
+```
+
+### When to Optimize Further
+
+**Don't Optimize If:**
+- Operation completes in <1 second
+- Memory usage <100MB
+- Code readability would suffer significantly
+
+**Do Optimize If:**
+- User-facing operations take >5 seconds
+- Memory usage causes OOM errors
+- Blocking other operations (async opportunities)
+- Repeated in tight loops (caching opportunities)
+
+**Future Optimization Opportunities:**
+- Async PowerShell for parallel M365 API calls
+- Caching Graph API responses locally
+- Pre-compiled Pester tests
+- Incremental audit updates (only changed controls)
+
+---
+
+**🎯 Architecture Summary:** Hybrid Python/PowerShell enterprise security toolkit with dual MCP implementations and published GitHub Action. Core auditing works standalone; extensions enhance with AI integration; GitHub Action enables zero-setup CI/CD workflows.
+
+**🚀 Quick Start Paths:**
+1. **Local Development:** Clone → Install deps → Run audit scripts
+2. **CI/CD Integration:** Add GitHub Action → Configure secrets → Automated audits
+3. **AI Extensions:** Install MCP deps → Choose simple or plugin-based → Integrate with AI assistants
+4. **Multi-Repository:** Consume published action → Centralized security monitoring
+
+

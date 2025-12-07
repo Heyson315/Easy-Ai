@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"powershell.scriptAnalysis.enable": true,
+		"git.confirmSync": false,
+		"files.associations": {
+			"*.env.template": "properties",
+			".env.*": "properties"
+		}
+	}
+}

@@ -1,9 +1,13 @@
 import argparse
-import json
 import sys
 from pathlib import Path
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import pandas as pd
+
+from src.core.file_io import ensure_parent_dir, load_json_with_bom, normalize_audit_data
 
 DEFAULT_JSON = Path("output/reports/security/m365_cis_audit.json")
 
@@ -15,30 +19,9 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     json_path = Path(json_path)
     xlsx_path = Path(xlsx_path)
 
-    # Validate input file exists
-    if not json_path.exists():
-        print(f"ERROR: Input file not found: {json_path}", file=sys.stderr)
-        sys.exit(1)
-
-    xlsx_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Handle potential UTF-8 BOM from PowerShell's UTF8 encoding
-    try:
-        data = json.loads(json_path.read_text(encoding="utf-8-sig"))
-    except json.JSONDecodeError as e:
-        print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
-        sys.exit(1)
-    except (PermissionError, UnicodeDecodeError) as e:
-        print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Unexpected error reading {json_path}: {e}", file=sys.stderr)
-        sys.exit(1)
-    if isinstance(data, dict):
-        # In case it's a single object
-        rows = [data]
-    else:
-        rows = data
+    ensure_parent_dir(xlsx_path)
+    data = load_json_with_bom(json_path)
+    rows = normalize_audit_data(data)
     controls_dataframe = pd.DataFrame(rows)
 
     # Overview

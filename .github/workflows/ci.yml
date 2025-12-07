@@ -37,6 +37,8 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run tests with coverage
+        env:
+          PYTHONPATH: .
         run: |
           pytest --cov=src --cov=core --cov=extensions --cov=integrations --cov-report=xml --cov-report=term
 
