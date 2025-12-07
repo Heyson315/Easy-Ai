@@ -1,0 +1,90 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+  # Triggered by GitHub Copilot when it needs to understand your environment
+
+permissions:
+  contents: read
+  # Least privilege: read-only access
+
+jobs:
+  copilot-setup-steps:
+    name: copilot-setup-steps
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone for speed
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Python dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install --require-hashes --no-deps -r requirements.txt || pip install -r requirements.txt
+          fi
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
+
+      - name: Install Node.js dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm ci --ignore-scripts
+          fi
+
+      - name: Cache Python packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Cache Node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run linters (optional, helps Copilot understand code style)
+        run: |
+          if command -v pylint &> /dev/null; then
+            pylint **/*.py || true
+          fi
+          if [ -f package.json ] && npm run lint --if-present; then
+            npm run lint || true
+          fi
+
+      - name: Security scan - Bandit (Python)
+        run: |
+          if [ -f requirements.txt ] && command -v bandit &> /dev/null; then
+            bandit -r . -f json -o bandit-report.json || true
+          fi
+
+      - name: Security scan - npm audit (Node.js)
+        run: |
+          if [ -f package.json ]; then
+            npm audit --audit-level=high || true
+          fi
+
+      - name: Log completion
+        run: |
+          echo "✅ Copilot setup steps completed successfully."
+          echo "Environment: Python $(python --version), Node $(node --version)"
