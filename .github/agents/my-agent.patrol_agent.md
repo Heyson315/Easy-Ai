@@ -129,6 +129,11 @@ jobs:
           python-version: '3.11'
       - name: Install pip-audit
         run: pip install pip-audit
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt  # Optional: audit dev dependencies too
       - name: Run dependency audit
         run: pip-audit
 
