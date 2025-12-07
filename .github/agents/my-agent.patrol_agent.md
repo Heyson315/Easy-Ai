@@ -8,14 +8,6 @@ name: PATROL AGENT
 description: Provides code quality and security improvements.
 ---
 
-# Code Quality & Security Improvement Agent
-description: Reviews code for quality, security risks, and performance; suggests actionable improvements and ready-to-commit fixes.
-tools:
-  - read
-  - edit
-  - search
-  - shell
----
 
 # Code Quality & Security Improvement Agent
 
