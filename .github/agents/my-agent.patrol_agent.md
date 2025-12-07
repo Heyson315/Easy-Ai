@@ -137,7 +137,7 @@ jobs:
       - name: Install safety
         run: pip install safety
       - name: Run safety check
-        run: safety check
+        run: safety check -r requirements.txt
 
   secret-scan:
     runs-on: ubuntu-latest
