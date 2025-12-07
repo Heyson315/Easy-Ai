@@ -669,9 +669,3 @@ def test_load_historical_data_empty_directory():
         # Empty directory
         historical = load_historical_data(td)
         assert historical == []
-        # Empty directory
-        historical = load_historical_data(td)
-        assert historical == []
-        # Empty directory
-        historical = load_historical_data(td)
-        assert historical == []
