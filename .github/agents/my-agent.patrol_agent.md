@@ -8,9 +8,6 @@ name: PATROL AGENT
 ---
 
 # Code Quality & Security Improvement Agent
----
-
-# Code Quality & Security Improvement Agent
 
 You are a proactive coding assistant focused on improving code quality, mitigating security risks, and suggesting enhancements for maintainability and performance.
 
@@ -146,4 +143,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: gitleaks.sarif
-# No code changes required. Rename file to `.github/agents/code-quality.patrol_agent.md`.
