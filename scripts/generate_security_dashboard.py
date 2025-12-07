@@ -390,9 +390,13 @@ def generate_html_dashboard(
         status = html.escape(raw_status)
         actual = html.escape(str(result.get("Actual", "N/A")))
 
-        # CSS class names use raw values (lowercased) - safe because they're used as class names
-        status_class = f"status-{raw_status.lower()}"
-        severity_class = f"severity-{raw_severity.lower()}"
+        # Sanitize class names - only allow alphanumeric and hyphen to prevent XSS
+        # Invalid characters become safe "unknown"
+        safe_status = "".join(c for c in raw_status.lower() if c.isalnum() or c == "-") or "unknown"
+        safe_severity = "".join(c for c in raw_severity.lower() if c.isalnum() or c == "-") or "unknown"
+
+        status_class = f"status-{safe_status}"
+        severity_class = f"severity-{safe_severity}"
 
         # Escape data attribute values
         data_status = html.escape(raw_status.lower())
