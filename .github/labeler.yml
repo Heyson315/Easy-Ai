@@ -54,7 +54,6 @@ documentation:
       - 'CONTRIBUTING*'
       - 'CODE_OF_CONDUCT*'
       - 'LICENSE*'
-      - '*.md'
 
 # Security & Compliance
 # Triggers on: Security policies, security workflows, audit/compliance files
