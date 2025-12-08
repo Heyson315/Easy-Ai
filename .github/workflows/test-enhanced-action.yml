@@ -114,7 +114,7 @@ jobs:
           echo "✅ All outputs validated successfully!" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Audit Reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-audit-reports
           path: |

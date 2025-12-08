@@ -45,7 +45,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-run-${{ github.run_id }}-attempt-${{ github.run_attempt }}-${{ github.sha }}
           path: |
@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload PSScriptAnalyzer results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: psscriptanalyzer-results-${{ github.run_id }}-${{ github.sha }}
           path: scripts/powershell/

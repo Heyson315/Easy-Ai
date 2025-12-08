@@ -152,7 +152,7 @@ jobs:
 
     - name: 💾 Upload dependency artifacts
       if: steps.check-updates.outputs.updates-available == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       id: upload-python-dependencies
       with:
         name: python-dependency-updates
@@ -279,7 +279,7 @@ jobs:
 
     - name: 💾 Upload PowerShell artifacts
       if: steps.check-ps-updates.outputs.updates-available == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       id: upload-powershell-updates
       with:
         name: powershell-module-updates
@@ -343,7 +343,7 @@ jobs:
         find . -name "*.yml" -o -name "*.yaml" -o -name "*.json" | xargs grep -l "password\|secret\|key" >> security-report.md || echo "No sensitive data in config files" >> security-report.md
 
     - name: 💾 Upload security report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       id: upload-security-report
       with:
         name: security-audit-report
