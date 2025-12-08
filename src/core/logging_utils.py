@@ -4,12 +4,14 @@ Shared logging utilities for M365 Security Toolkit.
 Provides consistent logging configuration across all MCP servers and scripts.
 """
 
+import inspect
 import logging
 from pathlib import Path
+from typing import Optional
 
 
 def setup_logging(
-    logger_name: str = None,
+    logger_name: Optional[str] = None,
     log_filename: str = "m365_toolkit.log",
     log_level: int = logging.INFO,
 ) -> logging.Logger:
@@ -40,8 +42,6 @@ def setup_logging(
 
     # Use caller's module name if not specified
     if logger_name is None:
-        import inspect
-
         frame = inspect.currentframe()
         caller_frame = frame.f_back if frame else None
         logger_name = caller_frame.f_globals.get("__name__", "root") if caller_frame else "root"

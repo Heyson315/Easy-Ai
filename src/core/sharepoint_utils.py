@@ -71,12 +71,12 @@ async def analyze_sharepoint_permissions(
 
 📁 Open the Excel report for detailed insights!""",
                 )
-            else:
-                return False, f"Report generation failed: {stderr}"
-        else:
-            return (
-                True,
-                f"""✅ SharePoint Permissions Analysis Complete!
+
+            return False, f"Report generation failed: {stderr}"
+
+        return (
+            True,
+            f"""✅ SharePoint Permissions Analysis Complete!
 
 📊 **Analysis Results:**
 • Input File: {input_file}

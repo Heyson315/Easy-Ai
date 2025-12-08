@@ -142,5 +142,9 @@
         "copilot/gpt-5.1-codex-mini"
       ]
     }
-  }
+  },
+  "python.analysis.extraPaths": [
+    "c:\\Users\\HassanRahman\\.vscode\\extensions\\ms-security.ms-sentinel-1.0.0\\python",
+    "c:\\Users\\HassanRahman\\.vscode\\extensions\\ms-security.ms-sentinel-1.1.1\\python"
+  ]
 }

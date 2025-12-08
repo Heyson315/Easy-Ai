@@ -5,6 +5,7 @@ Provides consistent subprocess patterns for running scripts across MCP servers.
 """
 
 import asyncio
+import os
 import sys
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -14,7 +15,7 @@ async def run_python_script(
     script_path: Path,
     args: Optional[List[str]] = None,
     cwd: Optional[Path] = None,
-) -> Tuple[int, str, str]:
+) -> Tuple[Optional[int], str, str]:
     """
     Execute a Python script as a subprocess.
 
@@ -45,7 +46,7 @@ async def run_python_module(
     module_name: str,
     args: Optional[List[str]] = None,
     cwd: Optional[Path] = None,
-) -> Tuple[int, str, str]:
+) -> Tuple[Optional[int], str, str]:
     """
     Execute a Python module as a subprocess using -m flag.
 
@@ -77,7 +78,7 @@ async def run_powershell_script(
     args: Optional[List[str]] = None,
     cwd: Optional[Path] = None,
     use_pwsh: Optional[bool] = None,
-) -> Tuple[int, str, str]:
+) -> Tuple[Optional[int], str, str]:
     """
     Execute a PowerShell script as a subprocess.
 
@@ -91,8 +92,6 @@ async def run_powershell_script(
     Returns:
         Tuple of (return_code, stdout, stderr)
     """
-    import os
-
     if use_pwsh is None:
         use_pwsh = os.name != "nt"
 
