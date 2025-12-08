@@ -74,6 +74,9 @@ When invoked without specific instructions:
 ---
 
 ## Example GitHub Action for Python (Tests + Linting + Coverage + Dependency Scan + Secret Scan)
+
+### Option 1: Single Python Version (Simple)
+Use this approach for projects that target a specific Python version.
 ```yaml
 name: Python CI
 
@@ -96,7 +99,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.11'  # Customize to match your project's Python version
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -122,7 +125,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.11'  # Customize to match your project's Python version
       - name: Install pip-audit
         run: pip install pip-audit
       - name: Install dependencies
@@ -148,3 +151,89 @@ jobs:
         with:
           sarif_file: gitleaks.sarif
 ```
+
+### Option 2: Matrix Strategy (Recommended for Libraries)
+Use this approach to test across multiple Python versions, ensuring broader compatibility.
+```yaml
+name: Python CI (Multi-Version)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']  # Customize versions as needed
+    name: Tests (Python ${{ matrix.python-version }})
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'  # Cache pip dependencies for faster runs
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Lint with flake8
+        run: flake8 .
+      - name: Run tests with coverage
+        run: |
+          coverage run -m pytest
+          coverage report
+          coverage xml
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: coverage.xml
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # Use latest stable version for audit
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Run dependency audit
+        run: pip-audit
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --source . --verbose --report-format sarif --report-path gitleaks.sarif
+          fail: true
+      - name: Upload SARIF results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: gitleaks.sarif
+```
+
+# No code changes required. Rename file to `.github/agents/code-quality.patrol_agent.md`.
+
