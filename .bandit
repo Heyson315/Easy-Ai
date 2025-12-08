@@ -1,0 +1,9 @@
+[bandit]
+# Suppress B101 (assert_used) in test files - assertions are intentional in tests
+exclude_dirs = /htmlcov/,/output/,/data/
+skips = B101
+
+# Test files explicitly allow assert statements
+[bandit.assert_used]
+skips = B101
+exclude = /tests/

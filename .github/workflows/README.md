@@ -101,7 +101,7 @@ Attestations are generated for:
 
 To verify an artifact's attestation:
 ```bash
-gh attestation verify <artifact-path> --owner Heyson315 --repo share-report
+gh attestation verify <artifact-path> --owner Heyson315 --repo Easy-Ai
 ```
 
 ### Required Microsoft 365 Permissions

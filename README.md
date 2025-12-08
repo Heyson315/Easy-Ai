@@ -1,16 +1,16 @@
 # M365 Security & SharePoint Analysis Toolkit 🛡️
 
-[![CI/CD Pipeline](https://github.com/Heyson315/share-report/actions/workflows/m365-security-ci.yml/badge.svg)](https://github.com/Heyson315/share-report/actions/workflows/m365-security-ci.yml)
-[![Monthly Security Audit](https://github.com/Heyson315/share-report/actions/workflows/m365-automated-audit.yml/badge.svg)](https://github.com/Heyson315/share-report/actions/workflows/m365-automated-audit.yml)
+[![CI/CD Pipeline](https://github.com/Heyson315/Easy-Ai/actions/workflows/m365-security-ci.yml/badge.svg)](https://github.com/Heyson315/Easy-Ai/actions/workflows/m365-security-ci.yml)
+[![Monthly Security Audit](https://github.com/Heyson315/Easy-Ai/actions/workflows/m365-automated-audit.yml/badge.svg)](https://github.com/Heyson315/Easy-Ai/actions/workflows/m365-automated-audit.yml)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://docs.microsoft.com/en-us/powershell/)
 [![Python](https://img.shields.io/badge/Python-3.9+-green.svg)](https://www.python.org/downloads/)
 [![AI Development Ready](https://img.shields.io/badge/AI%20Development-Ready-brightgreen.svg)](.github/copilot-instructions.md)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-purple.svg)](docs/CUSTOM_MCP_SERVER_GUIDE.md)
-[![CodeQL](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/codeql.yml)
-[![Dependency Review](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/dependency-review.yml)
-[![Security Scan](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/security-scan.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/security-scan.yml)
+[![CodeQL](https://github.com/Heyson315/Easy-Ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/Heyson315/Easy-Ai/actions/workflows/codeql.yml)
+[![Dependency Review](https://github.com/Heyson315/Easy-Ai/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/Heyson315/Easy-Ai/actions/workflows/dependency-review.yml)
+[![Security Scan](https://github.com/Heyson315/Easy-Ai/actions/workflows/security-scan.yml/badge.svg)](https://github.com/Heyson315/Easy-Ai/actions/workflows/security-scan.yml)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-success.svg)](https://docs.github.com/code-security/dependabot)
-[![CI Tests](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/ci.yml/badge.svg)](https://github.com/HHR-CPA/Easy-Ai/actions/workflows/ci.yml) ![Coverage](coverage.svg)
+[![CI Tests](https://github.com/Heyson315/Easy-Ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Heyson315/Easy-Ai/actions/workflows/ci.yml) ![Coverage](coverage.svg)
 
 ## 🎯 Overview
 
@@ -68,12 +68,34 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 - Real compliance requirements (SOX, AICPA standards)
 - Integration with accounting software ecosystems
 
-### Installation
+### Installation Options
+
+#### Option 1: GitHub Action (Recommended for CI/CD)
+
+Use our pre-built GitHub Action in your workflows:
+
+```yaml
+- name: Run M365 Security Audit
+  uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-id: ${{ secrets.M365_TENANT_ID }}
+    client-id: ${{ secrets.M365_CLIENT_ID }}
+    client-secret: ${{ secrets.M365_CLIENT_SECRET }}
+    generate-dashboard: true
+```
+
+📖 See [Action Usage Examples](.github/ACTION_USAGE_EXAMPLES.md) for complete workflow patterns including:
+- Monthly scheduled audits
+- Pull request compliance gates
+- Multi-tenant audits
+- Teams notifications
+
+#### Option 2: Local Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/Heyson315/share-report.git
-cd share-report
+git clone https://github.com/Heyson315/Easy-Ai.git
+cd Easy-Ai
 
 # Setup Python environment
 python -m venv .venv
@@ -273,15 +295,20 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 | **📋 Strategic Planning** | [Strategic Roadmap](docs/STRATEGIC_ROADMAP.md) | 🆕 Priority matrix & implementation plan |
 | **🚀 New Users** | [Project Outline](PROJECT_OUTLINE.md) | Complete project blueprint & setup |
 | **🧠 AI Agents** | [Copilot Instructions](.github/copilot-instructions.md) | Development patterns & architecture |
-| **🛡️ Security Teams** | [CIS Security Guide](docs/SECURITY_M365_CIS.md) | Security audit workflows |
-| **👨‍💻 Developers** | [Contributing Guide](CONTRIBUTING.md) | Development standards |
-| **🔧 Admins** | [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md) | Enterprise setup |
+| **🛡️ Security Teams** | [Secure Coding Guide](docs/SECURE_CODING_GUIDE.md) | 🆕 Security best practices for CPA firms |
+| **👨‍💻 Developers** | [API Reference](docs/API_REFERENCE.md) | 🆕 Complete API documentation |
+| **❓ Troubleshooting** | [FAQ](docs/FAQ.md) | 🆕 Common questions & solutions |
+| **🏗️ Architects** | [Architecture](ARCHITECTURE.md) | 🆕 System design & components |
 
 ### **📖 All Documentation**
 📁 **[Complete Documentation Index](docs/README.md)** - Organized by audience and use case
 
 **Key Guides:**
 - 📋 [Strategic Roadmap](docs/STRATEGIC_ROADMAP.md) - 🆕 Implementation priorities & success metrics
+- 🔐 [Secure Coding Guide](docs/SECURE_CODING_GUIDE.md) - 🆕 Security best practices & compliance
+- ❓ [FAQ](docs/FAQ.md) - 🆕 Frequently asked questions & troubleshooting
+- 📚 [API Reference](docs/API_REFERENCE.md) - 🆕 Python/PowerShell API documentation
+- 🏗️ [Architecture](ARCHITECTURE.md) - 🆕 System design & data flow
 - 🔐 [M365 CIS Security Auditing](docs/SECURITY_M365_CIS.md)
 - 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md)
 - 🤖 [AI MCP Server Development](docs/CUSTOM_MCP_SERVER_GUIDE.md)
@@ -401,9 +428,9 @@ This project is licensed under the MIT License - see the [`LICENSE`](LICENSE) fi
 
 ## 📞 Support
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/Heyson315/share-report/issues)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/Heyson315/Easy-Ai/issues)
 - 📚 **Documentation**: [`docs/`](docs/) directory
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/Heyson315/share-report/discussions)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/Heyson315/Easy-Ai/discussions)
 - 📧 **Security Issues**: security@company.com
 
 ---

@@ -33,14 +33,6 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
 
     # Normalize string columns efficiently (only those that exist and need normalization)
     str_columns = [
-def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFrame]:
-    """Create summary DataFrames for the report."""
-    summaries: dict[str, pd.DataFrame] = {}
-
-    # Normalize some fields
-    permissions_dataframe = permissions_dataframe.copy()
-    # Ensure consistent types
-    for col in [
         "Resource Path",
         "Item Type",
         "Permission",
@@ -54,37 +46,29 @@ def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFra
 
     # Only normalize columns that exist in the DataFrame
     existing_str_cols = [col for col in str_columns if col in df.columns]
+
     if existing_str_cols:
         # Create a copy only if we need to modify
         df = df.copy()
         for col in existing_str_cols:
             df[col] = df[col].astype(str).str.strip()
-    ]:
-        if col in permissions_dataframe.columns:
-            permissions_dataframe[col] = permissions_dataframe[col].astype(str).str.strip()
 
     # 1) Counts by Item Type
-    if "Item Type" in permissions_dataframe.columns:
+    if "Item Type" in df.columns:
         summaries["by_item_type"] = (
-            permissions_dataframe.groupby("Item Type")
-            .size()
-            .reset_index(name="Count")
-            .sort_values("Count", ascending=False)
+            df.groupby("Item Type").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 2) Counts by Permission
-    if "Permission" in permissions_dataframe.columns:
+    if "Permission" in df.columns:
         summaries["by_permission"] = (
-            permissions_dataframe.groupby("Permission")
-            .size()
-            .reset_index(name="Count")
-            .sort_values("Count", ascending=False)
+            df.groupby("Permission").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 3) Top users by occurrences
-    if "User Email" in permissions_dataframe.columns:
+    if "User Email" in df.columns:
         summaries["top_users"] = (
-            permissions_dataframe[permissions_dataframe["User Email"].str.len() > 0]
+            df[df["User Email"].str.len() > 0]
             .groupby(["User Email", "User Name"])
             .size()
             .reset_index(name="Count")
@@ -93,9 +77,9 @@ def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFra
         )
 
     # 4) Top resources by occurrences
-    if "Resource Path" in permissions_dataframe.columns:
+    if "Resource Path" in df.columns:
         summaries["top_resources"] = (
-            permissions_dataframe[permissions_dataframe["Resource Path"].str.len() > 0]
+            df[df["Resource Path"].str.len() > 0]
             .groupby("Resource Path")
             .size()
             .reset_index(name="Count")

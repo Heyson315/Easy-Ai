@@ -115,7 +115,7 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
 # Run scripts from repository root
-cd /path/to/share-report
+cd /path/to/Easy-Ai
 python scripts/script_name.py
 ```
 
@@ -258,7 +258,7 @@ data/test/
 
 ### 2. Submodule Errors in CI
 
-**Warning**: `fatal: No url found for submodule path 'share-report'`
+**Warning**: `fatal: No url found for submodule path 'Easy-Ai'`
 
 **Cause**: Invalid submodule configuration (can be ignored if not using submodules)
 
@@ -268,8 +268,8 @@ data/test/
 git config --file .gitmodules --get-regexp url
 
 # Remove invalid submodule
-git submodule deinit share-report
-git rm share-report
+git submodule deinit Easy-Ai
+git rm Easy-Ai
 git commit -m "Remove invalid submodule"
 ```
 

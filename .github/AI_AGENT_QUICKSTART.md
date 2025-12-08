@@ -22,9 +22,17 @@ Before starting any task, **read these in order**:
 
 ---
 
+## 📊 Project Status
+
+- **[Interactive Dashboard](../PROJECT_STATUS_MAP.html)** - Visual feature completion map
+- **[Detailed Report](../PROJECT_STATUS.md)** - 80% complete (45/56 features)
+- **[Bug Tracking](../BUG_TRACKING.md)** - Zero known bugs
+
+---
+
 ## 🏗️ Project Architecture at a Glance
 
-```
+```text
 Hybrid Python/PowerShell Toolkit
 ├── PowerShell → M365 Services → Raw JSON/CSV (output/reports/security/)
 ├── Python Scripts → CSV Cleaning → Processed Data (data/processed/)
@@ -32,6 +40,7 @@ Hybrid Python/PowerShell Toolkit
 ```
 
 **Key Directories:**
+
 - `scripts/` - Standalone utilities (Python + PowerShell)
 - `scripts/powershell/modules/M365CIS.psm1` - Core audit functions (483+ lines)
 - `src/core/` - Excel generation
@@ -46,6 +55,7 @@ Hybrid Python/PowerShell Toolkit
 ### Task 1: Add a New Python Script
 
 **Pattern:**
+
 ```python
 #!/usr/bin/env python
 """
@@ -74,12 +84,14 @@ if __name__ == "__main__":
 ```
 
 **Key Conventions:**
+
 - ❌ Don't use `python -m scripts.my_script` → ✅ Use `python scripts/my_script.py`
 - Use `pathlib.Path` for file paths
 - Create output directories with `.parent.mkdir(parents=True, exist_ok=True)`
 - Use specific exceptions: `json.JSONDecodeError`, `PermissionError`, not generic `Exception`
 
 **Testing Pattern:**
+
 ```python
 # tests/test_my_script.py
 from tempfile import TemporaryDirectory
@@ -110,6 +122,7 @@ def test_my_function():
 ### Task 2: Add a New PowerShell Function to M365CIS Module
 
 **Pattern:**
+
 ```powershell
 # In scripts/powershell/modules/M365CIS.psm1
 
@@ -155,6 +168,7 @@ function Test-CIS-X.Y.Z {
 ```
 
 **Key Conventions:**
+
 - Prefix: `Test-CIS-*` for audit functions
 - Always return `New-CISResult` PSCustomObject
 - Wrap in try/catch returning `Status='Manual'` on error
@@ -183,6 +197,7 @@ print(f"Output {stats['output_rows']} clean rows")
 ```
 
 **Pattern inside clean_csv:**
+
 ```python
 # Read with UTF-8 BOM handling
 content = input_path.read_text(encoding='utf-8-sig')
@@ -199,6 +214,7 @@ reader = csv.reader(lines)
 ### Task 4: Generate Excel Report with Formatting
 
 **Pattern:**
+
 ```python
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
@@ -244,7 +260,7 @@ wb.save(output_path)
 
 ```bash
 # 1. Run tests
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 python -m pytest tests/ -v --cov=scripts --cov=src
 
 # 2. Run linters (if code changes)
@@ -263,6 +279,7 @@ git status
 ```
 
 **Before committing:**
+
 - ✅ All tests pass
 - ✅ Linters pass (Black, flake8)
 - ✅ Script runs without errors
@@ -329,6 +346,7 @@ target-version = ['py38', 'py39', 'py310', 'py311']
 ```
 
 **Usage:**
+
 ```bash
 black --line-length 120 scripts/my_script.py
 black --check scripts/  # Dry run
@@ -345,6 +363,7 @@ addopts = "-v --cov=scripts --cov=src"
 ```
 
 **Usage:**
+
 ```bash
 python -m pytest tests/ -v
 python -m pytest tests/test_my_script.py -v
@@ -438,7 +457,7 @@ git push origin branch-name
 
 ```bash
 # Ensure you're in repo root
-cd /home/runner/work/share-report/share-report
+cd /home/runner/work/Easy-Ai/Easy-Ai
 
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"

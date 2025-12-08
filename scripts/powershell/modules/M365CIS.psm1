@@ -39,12 +39,21 @@ function Connect-M365CIS {
     }
     if (-not $SkipGraph) {
         try {
-            Write-CISLog 'Connecting to Microsoft Graph (User.Read.All, Policy.Read.All, Directory.Read.All)...'
             Import-Module Microsoft.Graph.Authentication -ErrorAction Stop
             Import-Module Microsoft.Graph.Identity.DirectoryManagement -ErrorAction Stop
             Import-Module Microsoft.Graph.Identity.SignIns -ErrorAction Stop
-            Connect-MgGraph -Scopes 'User.Read.All','Policy.Read.All','Directory.Read.All','Organization.Read.All' -ErrorAction Stop | Out-Null
-            Write-CISLog 'Connected to Microsoft Graph.'
+            
+            # Check if already connected (e.g., from action.yml with access token)
+            $existingContext = $null
+            try { $existingContext = Get-MgContext } catch { $existingContext = $null }
+            
+            if ($existingContext) {
+                Write-CISLog "Already connected to Microsoft Graph (AuthType: $($existingContext.AuthType))"
+            } else {
+                Write-CISLog 'Connecting to Microsoft Graph (User.Read.All, Policy.Read.All, Directory.Read.All)...'
+                Connect-MgGraph -Scopes 'User.Read.All','Policy.Read.All','Directory.Read.All','Organization.Read.All' -ErrorAction Stop | Out-Null
+                Write-CISLog 'Connected to Microsoft Graph.'
+            }
         } catch {
             Write-CISLog "Graph connect failed: $($_.Exception.Message)" 'Warn'
         }

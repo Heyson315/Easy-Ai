@@ -110,6 +110,6 @@ For releases:
 
 ---
 
-[Unreleased]: https://github.com/Heyson315/share-report/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/Heyson315/share-report/releases/tag/v1.0.0
-[0.1.0]: https://github.com/Heyson315/share-report/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Heyson315/Easy-Ai/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Heyson315/Easy-Ai/releases/tag/v1.0.0
+[0.1.0]: https://github.com/Heyson315/Easy-Ai/releases/tag/v0.1.0

@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: share_report_mcp
+    volumes:
+      - .:/workspace:delegated
+    working_dir: /workspace
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    command: ["python", "src/extensions/mcp/server.py"]
+    restart: unless-stopped
