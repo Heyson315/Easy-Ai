@@ -13,7 +13,7 @@
 
 name: Codacy Security Scan
 
-run-name: ubuntu-latest
+run-name: Codacy Security Scan for ${{ github.ref_name }}
 
 on:
   push:
