@@ -82,9 +82,9 @@ name: Python CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ Primary ]
   pull_request:
-    branches: [ main ]
+    branches: [ Primary ]
 
 permissions:
   contents: read
