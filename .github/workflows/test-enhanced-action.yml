@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       test-mode:
-        description: 'Test mode'
+        description: "Test mode"
         required: true
-        default: 'validate-only'
+        default: "validate-only"
         type: choice
         options:
           - validate-only
@@ -16,17 +16,17 @@ jobs:
   validate-action:
     name: Validate Action Structure
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Validate action.yml syntax
         run: |
           echo "✅ Validating action.yml YAML syntax..."
           python -c "import yaml; yaml.safe_load(open('action.yml'))"
           echo "✅ action.yml is valid YAML"
-      
+
       - name: Check required inputs
         run: |
           echo "✅ Checking required inputs are defined..."
@@ -34,7 +34,7 @@ jobs:
           grep -q "client-id:" action.yml
           grep -q "client-secret:" action.yml
           echo "✅ All required inputs present"
-      
+
       - name: Check outputs
         run: |
           echo "✅ Verifying v1.2.0 outputs..."
@@ -52,11 +52,11 @@ jobs:
     permissions:
       contents: read
       security-events: write
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Verify Secrets Exist
         run: |
           if [ -z "${{ secrets.M365_TENANT_ID }}" ]; then
@@ -64,21 +64,21 @@ jobs:
             echo "::error::Please add M365_TENANT_ID to repository secrets"
             exit 1
           fi
-          
+
           if [ -z "${{ secrets.M365_CLIENT_ID }}" ]; then
             echo "❌ M365_CLIENT_ID secret not configured"
             echo "::error::Please add M365_CLIENT_ID to repository secrets"
             exit 1
           fi
-          
+
           if [ -z "${{ secrets.M365_CLIENT_SECRET }}" ]; then
             echo "❌ M365_CLIENT_SECRET secret not configured"
             echo "::error::Please add M365_CLIENT_SECRET to repository secrets"
             exit 1
           fi
-          
+
           echo "✅ All required secrets are configured"
-      
+
       - name: Run Enhanced Action
         id: audit
         uses: ./
@@ -90,70 +90,54 @@ jobs:
           upload-to-security-tab: true
           compare-with-baseline: true
           enable-auto-remediation: false
-          
+
       - name: Validate Outputs
         run: |
           echo "### 🎯 Output Validation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Output | Value | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          
+
           # Validate core outputs
           echo "| Compliance Score | ${{ steps.audit.outputs.compliance-score }}% | ✅ |" >> $GITHUB_STEP_SUMMARY
           echo "| Total Controls | ${{ steps.audit.outputs.total-controls }} | ✅ |" >> $GITHUB_STEP_SUMMARY
-          
+
           # Validate risk scoring outputs
           echo "| Risk Score | ${{ steps.audit.outputs.risk-score }}/100 | ✅ |" >> $GITHUB_STEP_SUMMARY
           echo "| Critical Findings | ${{ steps.audit.outputs.critical-findings }} | ✅ |" >> $GITHUB_STEP_SUMMARY
-          
+
           # Validate trending outputs
           echo "| Compliance Trend | ${{ steps.audit.outputs.compliance-trend }} | ✅ |" >> $GITHUB_STEP_SUMMARY
           echo "| Trend Direction | ${{ steps.audit.outputs.trend-direction }} | ✅ |" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ All outputs validated successfully!" >> $GITHUB_STEP_SUMMARY
-      
-      - name: Upload Reports
+
+      - name: Upload Audit Reports
         uses: actions/upload-artifact@v4
         with:
-          name: compliance-baseline-audit
+          name: test-audit-reports
           path: |
             ${{ steps.audit.outputs.json-report }}
             ${{ steps.audit.outputs.csv-report }}
             ${{ steps.audit.outputs.excel-report }}
-          retention-days: 365
-      
+          retention-days: 30
+
       - name: Prepare Dashboard
         if: success()
         run: |
           Write-Host "📊 Preparing web dashboard..." -ForegroundColor Cyan
           # Copy JSON report to dashboard data directory
-          Copy-Item "${{ steps.audit.outputs.json-report }}" web-templates/dashboard/data/m365_cis_audit.json -Force
-          Write-Host "✅ Dashboard ready for deployment" -ForegroundColor Green
-        shell: pwsh
-      
-      - name: Deploy to GitHub Pages
-        if: success() && github.ref == 'refs/heads/Primary'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          name: test-audit-reports
-          path: output/reports/
-          retention-days: 30
-
-      # Deploy Web Dashboard
-      - name: Prepare Dashboard
-        if: success()
-        run: |
-          Write-Host "📊 Preparing web dashboard..." -ForegroundColor Cyan
+          New-Item -Path "web-templates/dashboard/data" -ItemType Directory -Force | Out-Null
           Copy-Item "${{ steps.audit.outputs.json-report }}" web-templates/dashboard/data/m365_cis_audit.json -Force
           Write-Host "✅ Dashboard data copied" -ForegroundColor Green
         shell: pwsh
-      
-      - name: Deploy to GitHub Pages
+
+      - name: Deploy Dashboard to GitHub Pages
         if: success() && github.ref == 'refs/heads/Primary'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./web-templates/dashboard
           destination_dir: dashboard
-          commit_message: 'docs: Update M365 security dashboard'
+          commit_message: "docs: Update M365 security dashboard"

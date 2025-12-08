@@ -295,15 +295,20 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 | **📋 Strategic Planning** | [Strategic Roadmap](docs/STRATEGIC_ROADMAP.md) | 🆕 Priority matrix & implementation plan |
 | **🚀 New Users** | [Project Outline](PROJECT_OUTLINE.md) | Complete project blueprint & setup |
 | **🧠 AI Agents** | [Copilot Instructions](.github/copilot-instructions.md) | Development patterns & architecture |
-| **🛡️ Security Teams** | [CIS Security Guide](docs/SECURITY_M365_CIS.md) | Security audit workflows |
-| **👨‍💻 Developers** | [Contributing Guide](CONTRIBUTING.md) | Development standards |
-| **🔧 Admins** | [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md) | Enterprise setup |
+| **🛡️ Security Teams** | [Secure Coding Guide](docs/SECURE_CODING_GUIDE.md) | 🆕 Security best practices for CPA firms |
+| **👨‍💻 Developers** | [API Reference](docs/API_REFERENCE.md) | 🆕 Complete API documentation |
+| **❓ Troubleshooting** | [FAQ](docs/FAQ.md) | 🆕 Common questions & solutions |
+| **🏗️ Architects** | [Architecture](ARCHITECTURE.md) | 🆕 System design & components |
 
 ### **📖 All Documentation**
 📁 **[Complete Documentation Index](docs/README.md)** - Organized by audience and use case
 
 **Key Guides:**
 - 📋 [Strategic Roadmap](docs/STRATEGIC_ROADMAP.md) - 🆕 Implementation priorities & success metrics
+- 🔐 [Secure Coding Guide](docs/SECURE_CODING_GUIDE.md) - 🆕 Security best practices & compliance
+- ❓ [FAQ](docs/FAQ.md) - 🆕 Frequently asked questions & troubleshooting
+- 📚 [API Reference](docs/API_REFERENCE.md) - 🆕 Python/PowerShell API documentation
+- 🏗️ [Architecture](ARCHITECTURE.md) - 🆕 System design & data flow
 - 🔐 [M365 CIS Security Auditing](docs/SECURITY_M365_CIS.md)
 - 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md)
 - 🤖 [AI MCP Server Development](docs/CUSTOM_MCP_SERVER_GUIDE.md)
