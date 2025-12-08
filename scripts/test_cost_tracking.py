@@ -53,7 +53,7 @@ def demo_cost_tracking():
         metadata={"task": "document_analysis", "document": "tax_return_2025.pdf"},
     )
     print(f"   Cost: ${result2['request']['cost']['total']:.6f}")
-    print(f"   Cache savings: ${(500/1_000_000) * 2:.6f}")
+    print(f"   Cache savings: ${(500 / 1_000_000) * 2:.6f}")
 
     # Scenario 3: Client email draft (gpt-5-mini)
     print("\n3️⃣  Client Email Draft (gpt-5-mini):")

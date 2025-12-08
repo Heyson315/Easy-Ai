@@ -3,18 +3,14 @@ Tests for the performance profiling utilities.
 """
 
 import sys
+import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import time
-import io
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 
-# Add the project root to the Python path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from src.core.profiler import profile_function, profile_script, memory_profile
+from src.core.profiler import memory_profile, profile_function, profile_script
 
 
 class TestProfiler:
@@ -69,7 +65,7 @@ class TestProfiler:
         """Test the @memory_profile decorator when memory_profiler is installed."""
         # Mock the memory_profiler library
         mock_mem_profile = MagicMock(side_effect=lambda f: f)
-        sys.modules['memory_profiler'] = MagicMock(profile=mock_mem_profile)
+        sys.modules["memory_profiler"] = MagicMock(profile=mock_mem_profile)
 
         @memory_profile
         def dummy_mem_function():
@@ -77,15 +73,15 @@ class TestProfiler:
 
         dummy_mem_function()
         mock_mem_profile.assert_called_once()
-        
+
         # Cleanup the mock
-        del sys.modules['memory_profiler']
+        del sys.modules["memory_profiler"]
 
     def test_memory_profile_decorator_without_library(self, capsys):
         """Test that @memory_profile handles ImportError gracefully."""
         # Ensure memory_profiler is not in sys.modules
-        if 'memory_profiler' in sys.modules:
-            del sys.modules['memory_profiler']
+        if "memory_profiler" in sys.modules:
+            del sys.modules["memory_profiler"]
 
         @memory_profile
         def dummy_mem_function():
@@ -99,7 +95,7 @@ class TestProfiler:
 
     def test_profile_function_preserves_signature(self):
         """Test that the decorator preserves the original function's signature."""
-        
+
         @profile_function
         def function_with_args(a: int, b: str = "default") -> str:
             """A docstring."""
@@ -107,9 +103,10 @@ class TestProfiler:
 
         assert function_with_args.__name__ == "function_with_args"
         assert function_with_args.__doc__ == "A docstring."
-        
+
         result = function_with_args(1, b="custom")
         assert result == "1-custom"
+
 
 if __name__ == "__main__":
     pytest.main()

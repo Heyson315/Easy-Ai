@@ -11,6 +11,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 **Before contributing**: Read [`docs/GIT_BRANCH_STRATEGY.md`](docs/GIT_BRANCH_STRATEGY.md) to understand our Git Flow workflow.
 
 **Quick Reference**:
+
 - Start features from `develop` branch
 - Use `feature/*` naming for new features
 - Use `copilot/*` naming for AI-generated code
@@ -18,6 +19,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 - `main` branch is for production releases only
 
 ## Table of Contents
+
 - [AI-Assisted Development](#ai-assisted-development)
 - [Git Branch Strategy](#git-branch-strategy)
 - [Getting Started](#getting-started)
@@ -30,6 +32,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 ## Getting Started
 
 ### Prerequisites
+
 - Python 3.8 or higher
 - PowerShell 7.0 or higher (for PowerShell scripts)
 - Git
@@ -37,19 +40,23 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 ### Development Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Heyson315/Easy-Ai.git
    cd Easy-Ai
    ```
 
 2. **Checkout develop branch**
+
    ```bash
    git checkout develop
    git pull origin develop
    ```
+
    ```
 
 2. **Install Python dependencies**
+
    ```bash
    # Production dependencies
    pip install -r requirements.txt
@@ -59,6 +66,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    ```
 
 3. **Install PowerShell modules** (if working with PowerShell scripts)
+
    ```powershell
    Install-Module ExchangeOnlineManagement -Scope CurrentUser
    Install-Module Microsoft.Graph -Scope CurrentUser
@@ -68,12 +76,14 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    ```
 
 4. **Verify installation**
+
    ```bash
    # Run tests
    pytest
 
    # Check code quality
    pylint scripts/ src/
+   flake8 scripts/ src/ tests/
    black --check scripts/ src/ tests/
    ```
 
@@ -85,10 +95,11 @@ We follow [PEP 8](https://pep8.org/) with some modifications:
 
 - **Line length:** Maximum 120 characters
 - **Formatting:** Use [Black](https://black.readthedocs.io/) for automatic formatting
-- **Linting:** Use [Pylint](https://pylint.org/) for code quality checks
+- **Linting:** Use [Pylint](https://pylint.org/) and [Flake8](https://flake8.pycqa.org/) for code quality checks
 - **Type hints:** Use type hints for function signatures
 
 **Example:**
+
 ```python
 from typing import Dict, List
 from pathlib import Path
@@ -117,6 +128,7 @@ def process_data(input_path: Path, options: Dict[str, str]) -> List[Dict[str, an
 - Use **PSScriptAnalyzer** for linting
 
 **Example:**
+
 ```powershell
 <#
 .SYNOPSIS
@@ -145,6 +157,7 @@ function Get-M365AuditResults {
 We use [pytest](https://pytest.org/) for Python testing.
 
 **Running tests:**
+
 ```bash
 # Run all tests
 pytest
@@ -160,12 +173,14 @@ pytest tests/test_clean_csv.py::test_clean_csv_basic
 ```
 
 **Writing tests:**
+
 - Place tests in the `tests/` directory
 - Name test files `test_*.py`
 - Name test functions `test_*`
 - Use descriptive test names that explain what is being tested
 
 **Example:**
+
 ```python
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -200,18 +215,21 @@ Invoke-Pester -Path tests/M365CIS.Tests.ps1
 ## Submitting Changes
 
 ### Branch Naming Convention
+
 - `feature/description` - New features
 - `bugfix/description` - Bug fixes
 - `docs/description` - Documentation changes
 - `refactor/description` - Code refactoring
 
 ### Commit Message Guidelines
+
 - Use clear, descriptive commit messages
 - Start with a verb in present tense (Add, Fix, Update, etc.)
 - Keep the first line under 72 characters
 - Add detailed description if needed
 
 **Good examples:**
+
 ```
 Add error handling to m365_cis_report.py
 
@@ -223,6 +241,7 @@ Update README with new installation instructions
 ### Pull Request Process
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -233,6 +252,7 @@ Update README with new installation instructions
    - Update documentation as needed
 
 3. **Run quality checks**
+
    ```bash
    # Format code
    black scripts/ src/ tests/
@@ -248,12 +268,14 @@ Update README with new installation instructions
    ```
 
 4. **Commit your changes**
+
    ```bash
    git add .
    git commit -m "Add feature: description"
    ```
 
 5. **Push to your fork**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -265,6 +287,7 @@ Update README with new installation instructions
    - Request review from maintainers
 
 ### Pull Request Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Tests added/updated for changes
 - [ ] All tests pass
@@ -278,6 +301,7 @@ Update README with new installation instructions
 ### Bug Reports
 
 When reporting bugs, please include:
+
 - **Clear title** describing the issue
 - **Steps to reproduce** the bug
 - **Expected behavior**
@@ -286,6 +310,7 @@ When reporting bugs, please include:
 - **Error messages** or logs (if applicable)
 
 **Example:**
+
 ```markdown
 ### Bug: Dashboard generation fails with malformed JSON
 
@@ -306,6 +331,7 @@ When reporting bugs, please include:
 ### Feature Requests
 
 When requesting features, please include:
+
 - **Clear description** of the feature
 - **Use case** explaining why it's needed
 - **Proposed solution** (if you have one)
@@ -314,6 +340,7 @@ When requesting features, please include:
 ## Code Review Process
 
 All submissions require review. Reviewers will check:
+
 - Code quality and adherence to style guidelines
 - Test coverage
 - Documentation completeness
@@ -323,6 +350,7 @@ All submissions require review. Reviewers will check:
 ## Questions?
 
 If you have questions about contributing:
+
 - Open an issue with your question
 - Tag it with the `question` label
 - We'll respond as soon as possible

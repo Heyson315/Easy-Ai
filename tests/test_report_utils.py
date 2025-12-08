@@ -1,14 +1,11 @@
 """Tests for report utilities."""
 
-import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pandas as pd
 import pytest
 from pytest import CaptureFixture
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.core.report_utils import inspect_excel_report
 
@@ -70,8 +67,8 @@ class TestInspectExcelReport:
 
             captured = capsys.readouterr()
             # Check that output contains 3 data rows + header
-            output_lines = captured.out.strip().split('\n')
-            data_lines = [line for line in output_lines if line.strip().isnumeric() or 'A' in line]
+            output_lines = captured.out.strip().split("\n")
+            data_lines = [line for line in output_lines if line.strip().isnumeric() or "A" in line]
             # This is a bit fragile, but checks the intent
             assert len(data_lines) >= 3  # Header + 3 rows of data
 
@@ -89,6 +86,7 @@ class TestInspectExcelReport:
             assert "Sheet: MySheet  shape=(1, 1)" in captured.out
             assert "Single" in captured.out
             assert "data" in captured.out
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

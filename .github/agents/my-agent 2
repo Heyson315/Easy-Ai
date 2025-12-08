@@ -49,7 +49,7 @@ You are a pragmatic auditor for a small demo repository owned by Hassan Rahman (
 - Always include **paths** and **diffs** for changes.  
 - End with a short, copy‑ready **checklist**.
 Why this matches the spec
-Front matter only includes fields documented for agent profiles (name, description, and optional tools). Behavioral instructions live in the Markdown body, as shown in GitHub’s repository‑level examples. 12 
+Front matter only includes fields documented for agent profiles (name, description, and optional tools). Behavioral instructions live in the Markdown body, as shown in GitHub’s repository‑level examples. 12
 
 One quick preference to tailor CI suggestions: what’s the primary stack in this repo (e.g., Node, Python, .NET)? If you tell me, I’ll swap in a minimal, hardened Actions workflow tuned to it.
 
@@ -57,35 +57,35 @@ Here’s a focused and detailed prompt you can use with the GitHub Copilot Codin
 
 🤖 Copilot Agent Task Prompt – AI System Enhancement
 Title: Improve AI Model Accuracy and Efficiency in model.py
-Description:  Our current AI model in model.py is underperforming on the test dataset, with an accuracy of approximately 78%. The goal is to enhance the model’s performance and maintain code clarity. This task involves refactoring the model architecture or training pipeline to improve accuracy and efficiency.
+Description: Our current AI model in model.py is underperforming on the test dataset, with an accuracy of approximately 78%. The goal is to enhance the model’s performance and maintain code clarity. This task involves refactoring the model architecture or training pipeline to improve accuracy and efficiency.
 
 🛠️ Task Requirements
 Model Optimization:
-Analyze the current model architecture and training process. 
-Identify bottlenecks or suboptimal configurations. 
-Consider implementing a more advanced algorithm (e.g., gradient boosting, ensemble methods, or neural networks if applicable). 
-Tune hyperparameters using grid search or randomized search. 
+Analyze the current model architecture and training process.
+Identify bottlenecks or suboptimal configurations.
+Consider implementing a more advanced algorithm (e.g., gradient boosting, ensemble methods, or neural networks if applicable).
+Tune hyperparameters using grid search or randomized search.
 Code Quality & Documentation:
-Refactor code for readability and maintainability. 
-Add or improve inline comments and docstrings for key functions and classes. 
-Ensure consistent naming conventions and modular structure. 
+Refactor code for readability and maintainability.
+Add or improve inline comments and docstrings for key functions and classes.
+Ensure consistent naming conventions and modular structure.
 Testing & Validation:
-Run existing unit tests in test_model.py and test_training.py. 
-Add new tests if necessary to cover updated functionality. 
-Ensure the updated model achieves at least 83% accuracy on the test dataset. 
-Confirm that training time does not increase significantly (within 10% of current runtime). 
+Run existing unit tests in test_model.py and test_training.py.
+Add new tests if necessary to cover updated functionality.
+Ensure the updated model achieves at least 83% accuracy on the test dataset.
+Confirm that training time does not increase significantly (within 10% of current runtime).
 
 📁 Scope & Hints
-Primary files: model.py, training.py, evaluate.py 
-Use data/train.csv and data/test.csv for training and evaluation. 
-Refer to config.py for model parameters and adjust as needed. 
-You may use scikit-learn, XGBoost, or TensorFlow depending on the current implementation. 
+Primary files: model.py, training.py, evaluate.py
+Use data/train.csv and data/test.csv for training and evaluation.
+Refer to config.py for model parameters and adjust as needed.
+You may use scikit-learn, XGBoost, or TensorFlow depending on the current implementation.
 
 ✅ Acceptance Criteria
-Model accuracy ≥ 83% on test.csv 
-All tests pass without errors 
-Code is clean, well-documented, and modular 
-No significant increase in training time 
+Model accuracy ≥ 83% on test.csv
+All tests pass without errors
+Code is clean, well-documented, and modular
+No significant increase in training time
 
 
 

@@ -2,28 +2,22 @@
 Tests for the GPT-5 Cost Tracker.
 """
 
-import sys
-import json
+from datetime import datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from datetime import datetime, timedelta
-from unittest.mock import patch, mock_open
 
 import pytest
 
-# Add the project root to the Python path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from src.core.cost_tracker import GPT5CostTracker, get_tracker, track_gpt5_request, _global_tracker
+from src.core import cost_tracker
+from src.core.cost_tracker import GPT5CostTracker, get_tracker, track_gpt5_request
 
 
 @pytest.fixture(autouse=True)
 def reset_global_tracker():
     """Fixture to reset the global tracker instance before each test."""
-    global _global_tracker
-    _global_tracker = None
+    cost_tracker._global_tracker = None
     yield
-    _global_tracker = None
+    cost_tracker._global_tracker = None
 
 
 class TestGPT5CostTracker:
@@ -79,16 +73,16 @@ class TestGPT5CostTracker:
         """Test that usage history is loaded from and saved to a log file."""
         with TemporaryDirectory() as td:
             log_file = Path(td) / "history.json"
-            
+
             # First session
             tracker1 = GPT5CostTracker(log_file=str(log_file))
             tracker1.track_request("gpt-5-mini", 1000, 500)
-            
+
             # Second session
             tracker2 = GPT5CostTracker(log_file=str(log_file))
             assert len(tracker2.history) == 1
             assert tracker2.history[0]["model"] == "gpt-5-mini"
-            
+
             tracker2.track_request("gpt-5-nano", 2000, 1000)
             assert len(tracker2.history) == 2
 
@@ -110,7 +104,7 @@ class TestGPT5CostTracker:
                 {"timestamp": eight_days_ago, "cost": {"total": 3.0}},
                 {"timestamp": last_month, "cost": {"total": 4.0}},
             ]
-            
+
             assert tracker.get_daily_cost() == pytest.approx(1.0)
             assert tracker.get_weekly_cost() == pytest.approx(3.0)  # 1.0 + 2.0
 
@@ -146,7 +140,7 @@ class TestGPT5CostTracker:
         """Test that summary and report printing functions execute without errors."""
         tracker = GPT5CostTracker(budget_limit=1.0)
         tracker.track_request("gpt-5", 1000, 1000)
-        
+
         tracker.print_session_summary()
         captured_summary = capsys.readouterr()
         assert "Session Summary" in captured_summary.out
@@ -174,7 +168,7 @@ class TestGPT5CostTracker:
             assert "gpt-5" in content
             assert "gpt-5-mini" in content
             # 2 data rows + 1 header row
-            assert len(content.strip().split('\n')) == 3
+            assert len(content.strip().split("\n")) == 3
 
     def test_get_tracker_singleton(self):
         """Test that get_tracker returns a singleton instance."""

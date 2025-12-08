@@ -1,18 +1,14 @@
 import unittest
-from unittest.mock import patch, MagicMock
-import pandas as pd
 from pathlib import Path
-import sys
-
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from unittest.mock import MagicMock, patch
 
 from scripts.m365_cis_report import build_report
 
+
 class TestM365CisReport(unittest.TestCase):
-    @patch('scripts.m365_cis_report.pd.ExcelWriter')
-    @patch('scripts.m365_cis_report.normalize_audit_data')
-    @patch('scripts.m365_cis_report.load_json_with_bom')
+    @patch("scripts.m365_cis_report.pd.ExcelWriter")
+    @patch("scripts.m365_cis_report.normalize_audit_data")
+    @patch("scripts.m365_cis_report.load_json_with_bom")
     def test_build_report(self, mock_load_json, mock_normalize_data, mock_excel_writer):
         # Arrange
         mock_data = {
@@ -22,13 +18,33 @@ class TestM365CisReport(unittest.TestCase):
             ]
         }
         mock_load_json.return_value = mock_data
-        
+
         mock_normalized_rows = [
-            {"ControlId": "1.1", "Title": "Control 1", "Severity": "High", "Expected": "X", "Actual": "Y", "Status": "Fail", "Evidence": "E1", "Reference": "R1", "Timestamp": "T1"},
-            {"ControlId": "1.2", "Title": "Control 2", "Severity": "Medium", "Expected": "A", "Actual": "A", "Status": "Pass", "Evidence": "E2", "Reference": "R2", "Timestamp": "T2"},
+            {
+                "ControlId": "1.1",
+                "Title": "Control 1",
+                "Severity": "High",
+                "Expected": "X",
+                "Actual": "Y",
+                "Status": "Fail",
+                "Evidence": "E1",
+                "Reference": "R1",
+                "Timestamp": "T1",
+            },
+            {
+                "ControlId": "1.2",
+                "Title": "Control 2",
+                "Severity": "Medium",
+                "Expected": "A",
+                "Actual": "A",
+                "Status": "Pass",
+                "Evidence": "E2",
+                "Reference": "R2",
+                "Timestamp": "T2",
+            },
         ]
         mock_normalize_data.return_value = mock_normalized_rows
-        
+
         # This mock setup is for pandas >= 1.4.0
         mock_writer_instance = MagicMock()
         mock_excel_writer.return_value.__enter__.return_value = mock_writer_instance
@@ -37,7 +53,7 @@ class TestM365CisReport(unittest.TestCase):
         xlsx_path = Path("dummy.xlsx")
 
         # Act
-        with patch('pandas.DataFrame.to_excel') as mock_to_excel:
+        with patch("pandas.DataFrame.to_excel") as mock_to_excel:
             build_report(json_path, xlsx_path)
 
         # Assert
@@ -49,11 +65,12 @@ class TestM365CisReport(unittest.TestCase):
 
         # Check the call arguments for the 'Overview' sheet
         overview_call_args = mock_to_excel.call_args_list[0]
-        self.assertEqual(overview_call_args[1]['sheet_name'], 'Overview')
+        self.assertEqual(overview_call_args[1]["sheet_name"], "Overview")
 
         # Check the call arguments for the 'Controls' sheet
         controls_call_args = mock_to_excel.call_args_list[1]
-        self.assertEqual(controls_call_args[1]['sheet_name'], 'Controls')
+        self.assertEqual(controls_call_args[1]["sheet_name"], "Controls")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

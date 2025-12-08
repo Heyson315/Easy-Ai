@@ -1,22 +1,14 @@
 """Tests for core file I/O utilities."""
 
 import json
-import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, List, Dict
+from typing import Any
 
 import pytest
 from pytest import CaptureFixture, MonkeyPatch
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from src.core.file_io import (
-    CIS_AUDIT_COLUMNS,
-    ensure_parent_dir,
-    load_json_with_bom,
-    normalize_audit_data,
-)
+from src.core.file_io import CIS_AUDIT_COLUMNS, ensure_parent_dir, load_json_with_bom, normalize_audit_data
 
 
 class TestLoadJsonWithBom:
@@ -57,9 +49,7 @@ class TestLoadJsonWithBom:
             with pytest.raises(PermissionError):
                 load_json_with_bom(json_path, exit_on_error=False)
 
-    def test_load_json_permission_error_exits(
-        self, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]
-    ):
+    def test_load_json_permission_error_exits(self, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str]):
         """Test that sys.exit is called for an unreadable file when exit_on_error=True."""
         with TemporaryDirectory() as td:
             json_path = Path(td) / "unreadable.json"

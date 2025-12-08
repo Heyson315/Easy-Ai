@@ -11,14 +11,10 @@ Pattern follows existing test conventions from tests/test_clean_csv.py
 """
 
 import json
-import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-# Add scripts directory to path for import
-sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-
-from generate_security_dashboard import generate_html_dashboard
+from scripts.generate_security_dashboard import generate_html_dashboard
 
 
 def _generate_dashboard_from_json(json_path: Path, output_html: Path):

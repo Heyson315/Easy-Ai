@@ -2,16 +2,10 @@
 Tests for the Excel report generation.
 """
 
-import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from datetime import datetime
 
 import openpyxl
-import pytest
-
-# Add the project root to the Python path
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.core.excel_generator import create_project_management_workbook
 
@@ -24,14 +18,15 @@ class TestCreateProjectManagementWorkbook:
         with TemporaryDirectory() as td:
             # Change working directory to temp dir to avoid cluttering project root
             import os
+
             original_cwd = os.getcwd()
             os.chdir(td)
-            
+
             create_project_management_workbook()
-            
+
             report_path = Path("Project_Management.xlsx")
             assert report_path.exists()
-            
+
             os.chdir(original_cwd)
 
     def test_creates_workbook_with_custom_name(self):
@@ -48,12 +43,12 @@ class TestCreateProjectManagementWorkbook:
             create_project_management_workbook(filename=str(report_path))
 
             workbook = openpyxl.load_workbook(report_path)
-            
+
             # Check sheet names
             assert "Financial Transactions" in workbook.sheetnames
             assert "Project Tasks" in workbook.sheetnames
             assert "Budget Summary" in workbook.sheetnames
-            
+
             # Check headers for Financial Transactions sheet
             transactions_sheet = workbook["Financial Transactions"]
             trans_headers = ["Date", "Description", "Category", "Income", "Expense", "Balance"]
@@ -79,7 +74,7 @@ class TestCreateProjectManagementWorkbook:
             create_project_management_workbook(filename=str(report_path))
 
             workbook = openpyxl.load_workbook(report_path)
-            
+
             # Check sample transaction data
             transactions_sheet = workbook["Financial Transactions"]
             assert transactions_sheet.cell(row=2, column=2).value == "Initial Budget"

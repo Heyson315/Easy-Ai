@@ -18,7 +18,7 @@ import time
 import tracemalloc
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Callable, Dict, Any
+from typing import Any, Callable, Dict
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -47,12 +47,12 @@ def benchmark_operation(name: str, func: Callable, *args, **kwargs) -> Dict[str,
     start_time = time.perf_counter()
 
     try:
-        result = func(*args, **kwargs)
+        _ = func(*args, **kwargs)
         success = True
         error = None
     except Exception as e:
         print(f"❌ Error: {e}")
-        result = None
+        _ = None
         success = False
         error = str(e)
 
@@ -104,8 +104,8 @@ def create_test_audit_json(path: Path, controls: int = 100) -> None:
     for i in range(controls):
         data.append(
             {
-                "ControlId": f"CIS-{i+1}",
-                "Title": f"Test Control {i+1}",
+                "ControlId": f"CIS-{i + 1}",
+                "Title": f"Test Control {i + 1}",
                 "Severity": ["High", "Medium", "Low"][i % 3],
                 "Status": ["Pass", "Fail", "Manual"][i % 3],
                 "Expected": "Enabled",
@@ -162,9 +162,9 @@ def run_performance_benchmarks() -> Dict[str, Any]:
         results.append(result)
 
         # 3. Benchmark statistics calculation
-        from scripts.generate_security_dashboard import calculate_statistics
-
         import json
+
+        from scripts.generate_security_dashboard import calculate_statistics
 
         with open(test_json, "r") as f:
             audit_data = json.load(f)

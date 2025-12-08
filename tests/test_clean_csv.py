@@ -1,8 +1,3 @@
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -96,7 +91,7 @@ def test_clean_csv_bom_in_data():
         td = Path(td)
         inp = td / "in.csv"
         out = td / "out.csv"
-        inp.write_text('header\n\ufeffvalue', encoding="utf-8")
+        inp.write_text("header\n\ufeffvalue", encoding="utf-8")
 
         stats = clean_csv(inp, out)
         assert stats["output_rows"] == 1
