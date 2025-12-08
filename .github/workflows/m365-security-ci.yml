@@ -2,9 +2,18 @@ name: M365 Security - Quality Assurance
 
 on:
   push:
-    branches: [Primary, main, develop, feature/*, copilot/*, Heyson315/*]
+    branches:
+      - Primary
+      - main
+      - develop
+      - feature/*
+      - copilot/*
+      - Heyson315/*
   pull_request:
-    branches: [Primary, main, develop]
+    branches:
+      - Primary
+      - main
+      - develop
 
 jobs:
   python-quality:

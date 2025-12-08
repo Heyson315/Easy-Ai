@@ -2,11 +2,15 @@ name: CI Tests & Coverage
 
 on:
   push:
-    branches: [ main, Primary ]
+    branches:
+      - main
+      - Primary
     paths-ignore:
       - 'coverage.svg'
   pull_request:
-    branches: [ main, Primary ]
+    branches:
+      - main
+      - Primary
 
 permissions:
   contents: write

@@ -13,10 +13,12 @@
 name: Bandit
 on:
   push:
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   schedule:
     - cron: '21 17 * * 1'
 

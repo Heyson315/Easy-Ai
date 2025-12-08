@@ -17,10 +17,12 @@ run-name: Codacy Security Scan for ${{ github.ref_name }}
 
 on:
   push:
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   schedule:
     - cron: '19 19 * * 4'
 
