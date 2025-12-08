@@ -250,10 +250,25 @@ function Get-SafeFilePath {
     )
     
     $basePath = Resolve-Path $BaseDirectory
+    
+    # Disallow absolute user input paths
+    if ([System.IO.Path]::IsPathRooted($UserInput)) {
+        throw "Access denied: Absolute paths are not allowed"
+    }
+    
     $targetPath = Join-Path $basePath $UserInput
     $resolvedTarget = Resolve-Path $targetPath -ErrorAction SilentlyContinue
     
-    if (-not $resolvedTarget -or -not $resolvedTarget.Path.StartsWith($basePath.Path)) {
+    # Ensure the resolved target is within the base directory (not just prefix match)
+    $basePathStr = $basePath.Path.TrimEnd('\')
+    $resolvedTargetStr = $resolvedTarget.Path
+    $basePathWithSep = $basePathStr + '\'
+    if (
+        -not $resolvedTarget -or (
+            ($resolvedTargetStr -ne $basePathStr) -and
+            (-not $resolvedTargetStr.StartsWith($basePathWithSep))
+        )
+    ) {
         throw "Access denied: Path is outside allowed directory"
     }
     
