@@ -137,7 +137,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Gitleaks secret scan
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@e9c1b2e2e2e6e2e2e2e2e2e2e2e2e2e2e2e2e2e2  # v2.4.0 (example SHA, update as needed)
         with:
           args: detect --source . --verbose --report-format sarif --report-path gitleaks.sarif
           fail: true
