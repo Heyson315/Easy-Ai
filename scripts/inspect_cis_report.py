@@ -41,7 +41,7 @@ def inspect_cis_report(report_path: Path) -> None:
                 print(df.head(10).to_string(index=False))
             else:
                 print("  (Empty sheet)")
-        except Exception as e:
+        except (pd.errors.ParserError, KeyError, ValueError) as e:
             print(f"ERROR: Failed to parse sheet '{sheet}': {e}", file=sys.stderr)
             continue
 
