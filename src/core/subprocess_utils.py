@@ -76,7 +76,7 @@ async def run_powershell_script(
     script_path: Path,
     args: Optional[List[str]] = None,
     cwd: Optional[Path] = None,
-    use_pwsh: bool = None,
+    use_pwsh: Optional[bool] = None,
 ) -> Tuple[int, str, str]:
     """
     Execute a PowerShell script as a subprocess.
@@ -85,7 +85,8 @@ async def run_powershell_script(
         script_path: Path to the PowerShell script
         args: Optional list of command-line arguments
         cwd: Optional working directory
-        use_pwsh: If None, auto-detect (pwsh on non-Windows, powershell.exe on Windows)
+        use_pwsh: If None, auto-detect (pwsh on non-Windows, powershell.exe on Windows).
+                  If True, use pwsh. If False, use powershell.exe.
 
     Returns:
         Tuple of (return_code, stdout, stderr)

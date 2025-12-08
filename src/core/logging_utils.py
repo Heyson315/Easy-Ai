@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 def setup_logging(
-    logger_name: str = __name__,
+    logger_name: str = None,
     log_filename: str = "m365_toolkit.log",
     log_level: int = logging.INFO,
 ) -> logging.Logger:
@@ -19,7 +19,7 @@ def setup_logging(
     Creates log directory at ~/.aitk/logs/ if it doesn't exist.
 
     Args:
-        logger_name: Name for the logger (default: __name__)
+        logger_name: Name for the logger (default: caller's module name)
         log_filename: Name of log file in ~/.aitk/logs/
         log_level: Logging level (default: INFO)
 
@@ -37,5 +37,13 @@ def setup_logging(
             logging.StreamHandler(),
         ],
     )
+
+    # Use caller's module name if not specified
+    if logger_name is None:
+        import inspect
+
+        frame = inspect.currentframe()
+        caller_frame = frame.f_back if frame else None
+        logger_name = caller_frame.f_globals.get("__name__", "root") if caller_frame else "root"
 
     return logging.getLogger(logger_name)
