@@ -70,7 +70,8 @@ def load_json_with_bom(json_path: Path, exit_on_error: bool = True) -> Any:
 
 def normalize_audit_data(data: Any) -> List[dict]:
     """
-    Normalize audit data to a list of dictionaries.
+    Normalize audit data to a list of dictionaries, ensuring all standard
+    columns are present.
 
     Handles both single object and array formats from audit JSON files.
 
@@ -78,11 +79,20 @@ def normalize_audit_data(data: Any) -> List[dict]:
         data: Parsed JSON data (can be dict or list)
 
     Returns:
-        List of audit result dictionaries
+        List of audit result dictionaries with all standard columns.
     """
-    if isinstance(data, dict):
-        return [data]
-    return data
+    if not data:
+        return []
+
+    results = [data] if isinstance(data, dict) else data
+
+    normalized_results = []
+    for item in results:
+        normalized_item = {col: "" for col in CIS_AUDIT_COLUMNS}
+        normalized_item.update(item)
+        normalized_results.append(normalized_item)
+
+    return normalized_results
 
 
 def ensure_parent_dir(path: Path) -> Path:
