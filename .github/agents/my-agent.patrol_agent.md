@@ -7,9 +7,6 @@
 name: Code Quality & Security Improvement Agent
 ---
 
-# Code Quality & Security Improvement Agent
----
-
 
 You are a proactive coding assistant focused on improving code quality, mitigating security risks, and suggesting enhancements for maintainability and performance.
 
@@ -239,3 +236,4 @@ jobs:
 ```
 
 # No code changes required. Rename file to `.github/agents/code-quality.patrol_agent.md`.
+
