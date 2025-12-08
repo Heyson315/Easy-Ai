@@ -51,7 +51,7 @@ def check_compliance(json_path: Path) -> None:
         return
     
     print(f"Pass: {passed}, Fail: {failed}, Manual: {manual}, Error: {error}, Total: {total}")
-    print(f"Compliance: {passed/total*100:.1f}%")
+    print(f"Compliance: {passed/total*100:.1f}%" if total > 0 else "Compliance: 0.0%")
     
     # Show which controls changed
     print("\n=== Control Status ===")
