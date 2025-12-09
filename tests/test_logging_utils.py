@@ -13,7 +13,7 @@ def test_setup_logging_creates_log_directory():
     """Test that setup_logging creates log directory."""
     with TemporaryDirectory() as tmpdir:
         # Mock Path.home() to return tmpdir
-        import src.core.logging_utils as logging_utils
+        import src.core.logging_utils as logging_utils  # noqa: F401
 
         original_home = Path.home
 
@@ -44,7 +44,7 @@ def test_setup_logging_creates_log_directory():
 def test_setup_logging_uses_correct_level():
     """Test that setup_logging respects log level parameter."""
     with TemporaryDirectory() as tmpdir:
-        import src.core.logging_utils as logging_utils
+        import src.core.logging_utils as logging_utils  # noqa: F401
 
         original_home = Path.home
 
@@ -67,7 +67,7 @@ def test_setup_logging_uses_correct_level():
 def test_setup_logging_handles_existing_directory():
     """Test that setup_logging works with existing log directory."""
     with TemporaryDirectory() as tmpdir:
-        import src.core.logging_utils as logging_utils
+        import src.core.logging_utils as logging_utils  # noqa: F401
 
         original_home = Path.home
 

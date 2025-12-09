@@ -84,7 +84,7 @@ async def analyze_sharepoint_permissions(
 
 🔍 **CSV cleaning completed successfully.**
 📁 Use generate_excel=True for detailed Excel report.""",
-            )
+        )
 
     except Exception as e:
         return False, f"SharePoint analysis failed: {str(e)}"

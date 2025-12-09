@@ -2,7 +2,6 @@
 Tests for subprocess utilities.
 """
 
-import asyncio
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
