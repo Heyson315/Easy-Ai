@@ -61,12 +61,19 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 - **PowerShell 5.1+**
 - **Python 3.9+**
 - **M365 tenant** with admin access
+- **🔐 Azure Key Vault** (recommended for SOX compliance) - [Setup Guide](docs/AZURE_KEY_VAULT_SETUP.md)
 
 **🏢 CPA Environment Features**:
 - Enterprise-grade M365 Business Premium/E3 tenant
 - Multi-user professional services scenarios
 - Real compliance requirements (SOX, AICPA standards)
 - Integration with accounting software ecosystems
+- **Hardware-backed secret storage** via Azure Key Vault
+
+**🔒 Security & Compliance**:
+- For production/SOX compliance: Use [Azure Key Vault](docs/AZURE_KEY_VAULT_SETUP.md) for secret management
+- For local development: Environment variables with `.env` file (fallback supported)
+- GitHub Actions: OIDC authentication with federated credentials (no long-lived secrets)
 
 ### Installation Options
 
