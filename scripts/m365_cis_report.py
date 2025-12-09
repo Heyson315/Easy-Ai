@@ -39,18 +39,18 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
         rows = [data]
     else:
         rows = data
-    df = pd.DataFrame(rows)
+    audit_df = pd.DataFrame(rows)
 
     # Overview
     overview = (
-        df.groupby(["Status", "Severity"])
+        audit_df.groupby(["Status", "Severity"])
         .size()
         .reset_index(name="Count")
         .sort_values(["Severity", "Status", "Count"], ascending=[True, True, False])
     )
 
     # By control
-    by_control = df[
+    by_control = audit_df[
         ["ControlId", "Title", "Severity", "Expected", "Actual", "Status", "Evidence", "Reference", "Timestamp"]
     ]
 
@@ -62,10 +62,10 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--input", type=Path, default=DEFAULT_JSON, help="Path to CIS audit JSON")
-    ap.add_argument(
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=Path, default=DEFAULT_JSON, help="Path to CIS audit JSON")
+    parser.add_argument(
         "--output", type=Path, default=None, help="Path to Excel output (optional, auto-names from JSON if omitted)"
     )
-    args = ap.parse_args()
+    args = parser.parse_args()
     build_report(args.input, args.output)

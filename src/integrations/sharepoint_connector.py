@@ -22,12 +22,12 @@ DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xlsx")
 
 
-def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+def generate_permission_summaries(permissions_df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     """Create summary DataFrames for the report."""
     summaries: dict[str, pd.DataFrame] = {}
 
     # Normalize some fields
-    df = df.copy()
+    permissions_df = permissions_df.copy()
     # Ensure consistent types
     for col in [
         "Resource Path",
@@ -40,25 +40,25 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
         "Link Type",
         "AccessViaLinkID",
     ]:
-        if col in df.columns:
-            df[col] = df[col].astype(str).str.strip()
+        if col in permissions_df.columns:
+            permissions_df[col] = permissions_df[col].astype(str).str.strip()
 
     # 1) Counts by Item Type
-    if "Item Type" in df.columns:
+    if "Item Type" in permissions_df.columns:
         summaries["by_item_type"] = (
-            df.groupby("Item Type").size().reset_index(name="Count").sort_values("Count", ascending=False)
+            permissions_df.groupby("Item Type").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 2) Counts by Permission
-    if "Permission" in df.columns:
+    if "Permission" in permissions_df.columns:
         summaries["by_permission"] = (
-            df.groupby("Permission").size().reset_index(name="Count").sort_values("Count", ascending=False)
+            permissions_df.groupby("Permission").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 3) Top users by occurrences
-    if "User Email" in df.columns:
+    if "User Email" in permissions_df.columns:
         summaries["top_users"] = (
-            df[df["User Email"].str.len() > 0]
+            permissions_df[permissions_df["User Email"].str.len() > 0]
             .groupby(["User Email", "User Name"])
             .size()
             .reset_index(name="Count")
@@ -67,9 +67,9 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
         )
 
     # 4) Top resources by occurrences
-    if "Resource Path" in df.columns:
+    if "Resource Path" in permissions_df.columns:
         summaries["top_resources"] = (
-            df[df["Resource Path"].str.len() > 0]
+            permissions_df[permissions_df["Resource Path"].str.len() > 0]
             .groupby("Resource Path")
             .size()
             .reset_index(name="Count")
@@ -97,7 +97,7 @@ def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) ->
                         "Columns": len(df.columns),
                     }
                 )
-            
+
             if overview_rows:
                 pd.DataFrame(overview_rows).to_excel(writer, sheet_name="Overview", index=False)
             else:
@@ -107,13 +107,15 @@ def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) ->
                 )
 
             # Individual sheets
-            for name, sdf in summaries.items():
+            for name, summary_df in summaries.items():
                 # Limit sheet name to 31 chars (Excel limitation)
                 sheet = name[:31]
-                sdf.to_excel(writer, sheet_name=sheet, index=False)
-    except PermissionError as e:
-        print(f"ERROR: Cannot write to {output_path}: Permission denied. "
-              f"Please close the file if it's open.", file=sys.stderr)
+                summary_df.to_excel(writer, sheet_name=sheet, index=False)
+    except PermissionError:
+        print(
+            f"ERROR: Cannot write to {output_path}: Permission denied. Please close the file if it's open.",
+            file=sys.stderr,
+        )
         raise
     except OSError as e:
         print(f"ERROR: OS error writing to {output_path}: {e}", file=sys.stderr)
@@ -124,10 +126,10 @@ def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) ->
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Generate SharePoint permissions analysis report")
-    ap.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
-    ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
-    args = ap.parse_args()
+    parser = argparse.ArgumentParser(description="Generate SharePoint permissions analysis report")
+    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
+    args = parser.parse_args()
 
     # Validate input file
     if not args.input.exists():
@@ -135,7 +137,7 @@ def main():
         sys.exit(1)
 
     try:
-        df = pd.read_csv(args.input)
+        permissions_df = pd.read_csv(args.input)
     except pd.errors.EmptyDataError:
         print(f"ERROR: Input CSV is empty: {args.input}", file=sys.stderr)
         sys.exit(1)
@@ -151,19 +153,19 @@ def main():
     except OSError as e:
         print(f"ERROR: I/O error while reading input file: {e}", file=sys.stderr)
         sys.exit(1)
-    
-    if df.empty:
-        print(f"WARNING: Input CSV contains no data rows", file=sys.stderr)
-    
+
+    if permissions_df.empty:
+        print("WARNING: Input CSV contains no data rows", file=sys.stderr)
+
     try:
-        summaries = build_summaries(df)
+        summaries = generate_permission_summaries(permissions_df)
     except Exception as e:
         print(f"ERROR: Failed to build summaries: {e}", file=sys.stderr)
         sys.exit(1)
-    
+
     if not summaries:
         print("WARNING: No summaries could be generated from the input data", file=sys.stderr)
-    
+
     # Let exceptions from write_excel_report propagate; it already prints detailed errors
     write_excel_report(summaries, args.output)
     print(f"✓ Report written: {args.output}")

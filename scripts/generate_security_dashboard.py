@@ -35,15 +35,15 @@ def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     except UnicodeDecodeError as e:
         print(f"ERROR: Encoding error reading {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
-    
+
     # Validate data is a list
     if not isinstance(data, list):
         print(f"ERROR: Expected JSON array, got {type(data).__name__}", file=sys.stderr)
         sys.exit(1)
-    
+
     if not data:
         print(f"WARNING: No audit results found in {json_path}", file=sys.stderr)
-    
+
     return data
 
 
@@ -410,9 +410,9 @@ def generate_html_dashboard(
 
     <script>
         // Trend Chart
-        const ctx = document.getElementById('trendChart');
-        if (ctx) {{
-            new Chart(ctx, {{
+        const chart_context = document.getElementById('trendChart');
+        if (chart_context) {{
+            new Chart(chart_context, {{
                 type: 'line',
                 data: {{
                     labels: {json.dumps(trend_labels)},
