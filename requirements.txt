@@ -9,5 +9,8 @@ openpyxl>=3.0.0
 openai>=1.65.0
 azure-identity>=1.19.0
 
+# Azure Key Vault for SOX Compliance
+azure-keyvault-secrets>=4.8.0
+
 # No other external dependencies required!
 # The dashboard generator and other scripts use only Python standard library.
