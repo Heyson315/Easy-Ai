@@ -56,13 +56,19 @@ def build_summaries(permissions_dataframe: pd.DataFrame) -> dict[str, pd.DataFra
     # 1) Counts by Item Type
     if "Item Type" in permissions_dataframe.columns:
         summaries["by_item_type"] = (
-            permissions_dataframe.groupby("Item Type").size().reset_index(name="Count").sort_values("Count", ascending=False)
+            permissions_dataframe.groupby("Item Type")
+            .size()
+            .reset_index(name="Count")
+            .sort_values("Count", ascending=False)
         )
 
     # 2) Counts by Permission
     if "Permission" in permissions_dataframe.columns:
         summaries["by_permission"] = (
-            permissions_dataframe.groupby("Permission").size().reset_index(name="Count").sort_values("Count", ascending=False)
+            permissions_dataframe.groupby("Permission")
+            .size()
+            .reset_index(name="Count")
+            .sort_values("Count", ascending=False)
         )
 
     # 3) Top users by occurrences

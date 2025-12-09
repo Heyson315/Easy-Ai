@@ -55,8 +55,12 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         if severity in audit_statistics["by_severity"]:
             audit_statistics["by_severity"][severity] += 1
 
-    audit_statistics["pass_rate"] = round((audit_statistics["pass"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
-    audit_statistics["fail_rate"] = round((audit_statistics["fail"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
+    audit_statistics["pass_rate"] = (
+        round((audit_statistics["pass"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
+    )
+    audit_statistics["fail_rate"] = (
+        round((audit_statistics["fail"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
+    )
 
     return audit_statistics
 
