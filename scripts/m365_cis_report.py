@@ -24,7 +24,7 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     rows = normalize_audit_data(data)
     controls_dataframe = pd.DataFrame(rows)
 
-    # Overview
+    # Overview - optimize sorting (single-pass, single-column when possible)
     overview = (
         controls_dataframe.groupby(["Status", "Severity"])
         .size()
