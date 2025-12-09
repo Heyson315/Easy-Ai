@@ -87,9 +87,9 @@ def normalize_audit_data(data: Any) -> List[dict]:
     results = [data] if isinstance(data, dict) else data
 
     normalized_results = []
-    for item in results:
-        normalized_item = {col: "" for col in CIS_AUDIT_COLUMNS}
-        normalized_item.update(item)
+    for audit_item in results:
+        normalized_item = {column_name: "" for column_name in CIS_AUDIT_COLUMNS}
+        normalized_item.update(audit_item)
         normalized_results.append(normalized_item)
 
     return normalized_results

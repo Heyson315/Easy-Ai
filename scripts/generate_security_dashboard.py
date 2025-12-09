@@ -27,7 +27,7 @@ def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate summary statistics from audit results."""
-    stats = {
+    audit_statistics = {
         "total": len(results),
         "pass": 0,
         "fail": 0,
@@ -37,28 +37,28 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "failed_by_severity": {"High": 0, "Medium": 0, "Low": 0},
     }
 
-    for result in results:
-        status = result.get("Status", "Unknown")
-        severity = result.get("Severity", "Unknown")
+    for control_result in results:
+        status = control_result.get("Status", "Unknown")
+        severity = control_result.get("Severity", "Unknown")
 
         if status == "Pass":
-            stats["pass"] += 1
+            audit_statistics["pass"] += 1
         elif status == "Fail":
-            stats["fail"] += 1
-            if severity in stats["failed_by_severity"]:
-                stats["failed_by_severity"][severity] += 1
+            audit_statistics["fail"] += 1
+            if severity in audit_statistics["failed_by_severity"]:
+                audit_statistics["failed_by_severity"][severity] += 1
         elif status == "Manual":
-            stats["manual"] += 1
+            audit_statistics["manual"] += 1
         elif status == "Error":
-            stats["error"] += 1
+            audit_statistics["error"] += 1
 
-        if severity in stats["by_severity"]:
-            stats["by_severity"][severity] += 1
+        if severity in audit_statistics["by_severity"]:
+            audit_statistics["by_severity"][severity] += 1
 
-    stats["pass_rate"] = round((stats["pass"] / stats["total"]) * 100, 2) if stats["total"] > 0 else 0
-    stats["fail_rate"] = round((stats["fail"] / stats["total"]) * 100, 2) if stats["total"] > 0 else 0
+    audit_statistics["pass_rate"] = round((audit_statistics["pass"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
+    audit_statistics["fail_rate"] = round((audit_statistics["fail"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
 
-    return stats
+    return audit_statistics
 
 
 def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
@@ -126,7 +126,7 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
 
 
 def generate_html_dashboard(
-    results: List[Dict[str, Any]], stats: Dict[str, Any], historical: List[Dict[str, Any]], output_path: Path
+    results: List[Dict[str, Any]], audit_statistics: Dict[str, Any], historical: List[Dict[str, Any]], output_path: Path
 ):
     """
     Generate interactive HTML dashboard.
@@ -137,17 +137,17 @@ def generate_html_dashboard(
     """
 
     # Prepare data for charts
-    trend_labels = [h["timestamp"] for h in historical]
-    trend_pass_rates = [h["pass_rate"] for h in historical]
+    trend_labels = [historical_point["timestamp"] for historical_point in historical]
+    trend_pass_rates = [historical_point["pass_rate"] for historical_point in historical]
 
     # Sort results by severity and status (optimized with pre-computed keys)
     severity_order = {"High": 0, "Medium": 1, "Low": 2}
     status_order = {"Fail": 0, "Error": 1, "Manual": 2, "Pass": 3}
 
     # Pre-compute sort keys for better performance (avoid repeated dict.get in lambda)
-    def get_sort_key(result):
-        severity = severity_order.get(result.get("Severity", "Low"), 3)
-        status = status_order.get(result.get("Status", "Pass"), 3)
+    def get_sort_key(control_result):
+        severity = severity_order.get(control_result.get("Severity", "Low"), 3)
+        status = status_order.get(control_result.get("Status", "Pass"), 3)
         return (severity, status)
 
     sorted_results = sorted(results, key=get_sort_key)
@@ -322,30 +322,30 @@ def generate_html_dashboard(
             <h1>🛡️ M365 CIS Security Dashboard</h1>
             <div class="meta">
                 <strong>Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} |
-                <strong>Total Controls:</strong> {stats['total']} |
-                <strong>Pass Rate:</strong> {stats['pass_rate']}%
+                <strong>Total Controls:</strong> {audit_statistics['total']} |
+                <strong>Pass Rate:</strong> {audit_statistics['pass_rate']}%
             </div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Passed Controls</h3>
-                <div class="stat-value pass">{stats['pass']}</div>
-                <div class="subtitle">{stats['pass_rate']}% of total</div>
+                <div class="stat-value pass">{audit_statistics['pass']}</div>
+                <div class="subtitle">{audit_statistics['pass_rate']}% of total</div>
             </div>
             <div class="stat-card">
                 <h3>Failed Controls</h3>
-                <div class="stat-value fail">{stats['fail']}</div>
-                <div class="subtitle">{stats['fail_rate']}% of total</div>
+                <div class="stat-value fail">{audit_statistics['fail']}</div>
+                <div class="subtitle">{audit_statistics['fail_rate']}% of total</div>
             </div>
             <div class="stat-card">
                 <h3>Manual Review</h3>
-                <div class="stat-value manual">{stats['manual']}</div>
+                <div class="stat-value manual">{audit_statistics['manual']}</div>
                 <div class="subtitle">Requires investigation</div>
             </div>
             <div class="stat-card">
                 <h3>High Severity Failures</h3>
-                <div class="stat-value fail">{stats['failed_by_severity']['High']}</div>
+                <div class="stat-value fail">{audit_statistics['failed_by_severity']['High']}</div>
                 <div class="subtitle">Critical issues</div>
             </div>
         </div>
@@ -378,22 +378,22 @@ def generate_html_dashboard(
 """
 
     # Add table rows (escape HTML to prevent XSS)
-    for result in sorted_results:
+    for control_result in sorted_results:
         # Get raw values for CSS class generation (these are validated against known values)
-        raw_status = str(result.get("Status", "Unknown"))
-        raw_severity = str(result.get("Severity", "Unknown"))
+        raw_status = str(control_result.get("Status", "Unknown"))
+        raw_severity = str(control_result.get("Severity", "Unknown"))
 
         # Escape values for HTML display
-        control_id = html.escape(str(result.get("ControlId", "N/A")))
-        title = html.escape(str(result.get("Title", "N/A")))
+        control_id = html.escape(str(control_result.get("ControlId", "N/A")))
+        title = html.escape(str(control_result.get("Title", "N/A")))
         severity = html.escape(raw_severity)
         status = html.escape(raw_status)
-        actual = html.escape(str(result.get("Actual", "N/A")))
+        actual = html.escape(str(control_result.get("Actual", "N/A")))
 
         # Sanitize class names - only allow alphanumeric and hyphen to prevent XSS
         # Invalid characters become safe "unknown"
-        safe_status = "".join(c for c in raw_status.lower() if c.isalnum() or c == "-") or "unknown"
-        safe_severity = "".join(c for c in raw_severity.lower() if c.isalnum() or c == "-") or "unknown"
+        safe_status = "".join(char for char in raw_status.lower() if char.isalnum() or char == "-") or "unknown"
+        safe_severity = "".join(char for char in raw_severity.lower() if char.isalnum() or char == "-") or "unknown"
 
         status_class = f"status-{safe_status}"
         severity_class = f"severity-{safe_severity}"
@@ -532,9 +532,9 @@ def main():
     # Load and process data
     print(f"Loading audit results from {input_path}...")
     results = load_audit_results(input_path)
-    stats = calculate_statistics(results)
+    audit_statistics = calculate_statistics(results)
 
-    print(f"Calculating statistics: {stats['total']} controls, {stats['pass_rate']}% pass rate")
+    print(f"Calculating statistics: {audit_statistics['total']} controls, {audit_statistics['pass_rate']}% pass rate")
 
     # Load historical data
     reports_dir = input_path.parent
@@ -544,7 +544,7 @@ def main():
 
     # Generate dashboard
     print(f"Generating HTML dashboard: {args.output}")
-    generate_html_dashboard(results, stats, historical, args.output)
+    generate_html_dashboard(results, audit_statistics, historical, args.output)
 
     print(f"✅ Dashboard generated successfully: {args.output}")
     print(f"   Open in browser to view: file://{args.output.absolute()}")

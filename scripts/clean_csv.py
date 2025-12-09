@@ -42,16 +42,16 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
     }
 
     # Single-pass processing: filter and write simultaneously
-    with in_path.open("r", encoding="utf-8-sig", errors="replace") as fin, out_path.open(
+    with in_path.open("r", encoding="utf-8-sig", errors="replace") as input_file, out_path.open(
         "w", encoding="utf-8", newline=""
-    ) as fout:
+    ) as output_file:
 
-        writer = csv.writer(fout, lineterminator="\n")
+        writer = csv.writer(output_file, lineterminator="\n")
         header = None
 
         # Create a generator that yields filtered lines
         def filtered_lines_gen():
-            for raw_line in fin:
+            for raw_line in input_file:
                 stats["input_lines"] += 1
                 stripped = raw_line.strip()
                 if not stripped:
@@ -67,8 +67,8 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
 
         for row in reader:
             # Normalize whitespace in each cell (in-place for efficiency)
-            for i in range(len(row)):
-                row[i] = row[i].strip()
+            for cell_index in range(len(row)):
+                row[cell_index] = row[cell_index].strip()
 
             if header is None:
                 header = row

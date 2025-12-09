@@ -26,7 +26,7 @@ def _generate_dashboard_from_json(json_path: Path, output_html: Path):
     results = data.get("Controls", [])
 
     # Calculate statistics (match what calculate_statistics does)
-    stats = {
+    audit_statistics = {
         "total": len(results),
         "pass": sum(1 for r in results if r.get("Status") == "Pass"),
         "fail": sum(1 for r in results if r.get("Status") == "Fail"),
@@ -37,25 +37,25 @@ def _generate_dashboard_from_json(json_path: Path, output_html: Path):
     }
 
     # Count by severity and failed by severity
-    for result in results:
-        status = result.get("Status", "Unknown")
-        severity = result.get("Severity", "Unknown")
+    for control_result in results:
+        status = control_result.get("Status", "Unknown")
+        severity = control_result.get("Severity", "Unknown")
 
-        if severity in stats["by_severity"]:
-            stats["by_severity"][severity] += 1
+        if severity in audit_statistics["by_severity"]:
+            audit_statistics["by_severity"][severity] += 1
 
-        if status == "Fail" and severity in stats["failed_by_severity"]:
-            stats["failed_by_severity"][severity] += 1
+        if status == "Fail" and severity in audit_statistics["failed_by_severity"]:
+            audit_statistics["failed_by_severity"][severity] += 1
 
     # Calculate rates
-    stats["pass_rate"] = round((stats["pass"] / stats["total"]) * 100, 2) if stats["total"] > 0 else 0
-    stats["fail_rate"] = round((stats["fail"] / stats["total"]) * 100, 2) if stats["total"] > 0 else 0
+    audit_statistics["pass_rate"] = round((audit_statistics["pass"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
+    audit_statistics["fail_rate"] = round((audit_statistics["fail"] / audit_statistics["total"]) * 100, 2) if audit_statistics["total"] > 0 else 0
 
     # No historical data for tests
     historical = []
 
     # Generate dashboard
-    generate_html_dashboard(results, stats, historical, output_html)
+    generate_html_dashboard(results, audit_statistics, historical, output_html)
 
 
 def test_dashboard_html_escaping_script_tags():
@@ -403,11 +403,11 @@ def test_dashboard_empty_results():
 
         # Empty results list
         results = []
-        stats = calculate_statistics(results)
+        audit_statistics = calculate_statistics(results)
 
         # Generate dashboard
         historical = []
-        generate_html_dashboard(results, stats, historical, output_html)
+        generate_html_dashboard(results, audit_statistics, historical, output_html)
 
         # Verify file created
         assert output_html.exists(), "Dashboard should be created even with empty results"
@@ -416,9 +416,9 @@ def test_dashboard_empty_results():
 
         # Should show 0 totals
         assert "0" in html_content, "Should show 0 values"
-        assert stats["total"] == 0
-        assert stats["pass"] == 0
-        assert stats["fail"] == 0
+        assert audit_statistics["total"] == 0
+        assert audit_statistics["pass"] == 0
+        assert audit_statistics["fail"] == 0
 
 
 def test_dashboard_with_error_status():
@@ -497,28 +497,28 @@ def test_calculate_statistics_comprehensive():
         {"Status": "Unknown", "Severity": "Unknown"},  # Unknown statuses
     ]
 
-    stats = calculate_statistics(results)
+    audit_statistics = calculate_statistics(results)
 
     # Verify counts
-    assert stats["total"] == 8
-    assert stats["pass"] == 2
-    assert stats["fail"] == 3
-    assert stats["manual"] == 1
-    assert stats["error"] == 1
+    assert audit_statistics["total"] == 8
+    assert audit_statistics["pass"] == 2
+    assert audit_statistics["fail"] == 3
+    assert audit_statistics["manual"] == 1
+    assert audit_statistics["error"] == 1
 
     # Verify severity breakdowns
-    assert stats["by_severity"]["High"] == 3
-    assert stats["by_severity"]["Medium"] == 2
-    assert stats["by_severity"]["Low"] == 2
+    assert audit_statistics["by_severity"]["High"] == 3
+    assert audit_statistics["by_severity"]["Medium"] == 2
+    assert audit_statistics["by_severity"]["Low"] == 2
 
     # Verify failed by severity
-    assert stats["failed_by_severity"]["High"] == 1
-    assert stats["failed_by_severity"]["Medium"] == 1
-    assert stats["failed_by_severity"]["Low"] == 1
+    assert audit_statistics["failed_by_severity"]["High"] == 1
+    assert audit_statistics["failed_by_severity"]["Medium"] == 1
+    assert audit_statistics["failed_by_severity"]["Low"] == 1
 
     # Verify rates
-    assert stats["pass_rate"] == round((2 / 8) * 100, 2)
-    assert stats["fail_rate"] == round((3 / 8) * 100, 2)
+    assert audit_statistics["pass_rate"] == round((2 / 8) * 100, 2)
+    assert audit_statistics["fail_rate"] == round((3 / 8) * 100, 2)
 
 
 def test_calculate_statistics_edge_cases():
@@ -526,18 +526,18 @@ def test_calculate_statistics_edge_cases():
     from scripts.generate_security_dashboard import calculate_statistics
 
     # Test empty results
-    stats = calculate_statistics([])
-    assert stats["total"] == 0
-    assert stats["pass_rate"] == 0
-    assert stats["fail_rate"] == 0
+    audit_statistics = calculate_statistics([])
+    assert audit_statistics["total"] == 0
+    assert audit_statistics["pass_rate"] == 0
+    assert audit_statistics["fail_rate"] == 0
 
     # Test results with missing fields
     results = [
         {"Status": "Pass"},  # Missing Severity
         {"Severity": "High"},  # Missing Status
     ]
-    stats = calculate_statistics(results)
-    assert stats["total"] == 2
+    audit_statistics = calculate_statistics(results)
+    assert audit_statistics["total"] == 2
 
 
 def test_load_historical_data_with_valid_files():

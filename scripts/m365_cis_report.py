@@ -20,12 +20,12 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     xlsx_path = Path(xlsx_path)
 
     ensure_parent_dir(xlsx_path)
-    data = load_json_with_bom(json_path)
-    rows = normalize_audit_data(data)
-    controls_dataframe = pd.DataFrame(rows)
+    audit_results_data = load_json_with_bom(json_path)
+    normalized_audit_rows = normalize_audit_data(audit_results_data)
+    controls_dataframe = pd.DataFrame(normalized_audit_rows)
 
     # Overview
-    overview = (
+    overview_summary = (
         controls_dataframe.groupby(["Status", "Severity"])
         .size()
         .reset_index(name="Count")
@@ -33,13 +33,13 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     )
 
     # By control
-    by_control = controls_dataframe[
+    controls_detail_sheet = controls_dataframe[
         ["ControlId", "Title", "Severity", "Expected", "Actual", "Status", "Evidence", "Reference", "Timestamp"]
     ]
 
     with pd.ExcelWriter(xlsx_path, engine="openpyxl") as writer:
-        overview.to_excel(writer, sheet_name="Overview", index=False)
-        by_control.to_excel(writer, sheet_name="Controls", index=False)
+        overview_summary.to_excel(writer, sheet_name="Overview", index=False)
+        controls_detail_sheet.to_excel(writer, sheet_name="Controls", index=False)
 
     print("Excel report written:", xlsx_path)
 

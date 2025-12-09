@@ -73,9 +73,9 @@ def create_project_management_workbook(filename=None):
 
     # Add sample data
     # Transactions
-    for row, data in enumerate(sample_transactions, 2):
-        for column_index, value in enumerate(data, 1):
-            transactions_sheet.cell(row=row, column=column_index).value = value
+    for row_number, transaction_data in enumerate(sample_transactions, 2):
+        for column_index, value in enumerate(transaction_data, 1):
+            transactions_sheet.cell(row=row_number, column=column_index).value = value
 
     # Tasks
     sample_tasks = [
@@ -98,9 +98,9 @@ def create_project_management_workbook(filename=None):
             "",
         ],
     ]
-    for row, data in enumerate(sample_tasks, 2):
-        for column_index, value in enumerate(data, 1):
-            tasks_sheet.cell(row=row, column=column_index).value = value
+    for row_number, task_data in enumerate(sample_tasks, 2):
+        for column_index, value in enumerate(task_data, 1):
+            tasks_sheet.cell(row=row_number, column=column_index).value = value
 
     # Budget Categories
     sample_budget = [
@@ -108,9 +108,9 @@ def create_project_management_workbook(filename=None):
         ["Marketing", MARKETING_BUDGET, 0, "=B3-C3", "=C3/B3*100"],
         ["Development", DEVELOPMENT_BUDGET, 0, "=B4-C4", "=C4/B4*100"],
     ]
-    for row, data in enumerate(sample_budget, 2):
-        for column_index, value in enumerate(data, 1):
-            budget_sheet.cell(row=row, column=column_index).value = value
+    for row_number, budget_data in enumerate(sample_budget, 2):
+        for column_index, value in enumerate(budget_data, 1):
+            budget_sheet.cell(row=row_number, column=column_index).value = value
 
     # Save the workbook
     workbook.save(filename)
