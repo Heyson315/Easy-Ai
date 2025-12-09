@@ -114,8 +114,7 @@ class TestGPT5CostTracker:
             monthly_cost = 0.0
             if now.month == (now - timedelta(days=2)).month:
                 monthly_cost += 2.0
-            if now.month == now.month:
-                monthly_cost += 1.0
+            monthly_cost += 1.0
 
             assert tracker.get_monthly_cost() == pytest.approx(monthly_cost)
 
