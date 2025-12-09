@@ -1,0 +1,141 @@
+name: Copilot Tools CI
+
+on:
+  push:
+    branches:
+      - main
+      - Primary
+      - copilot/**
+    paths:
+      - 'scripts/copilot_tools/**'
+      - 'tests/test_copilot_toolbox.py'
+      - '.github/workflows/copilot-tools-ci.yml'
+      - 'requirements-dev.txt'
+  pull_request:
+    branches:
+      - main
+      - Primary
+    paths:
+      - 'scripts/copilot_tools/**'
+      - 'tests/test_copilot_toolbox.py'
+      - '.github/workflows/copilot-tools-ci.yml'
+      - 'requirements-dev.txt'
+
+# Use least privilege permissions
+permissions:
+  contents: read
+
+jobs:
+  lint-and-test:
+    name: Lint, Security Scan & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run flake8 linting
+        run: |
+          # Run flake8 on copilot_tools module
+          flake8 scripts/copilot_tools/ --count --show-source --statistics
+        continue-on-error: true  # Don't fail for linting issues
+
+      - name: Run bandit security scan
+        run: |
+          # Run bandit security scan on copilot_tools
+          bandit -r scripts/copilot_tools/ -f json -o bandit-report.json || true
+          # Display results
+          bandit -r scripts/copilot_tools/ || true
+        continue-on-error: true  # Don't fail for repo-wide security issues
+
+      - name: Run pip-audit dependency scan
+        run: |
+          # Check for known vulnerabilities in dependencies
+          pip-audit --desc || true
+        continue-on-error: true  # Don't fail for repo-wide dependency issues
+
+      - name: Run pytest tests
+        env:
+          PYTHONPATH: .
+        run: |
+          pytest tests/test_copilot_toolbox.py -v --cov=scripts.copilot_tools --cov-report=term --cov-report=xml
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: copilot-tools-coverage
+          path: coverage.xml
+          retention-days: 14
+
+      - name: Upload bandit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+  functional-test:
+    name: Functional CLI Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Test list-docs command
+        run: |
+          echo "Testing list-docs command..."
+          python -m scripts.copilot_tools list-docs
+          python -m scripts.copilot_tools list-docs --format json | jq '.'
+
+      - name: Test show-agent-prompts command
+        run: |
+          echo "Testing show-agent-prompts command..."
+          python -m scripts.copilot_tools show-agent-prompts
+          python -m scripts.copilot_tools show-agent-prompts --format json | jq '.'
+
+      - name: Test check-workspace command
+        run: |
+          echo "Testing check-workspace command..."
+          python -m scripts.copilot_tools check-workspace
+          python -m scripts.copilot_tools check-workspace --format json | jq '.'
+
+      - name: Test verbose logging
+        run: |
+          echo "Testing verbose logging..."
+          COPILOT_TOOLBOX_VERBOSE=true python -m scripts.copilot_tools check-workspace
+
+      - name: Verify health score
+        run: |
+          # Extract health score and verify it's reasonable
+          HEALTH_SCORE=$(python -m scripts.copilot_tools check-workspace --format json | jq -r '.health_score')
+          echo "Workspace health score: $HEALTH_SCORE"
+          # Health score should be > 0 for this repo
+          if (( $(echo "$HEALTH_SCORE > 0" | bc -l) )); then
+            echo "✅ Health check passed"
+          else
+            echo "❌ Health check failed"
+            exit 1
+          fi
