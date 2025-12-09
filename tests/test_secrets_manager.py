@@ -81,7 +81,9 @@ class TestSecretsManagerInitialization:
         assert manager.vault_url == vault_url
         assert manager.client is not None  # Client was successfully created
 
-    def test_init_with_vault_url_from_env(self, mock_env_with_vault, mock_vault_url, mock_azure_credential, mock_secret_client):
+    def test_init_with_vault_url_from_env(
+        self, mock_env_with_vault, mock_vault_url, mock_azure_credential, mock_secret_client
+    ):
         """Test initialization with vault URL from environment variable."""
         manager = SecretsManager()
 
@@ -103,9 +105,7 @@ class TestSecretsManagerInitialization:
         with pytest.raises(VaultConfigurationError, match="Azure Key Vault URL is required"):
             SecretsManager(enable_fallback=False)
 
-    def test_init_azure_error_with_fallback_enabled(
-        self, mock_env_with_vault, mock_azure_credential, mock_logger
-    ):
+    def test_init_azure_error_with_fallback_enabled(self, mock_env_with_vault, mock_azure_credential, mock_logger):
         """Test initialization handles Azure errors when fallback is enabled."""
         # Mock SecretClient to raise exception on initialization
         with patch("src.core.secrets_manager.SecretClient", side_effect=Exception("Azure connection failed")):
@@ -116,9 +116,7 @@ class TestSecretsManagerInitialization:
             # Should log warning about initialization failure
             assert mock_logger.warning.called
 
-    def test_init_azure_error_with_fallback_disabled(
-        self, mock_env_with_vault, mock_azure_credential
-    ):
+    def test_init_azure_error_with_fallback_disabled(self, mock_env_with_vault, mock_azure_credential):
         """Test initialization raises error on Azure failure when fallback disabled."""
         # Mock SecretClient to raise exception on initialization
         with patch("src.core.secrets_manager.SecretClient", side_effect=Exception("Azure connection failed")):
@@ -129,9 +127,7 @@ class TestSecretsManagerInitialization:
 class TestGetSecret:
     """Test suite for get_secret functionality."""
 
-    def test_get_secret_from_vault_success(
-        self, mock_env_with_vault, mock_azure_credential, mock_secret_client
-    ):
+    def test_get_secret_from_vault_success(self, mock_env_with_vault, mock_azure_credential, mock_secret_client):
         """Test successful secret retrieval from Key Vault."""
         # Mock successful secret retrieval
         mock_secret = Mock(spec=KeyVaultSecret)
@@ -157,9 +153,7 @@ class TestGetSecret:
         with pytest.raises(ValueError, match="Invalid secret name"):
             manager.get_secret("")
 
-    def test_get_secret_not_found_in_vault(
-        self, mock_env_with_vault, mock_azure_credential, mock_secret_client
-    ):
+    def test_get_secret_not_found_in_vault(self, mock_env_with_vault, mock_azure_credential, mock_secret_client):
         """Test get_secret when secret not found in vault and fallback disabled."""
         mock_secret_client.get_secret.side_effect = ResourceNotFoundError("Secret not found")
 
@@ -184,9 +178,7 @@ class TestGetSecret:
             # Should log warning about using env var
             assert mock_logger.warning.called
 
-    def test_get_secret_not_found_in_vault_or_env(
-        self, mock_env_with_vault, mock_azure_credential, mock_secret_client
-    ):
+    def test_get_secret_not_found_in_vault_or_env(self, mock_env_with_vault, mock_azure_credential, mock_secret_client):
         """Test get_secret fails when not found in vault or environment."""
         mock_secret_client.get_secret.side_effect = ResourceNotFoundError("Secret not found")
 
@@ -207,9 +199,7 @@ class TestGetSecret:
 class TestRetryLogic:
     """Test suite for retry logic with exponential backoff."""
 
-    def test_retry_on_service_request_error(
-        self, mock_env_with_vault, mock_azure_credential, mock_secret_client
-    ):
+    def test_retry_on_service_request_error(self, mock_env_with_vault, mock_azure_credential, mock_secret_client):
         """Test retry logic on transient network errors."""
         mock_secret = Mock(spec=KeyVaultSecret)
         mock_secret.value = "retry-success"
@@ -232,9 +222,7 @@ class TestRetryLogic:
             mock_sleep.assert_any_call(1.0)
             mock_sleep.assert_any_call(2.0)
 
-    def test_retry_exhausted_raises_error(
-        self, mock_env_with_vault, mock_azure_credential, mock_secret_client
-    ):
+    def test_retry_exhausted_raises_error(self, mock_env_with_vault, mock_azure_credential, mock_secret_client):
         """Test that error is raised after max retries exhausted."""
         mock_secret_client.get_secret.side_effect = ServiceRequestError("Persistent network error")
 
@@ -246,9 +234,7 @@ class TestRetryLogic:
 
             assert mock_secret_client.get_secret.call_count == 3
 
-    def test_no_retry_on_resource_not_found(
-        self, mock_env_with_vault, mock_azure_credential, mock_secret_client
-    ):
+    def test_no_retry_on_resource_not_found(self, mock_env_with_vault, mock_azure_credential, mock_secret_client):
         """Test that ResourceNotFoundError does not trigger retries."""
         mock_secret_client.get_secret.side_effect = ResourceNotFoundError("Secret does not exist")
 

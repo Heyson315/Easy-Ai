@@ -151,7 +151,7 @@ class SecretsManager:
                 # Secret not found in vault - try fallback if enabled
                 if not self.enable_fallback:
                     raise  # Re-raise if fallback disabled
-                
+
                 error_msg = f"Secret '{secret_name}' not found in Key Vault"
                 self._log_audit_event("get_secret", secret_name, "vault_not_found", error_msg, correlation_id)
                 logger.warning(f"{error_msg}. Attempting fallback to environment variable.")
@@ -198,7 +198,11 @@ class SecretsManager:
         for attempt in range(1, self.MAX_RETRIES + 1):
             try:
                 self._log_audit_event(
-                    "fetch_from_vault", secret_name, "attempting", f"Attempt {attempt}/{self.MAX_RETRIES}", correlation_id
+                    "fetch_from_vault",
+                    secret_name,
+                    "attempting",
+                    f"Attempt {attempt}/{self.MAX_RETRIES}",
+                    correlation_id,
                 )
 
                 secret = self.client.get_secret(secret_name)
@@ -282,7 +286,9 @@ class SecretsManager:
         # Example: AZURE-OPENAI-API-KEY -> AZURE_OPENAI_API_KEY
         env_name = secret_name.replace("-", "_")
 
-        self._log_audit_event("fetch_from_env", secret_name, "attempting", f"Trying env var: {env_name}", correlation_id)
+        self._log_audit_event(
+            "fetch_from_env", secret_name, "attempting", f"Trying env var: {env_name}", correlation_id
+        )
 
         secret_value = os.getenv(env_name)
 

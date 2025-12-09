@@ -104,16 +104,57 @@ try {
 
 Write-Host "Service principal created successfully.`n"
 
-# Print ready-to-paste .env lines (do not write to disk)
-$tenantId = (Get-AzContext).Tenant.Id
-Write-Host "# ---- Paste these into your .env (keep them secret) ----`n"
-Write-Host "M365_TENANT_ID=$tenantId"
-Write-Host "M365_CLIENT_ID=$appId"
-Write-Host "M365_CLIENT_SECRET=$plainSecret"
-Write-Host "AZURE_SUBSCRIPTION_ID=$SubscriptionId"
-Write-Host "# -----------------------------------------------------`n"
+# Option 1: Upload secrets to Azure Key Vault (recommended for SOX compliance)
+Write-Host "# ---- SOX Compliance: Azure Key Vault Setup ----`n" -ForegroundColor Green
+Write-Host "For SOX/AICPA compliance, secrets should be stored in Azure Key Vault." -ForegroundColor Yellow
+Write-Host ""
+$uploadToKeyVault = Read-Host "Upload secrets to Azure Key Vault? (y/n)"
 
-Write-Host "Next steps:" -ForegroundColor Yellow
+if ($uploadToKeyVault -eq 'y') {
+    $keyVaultName = Read-Host "Enter your Key Vault name (e.g., my-vault)"
+    
+    try {
+        Write-Host "Uploading secrets to Key Vault '$keyVaultName'..." -ForegroundColor Cyan
+        
+        # Upload M365 credentials to Key Vault
+        az keyvault secret set --vault-name $keyVaultName --name "M365-TENANT-ID" --value $tenantId | Out-Null
+        az keyvault secret set --vault-name $keyVaultName --name "M365-CLIENT-ID" --value $appId | Out-Null
+        az keyvault secret set --vault-name $keyVaultName --name "M365-CLIENT-SECRET" --value $plainSecret | Out-Null
+        
+        Write-Host "✅ Secrets uploaded to Key Vault successfully!" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "Add this to your .env file:" -ForegroundColor Yellow
+        Write-Host "AZURE_KEY_VAULT_URL=https://$keyVaultName.vault.azure.net/"
+        Write-Host ""
+        Write-Host "Secrets are now stored securely in Azure Key Vault with hardware-backed encryption." -ForegroundColor Green
+        Write-Host "Audit logs available in Azure Monitor for compliance tracking." -ForegroundColor Green
+    }
+    catch {
+        Write-Host "❌ Failed to upload to Key Vault: $_" -ForegroundColor Red
+        Write-Host "Ensure you have 'az' CLI installed and appropriate permissions." -ForegroundColor Yellow
+        Write-Host "Falling back to environment variable display..." -ForegroundColor Yellow
+        $uploadToKeyVault = 'n'
+    }
+}
+
+# Option 2: Display secrets for manual .env entry (fallback)
+if ($uploadToKeyVault -ne 'y') {
+    Write-Host "# ---- Paste these into your .env (keep them secret) ----`n"
+    Write-Host "M365_TENANT_ID=$tenantId"
+    Write-Host "M365_CLIENT_ID=$appId"
+    Write-Host "M365_CLIENT_SECRET=$plainSecret"
+    Write-Host "AZURE_SUBSCRIPTION_ID=$SubscriptionId"
+    Write-Host "# -----------------------------------------------------`n"
+    Write-Host "⚠️  WARNING: Environment variables do not meet SOX/AICPA compliance requirements." -ForegroundColor Yellow
+    Write-Host "    Consider migrating to Azure Key Vault for hardware-backed key storage." -ForegroundColor Yellow
+}
+
+Write-Host "`nNext steps:" -ForegroundColor Yellow
 Write-Host "1) Grant Microsoft Graph application permissions in the Azure Portal for the app registration (API permissions → Microsoft Graph → Application permissions) and grant admin consent."
-Write-Host "2) Add the printed variables to your local .env file (do NOT commit .env)."
+if ($uploadToKeyVault -eq 'y') {
+    Write-Host "2) Configure RBAC: Assign 'Key Vault Secrets User' role to your service principal or managed identity."
+    Write-Host "3) Set AZURE_KEY_VAULT_URL environment variable in your deployment environment."
+} else {
+    Write-Host "2) Add the printed variables to your local .env file (do NOT commit .env)."
+}
 Write-Host "3) Restart your devcontainer / docker-compose so the container picks up the new env vars."

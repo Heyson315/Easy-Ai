@@ -33,6 +33,14 @@ try:
 except ImportError:
     COST_TRACKING_ENABLED = False
 
+# Import secrets manager for SOX-compliant secret retrieval
+try:
+    from src.core.secrets_manager import SecretsManager
+
+    SECRETS_MANAGER_AVAILABLE = True
+except ImportError:
+    SECRETS_MANAGER_AVAILABLE = False
+
 
 class GPT5Client:
     """
@@ -62,10 +70,24 @@ class GPT5Client:
 
         Environment Variables:
             AZURE_OPENAI_ENDPOINT: Azure OpenAI endpoint URL
-            AZURE_OPENAI_API_KEY: Azure OpenAI API key
+            AZURE_OPENAI_API_KEY: Azure OpenAI API key (fallback if Key Vault unavailable)
+            AZURE_KEY_VAULT_URL: Azure Key Vault URL for SOX-compliant secret storage
         """
         self.azure_endpoint = azure_endpoint or os.getenv("AZURE_OPENAI_ENDPOINT")
-        self.api_key = api_key or os.getenv("AZURE_OPENAI_API_KEY")
+
+        # Get API key from Key Vault (SOX-compliant) or fall back to environment variable
+        if api_key:
+            self.api_key = api_key
+        elif SECRETS_MANAGER_AVAILABLE:
+            try:
+                secrets = SecretsManager(enable_fallback=True)
+                self.api_key = secrets.get_secret("AZURE-OPENAI-API-KEY")
+            except Exception:  # noqa: S110
+                # Fall back to environment variable if Key Vault fails
+                self.api_key = os.getenv("AZURE_OPENAI_API_KEY")
+        else:
+            self.api_key = os.getenv("AZURE_OPENAI_API_KEY")
+
         self.model = model
         self.use_entra_id = use_entra_id
 

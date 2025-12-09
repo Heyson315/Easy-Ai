@@ -44,6 +44,14 @@ try:
 except ImportError:
     print("Warning: Microsoft Graph SDK not installed. Some features may be limited.", file=sys.stderr)
 
+# Import secrets manager for SOX-compliant secret retrieval
+try:
+    from src.core.secrets_manager import SecretsManager
+
+    SECRETS_MANAGER_AVAILABLE = True
+except ImportError:
+    SECRETS_MANAGER_AVAILABLE = False
+
 
 class M365SecurityMCPServer:
     """Custom MCP Server for M365 Security Toolkit integration"""
@@ -427,11 +435,22 @@ Run a security audit first to get compliance status:
         return "\n".join(critical_issues)
 
     async def authenticate_graph(self) -> bool:
-        """Authenticate with Microsoft Graph API"""
+        """Authenticate with Microsoft Graph API using Key Vault for secrets"""
         try:
             tenant_id = os.getenv("M365_TENANT_ID")
             client_id = os.getenv("M365_CLIENT_ID")
-            client_secret = os.getenv("M365_CLIENT_SECRET")
+
+            # Get client secret from Key Vault (SOX-compliant) or fall back to environment
+            client_secret = None
+            if SECRETS_MANAGER_AVAILABLE:
+                try:
+                    secrets = SecretsManager(enable_fallback=True)
+                    client_secret = secrets.get_secret("M365-CLIENT-SECRET")
+                except Exception as e:
+                    self.logger.warning(f"Key Vault unavailable, using environment variable: {e}")
+                    client_secret = os.getenv("M365_CLIENT_SECRET")
+            else:
+                client_secret = os.getenv("M365_CLIENT_SECRET")
 
             if not all([tenant_id, client_id, client_secret]):
                 self.logger.warning("M365 credentials not configured. Graph API features will be limited.")
