@@ -56,3 +56,7 @@ output/reports/security/test_*.csv
 
 # Test data
 data/test/
+
+# User database (SQLite) - contains sensitive user data
+data/users.db
+data/users.db-*

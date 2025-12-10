@@ -9,5 +9,10 @@ openpyxl>=3.0.0
 openai>=1.65.0
 azure-identity>=1.19.0
 
+# Authentication API Dependencies
+Flask>=2.3.0
+bcrypt>=4.0.0
+SQLAlchemy>=2.0.0
+
 # No other external dependencies required!
 # The dashboard generator and other scripts use only Python standard library.
