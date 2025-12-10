@@ -27,9 +27,6 @@ def inspect_csv(csv_path: Path) -> None:
     except UnicodeDecodeError as e:
         print(f"ERROR: Encoding issue while reading CSV: {e}", file=sys.stderr)
         sys.exit(1)
-    except FileNotFoundError as e:
-        print(f"ERROR: File not found: {csv_path} ({e})", file=sys.stderr)
-        sys.exit(1)
     except OSError as e:
         print(f"ERROR: I/O error while reading CSV: {e}", file=sys.stderr)
         sys.exit(1)
