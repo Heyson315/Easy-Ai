@@ -8,10 +8,10 @@ Reference: #validators.py - Input validation and security checks
 """
 
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 
-def validate_email(email: str) -> tuple[bool, Optional[str]]:
+def validate_email(email: str) -> Tuple[bool, Optional[str]]:
     """
     Validate email address format.
 
@@ -38,7 +38,7 @@ def validate_email(email: str) -> tuple[bool, Optional[str]]:
     return True, None
 
 
-def validate_username(username: str) -> tuple[bool, Optional[str]]:
+def validate_username(username: str) -> Tuple[bool, Optional[str]]:
     """
     Validate username format and length.
 
@@ -71,7 +71,7 @@ def validate_username(username: str) -> tuple[bool, Optional[str]]:
     return True, None
 
 
-def validate_password(password: str) -> tuple[bool, Optional[str]]:
+def validate_password(password: str) -> Tuple[bool, Optional[str]]:
     """
     Validate password strength and requirements.
 
