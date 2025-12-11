@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive M365 Security Toolkit features including CIS compliance automation, safe remediation, multi-tenant support, and GitHub Actions integration.">
+    <meta name="keywords" content="M365 Features, Security Automation, CIS Controls, Remediation, Multi-Tenant, GitHub Actions">
+    <meta name="author" content="Rahman Finance and Accounting P.L.LLC">
+    
+    <title>Features | M365 Security Toolkit</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/main.css">
+    
+    <style>
+        .feature-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: var(--spacing-3xl);
+            border-radius: var(--border-radius-lg);
+            margin: var(--spacing-xl) 0;
+            text-align: center;
+        }
+        
+        .feature-hero h1 {
+            color: var(--white);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-hero p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: var(--font-size-lg);
+        }
+        
+        .feature-category {
+            margin: var(--spacing-3xl) 0;
+        }
+        
+        .feature-category-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .feature-category-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .feature-category-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--gray-600);
+        }
+        
+        .feature-detail {
+            background: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .feature-detail h3 {
+            color: var(--primary-color);
+            font-size: var(--font-size-2xl);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-detail p {
+            color: var(--gray-700);
+            line-height: 1.8;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-specs {
+            background: var(--gray-100);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .feature-specs dt {
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .feature-specs dd {
+            color: var(--gray-700);
+            margin-left: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .code-example {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-sm);
+            overflow-x: auto;
+            font-family: var(--font-family-monospace);
+            font-size: var(--font-size-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .code-example pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .screenshot-placeholder {
+            background: var(--gray-200);
+            border: 2px dashed var(--gray-400);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-3xl);
+            text-align: center;
+            color: var(--gray-600);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: var(--spacing-md);
+            border: 1px solid var(--gray-300);
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: var(--gray-100);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .check {
+            color: var(--success-color);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .cross {
+            color: var(--danger-color);
+            font-weight: var(--font-weight-bold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="./" class="navbar-brand">🛡️ M365 Security Toolkit</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                ☰
+            </button>
+            <ul class="navbar-nav">
+                <li><a href="./">Home</a></li>
+                <li><a href="./live-dashboard.html">Live Dashboard</a></li>
+                <li><a href="./features.html">Features</a></li>
+                <li><a href="./documentation.html">Documentation</a></li>
+                <li><a href="./demo.html">Demo</a></li>
+                <li><a href="./pricing.html" class="btn-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container">
+        <div class="feature-hero">
+            <h1>⚡ Comprehensive Security Features</h1>
+            <p>
+                Everything you need to automate M365 security compliance and auditing
+            </p>
+        </div>
+
+        <!-- Core Features -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">🔐 CIS Compliance Automation</h2>
+                <p class="feature-category-subtitle">Automated assessment against CIS Microsoft 365 Foundations Benchmark v3.0.0</p>
+            </div>
+
+            <div class="feature-detail">
+                <h3>15+ Automated Security Controls</h3>
+                <p>
+                    Comprehensive coverage across Exchange Online, Azure AD, Microsoft Teams, SharePoint Online, 
+                    OneDrive, and Microsoft Defender for Office 365. Each control is mapped to CIS Benchmark 
+                    recommendations with detailed evidence collection and remediation guidance.
+                </p>
+
+                <dl class="feature-specs">
+                    <dt>Supported Services:</dt>
+                    <dd>Exchange Online, Azure AD, SharePoint Online, Microsoft Teams, OneDrive, Microsoft Defender</dd>
+                    
+                    <dt>Control Categories:</dt>
+                    <dd>Authentication, Authorization, Data Protection, Audit Logging, External Sharing, Malware Protection</dd>
+                    
+                    <dt>Evidence Collection:</dt>
+                    <dd>PowerShell cmdlet outputs, Graph API responses, configuration snapshots</dd>
+                    
+                    <dt>Benchmark Version:</dt>
+                    <dd>CIS Microsoft 365 Foundations Benchmark v3.0.0</dd>
+                </dl>
+
+                <div class="code-example">
+                    <pre># Example: Run full CIS audit
+powershell -File scripts/powershell/Invoke-M365CISAudit.ps1 `
+  -Timestamped `
+  -SPOAdminUrl "https://tenant-admin.sharepoint.com"
+
+# Output: JSON, CSV, Excel, and HTML reports
+# - output/reports/security/m365_cis_audit_20241211.json
+# - output/reports/security/m365_cis_audit_20241211.xlsx
+# - output/reports/security/dashboard_20241211.html</pre>
+                </div>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Severity-Based Prioritization</h3>
+                <p>
+                    Controls are categorized by severity (Critical, High, Medium, Low) to help you focus on the 
+                    most impactful security issues first. Risk scoring algorithms calculate weighted compliance scores.
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Risk Weight</th>
+                            <th>Example Controls</th>
+                            <th>Remediation Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Critical</strong></td>
+                            <td>10x</td>
+                            <td>MFA enforcement, Security defaults</td>
+                            <td>Immediate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>High</strong></td>
+                            <td>7x</td>
+                            <td>Modern auth, External forwarding</td>
+                            <td>Within 48 hours</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Medium</strong></td>
+                            <td>4x</td>
+                            <td>DLP policies, Admin consent</td>
+                            <td>Within 1 week</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Low</strong></td>
+                            <td>1x</td>
+                            <td>Calendar sharing, Password expiry</td>
+                            <td>Within 30 days</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Safe Remediation -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">⚡ Safe Remediation Workflows</h2>
+                <p class="feature-category-subtitle">Preview changes before applying with -WhatIf mode and approval gates</p>
+            </div>
+
+            <div class="feature-detail">
+                <h3>What-If Preview Mode</h3>
+                <p>
+                    Test remediation actions without modifying your tenant. The -WhatIf parameter shows exactly 
+                    what changes would be made, allowing you to validate fixes before applying them to production.
+                </p>
+
+                <div class="code-example">
+                    <pre># Preview remediation changes (SAFE - no modifications)
+powershell -File scripts/powershell/PostRemediateM365CIS.ps1 -WhatIf
+
+# Example output:
+# What if: Would disable external calendar sharing
+# What if: Would enable admin consent workflow
+# What if: Would configure safe attachments policy
+
+# Apply changes after review
+powershell -File scripts/powershell/PostRemediateM365CIS.ps1 -Force</pre>
+                </div>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Automated Remediation with Approval Gates</h3>
+                <p>
+                    GitHub Actions integration supports automated remediation with manual approval gates. 
+                    Configure which controls can be auto-fixed and require approval for sensitive changes.
+                </p>
+
+                <div class="code-example">
+                    <pre># GitHub Action with approval workflow
+- name: Run Remediation
+  uses: Heyson315/Easy-Ai@v1
+  with:
+    enable-auto-remediation: true
+    auto-approve-remediation: false  # Requires manual approval
+    remediation-controls: '1.1.1,1.1.3,2.1.1'  # Specific controls
+
+# Approval required before changes are applied
+# GitHub Environment protection rules enforce approval</pre>
+                </div>
+
+                <ul class="feature-list">
+                    <li>Environment-based approval workflows</li>
+                    <li>Control-specific remediation targeting</li>
+                    <li>Detailed remediation logs and audit trails</li>
+                    <li>Rollback procedures for failed remediations</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- GitHub Actions Integration -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">🤖 GitHub Actions CI/CD</h2>
+                <p class="feature-category-subtitle">Seamless integration with GitHub workflows for automated auditing</p>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Published GitHub Action</h3>
+                <p>
+                    Use our pre-built action (Heyson315/Easy-Ai@v1) in your workflows. No need to clone the 
+                    repository or manage dependencies - just reference the action and configure your secrets.
+                </p>
+
+                <div class="code-example">
+                    <pre>name: Monthly M365 Security Audit
+
+on:
+  schedule:
+    - cron: '0 2 1 * *'  # 2 AM on 1st of month
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run M365 Audit
+        uses: Heyson315/Easy-Ai@v1
+        with:
+          tenant-id: ${{ secrets.M365_TENANT_ID }}
+          client-id: ${{ secrets.M365_CLIENT_ID }}
+          client-secret: ${{ secrets.M365_CLIENT_SECRET }}
+          spo-admin-url: ${{ secrets.SPO_ADMIN_URL }}
+          generate-dashboard: true
+          upload-to-security-tab: true</pre>
+                </div>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Advanced Outputs & Metrics</h3>
+                <p>
+                    Access 25+ output variables including risk scores, compliance trends, severity breakdowns, 
+                    and SARIF reports for GitHub Security tab integration.
+                </p>
+
+                <dl class="feature-specs">
+                    <dt>Risk Scoring:</dt>
+                    <dd>risk-score, critical-findings, high-findings, medium-findings, low-findings</dd>
+                    
+                    <dt>Compliance Trending:</dt>
+                    <dd>compliance-trend, new-failures, fixed-issues, trend-direction</dd>
+                    
+                    <dt>Security Integration:</dt>
+                    <dd>sarif-report, security-findings-count</dd>
+                    
+                    <dt>Remediation:</dt>
+                    <dd>remediated-controls, remediation-report</dd>
+                </dl>
+
+                <div class="code-example">
+                    <pre># Use outputs in subsequent steps
+- name: Evaluate Compliance
+  run: |
+    echo "Risk Score: ${{ steps.audit.outputs.risk-score }}"
+    echo "Trend: ${{ steps.audit.outputs.compliance-trend }}"
+    
+    # Fail if compliance drops below threshold
+    if (( $(echo "${{ steps.audit.outputs.compliance-score }} < 80" | bc -l) )); then
+      echo "::error::Compliance below 80% threshold!"
+      exit 1
+    fi</pre>
+                </div>
+            </div>
+
+            <div class="feature-detail">
+                <h3>SARIF Security Tab Integration</h3>
+                <p>
+                    Automatically upload audit findings to GitHub's Security tab using SARIF 2.1.0 format. 
+                    Filter by severity threshold and view security issues alongside code scanning results.
+                </p>
+
+                <div class="code-example">
+                    <pre># Enable Security tab upload
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    upload-to-security-tab: true
+    security-severity-threshold: high  # Only high/critical
+
+# Findings appear in Security > Code scanning alerts
+# - Severity mapping: Critical=9.0, High=7.0, Medium=5.0, Low=3.0
+# - Detailed descriptions and remediation guidance
+# - Filterable by rule, severity, and status</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Tenant Support -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">🏢 Multi-Tenant Architecture</h2>
+                <p class="feature-category-subtitle">Perfect for MSPs managing multiple M365 clients</p>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Batch Tenant Audits</h3>
+                <p>
+                    Audit multiple M365 tenants in parallel using matrix strategies or batch configurations. 
+                    Generate per-client reports and consolidated compliance dashboards.
+                </p>
+
+                <div class="code-example">
+                    <pre># Option A: Matrix strategy (parallel execution)
+strategy:
+  matrix:
+    tenant: [Client-A, Client-B, Client-C]
+steps:
+  - uses: Heyson315/Easy-Ai@v1
+    with:
+      tenant-id: ${{ secrets[format('TENANT_ID_{0}', matrix.tenant)] }}
+
+# Option B: Batch configuration
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-config: |
+      [
+        {"name": "Client-A", "tenantId": "guid-1"},
+        {"name": "Client-B", "tenantId": "guid-2"}
+      ]</pre>
+                </div>
+
+                <ul class="feature-list">
+                    <li>Parallel tenant audits (10+ clients simultaneously)</li>
+                    <li>Per-client report generation and artifact storage</li>
+                    <li>Aggregated compliance metrics across all tenants</li>
+                    <li>Client-specific remediation workflows</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Compliance Trending -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">📈 Compliance Trending & Baselines</h2>
+                <p class="feature-category-subtitle">Track security improvements over time with historical analysis</p>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Baseline Comparison</h3>
+                <p>
+                    Establish compliance baselines and track changes over time. Automatically detect new 
+                    failures, fixed issues, and overall trend direction (improving, stable, declining).
+                </p>
+
+                <div class="code-example">
+                    <pre># Enable baseline comparison
+- uses: Heyson315/Easy-Ai@v1
+  with:
+    compare-with-baseline: true
+    baseline-artifact-name: 'compliance-baseline'
+
+# Outputs:
+# - compliance-trend: "+5.2%" (percentage change)
+# - new-failures: 3 (controls that started failing)
+# - fixed-issues: 8 (controls now passing)
+# - trend-direction: "improving"</pre>
+                </div>
+
+                <ul class="feature-list">
+                    <li>365-day baseline retention in GitHub artifacts</li>
+                    <li>Month-over-month compliance tracking</li>
+                    <li>Automated alerts on negative trends</li>
+                    <li>Historical snapshot exports for auditing</li>
+                </ul>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Historical Trend Analysis</h3>
+                <p>
+                    Interactive dashboards display compliance scores, control pass rates, and severity 
+                    distributions over 3-6 months with Chart.js visualizations.
+                </p>
+
+                <div class="screenshot-placeholder">
+                    📊 Screenshot: Compliance trend chart showing 6-month improvement from 85% to 92%
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Dashboards -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">📊 Interactive Dashboards</h2>
+                <p class="feature-category-subtitle">Beautiful, responsive reports that work everywhere</p>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Multiple Report Formats</h3>
+                <p>
+                    Generate reports in JSON, CSV, Excel, and interactive HTML formats. Each format is 
+                    optimized for different use cases from programmatic access to executive presentations.
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Format</th>
+                            <th>Use Case</th>
+                            <th>Features</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>JSON</strong></td>
+                            <td>API integration, programmatic access</td>
+                            <td>Structured data, easy parsing, version control friendly</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CSV</strong></td>
+                            <td>Data analysis, Excel import, custom reporting</td>
+                            <td>Universal compatibility, pivot tables, mail merge</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Excel (XLSX)</strong></td>
+                            <td>Executive reports, detailed analysis</td>
+                            <td>Multiple sheets, formatting, charts, conditional formatting</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HTML Dashboard</strong></td>
+                            <td>Interactive viewing, sharing with stakeholders</td>
+                            <td>Charts, filters, responsive design, mobile-friendly</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="feature-detail">
+                <h3>Mobile-Responsive Design</h3>
+                <p>
+                    All dashboards are built with mobile-first design principles. View compliance status 
+                    on phones, tablets, or desktops with consistent user experience.
+                </p>
+
+                <ul class="feature-list">
+                    <li>Responsive grid layouts adapt to screen size</li>
+                    <li>Touch-friendly controls and navigation</li>
+                    <li>Optimized for SharePoint mobile app viewing</li>
+                    <li>Fast load times (&lt;3 seconds on 4G)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Technical Specifications -->
+        <div class="feature-category">
+            <div class="feature-category-header">
+                <h2 class="feature-category-title">⚙️ Technical Specifications</h2>
+                <p class="feature-category-subtitle">Platform requirements and architecture details</p>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="feature-detail">
+                    <h3>System Requirements</h3>
+                    <dl class="feature-specs">
+                        <dt>Operating Systems:</dt>
+                        <dd>Windows 10/11, Windows Server 2019+, Linux (Ubuntu 20.04+), macOS 11+</dd>
+                        
+                        <dt>PowerShell:</dt>
+                        <dd>PowerShell 5.1+ (Windows), PowerShell 7+ (cross-platform)</dd>
+                        
+                        <dt>Python:</dt>
+                        <dd>Python 3.9, 3.10, 3.11, 3.12</dd>
+                        
+                        <dt>Dependencies:</dt>
+                        <dd>ExchangeOnlineManagement, Microsoft.Graph, PnP.PowerShell</dd>
+                    </dl>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>Authentication Methods</h3>
+                    <dl class="feature-specs">
+                        <dt>Service Principal:</dt>
+                        <dd>Recommended for automation (certificate or secret-based)</dd>
+                        
+                        <dt>Interactive Login:</dt>
+                        <dd>For manual audits and testing</dd>
+                        
+                        <dt>Required Permissions:</dt>
+                        <dd>Exchange.ManageAsApp, Directory.Read.All, SharePointTenantSettings.Read.All</dd>
+                        
+                        <dt>Least Privilege:</dt>
+                        <dd>Read-only access by default, write permissions optional for remediation</dd>
+                    </dl>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>Performance Metrics</h3>
+                    <dl class="feature-specs">
+                        <dt>Audit Duration:</dt>
+                        <dd>5-10 minutes for standard tenant (15+ controls)</dd>
+                        
+                        <dt>Concurrent Tenants:</dt>
+                        <dd>Up to 10 parallel audits (rate limit aware)</dd>
+                        
+                        <dt>Report Generation:</dt>
+                        <dd>&lt;30 seconds for Excel, &lt;10 seconds for HTML</dd>
+                        
+                        <dt>Dashboard Load Time:</dt>
+                        <dd>&lt;3 seconds initial load, &lt;1 second cached</dd>
+                    </dl>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>Security Features</h3>
+                    <dl class="feature-specs">
+                        <dt>Credential Storage:</dt>
+                        <dd>GitHub Secrets, Azure Key Vault, local secure storage</dd>
+                        
+                        <dt>Data Protection:</dt>
+                        <dd>No PII stored, sanitized sample data, configurable data retention</dd>
+                        
+                        <dt>Code Security:</dt>
+                        <dd>CodeQL scanning, Dependabot alerts, SARIF vulnerability reports</dd>
+                        
+                        <dt>Audit Trail:</dt>
+                        <dd>All actions logged with timestamps, evidence collection, change tracking</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="section section-white text-center">
+            <h2 class="section-title">Ready to Experience These Features?</h2>
+            <p class="section-subtitle mb-4">
+                Try our interactive demo or start auditing your M365 tenant today
+            </p>
+            <div class="cta-buttons">
+                <a href="./demo.html" class="btn btn-primary btn-lg">Try Interactive Demo</a>
+                <a href="./live-dashboard.html" class="btn btn-outline btn-lg">View Live Dashboard</a>
+                <a href="./documentation.html" class="btn btn-secondary btn-lg">Read Documentation</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>M365 Security Toolkit</h4>
+                    <p style="color: var(--gray-600); margin-top: 0.5rem;">
+                        Enterprise-grade Microsoft 365 security auditing and compliance automation.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="./features.html">Features</a></li>
+                        <li><a href="./live-dashboard.html">Live Dashboard</a></li>
+                        <li><a href="./demo.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="./documentation.html">Getting Started</a></li>
+                        <li><a href="./documentation.html#api">API Reference</a></li>
+                        <li><a href="./documentation.html#troubleshooting">Troubleshooting</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/Heyson315/Easy-Ai">GitHub Repository</a></li>
+                        <li><a href="./privacy.html">Privacy Policy</a></li>
+                        <li><a href="./terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Rahman Finance and Accounting P.L.LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./assets/js/app.js"></script>
+</body>
+</html>

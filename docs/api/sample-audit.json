@@ -1,0 +1,112 @@
+[
+  {
+    "ControlId": "1.1.1",
+    "Title": "Ensure modern authentication for Exchange Online is enabled",
+    "Severity": "High",
+    "Status": "Pass",
+    "Expected": "Modern authentication enabled",
+    "Actual": "Modern authentication is enabled",
+    "Evidence": "Get-OrganizationConfig shows OAuth2ClientProfileEnabled=True",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "1.1.3",
+    "Title": "Ensure the admin consent workflow is enabled",
+    "Severity": "Medium",
+    "Status": "Fail",
+    "Expected": "Admin consent workflow enabled",
+    "Actual": "Admin consent workflow is not enabled",
+    "Evidence": "AdminConsentRequestWorkflow.IsEnabled=False",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "2.1.1",
+    "Title": "Ensure Security Defaults is enabled",
+    "Severity": "High",
+    "Status": "Pass",
+    "Expected": "Security defaults enabled or equivalent policies",
+    "Actual": "Security defaults enabled",
+    "Evidence": "SecurityDefaults.IsEnabled=True",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "2.1.2",
+    "Title": "Ensure multifactor authentication is enabled for all users",
+    "Severity": "High",
+    "Status": "Pass",
+    "Expected": "MFA enabled for all users",
+    "Actual": "MFA enabled for 100% of users",
+    "Evidence": "All users have MFA configured",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "3.1.1",
+    "Title": "Ensure DLP policies are enabled for Microsoft Teams",
+    "Severity": "Medium",
+    "Status": "Manual",
+    "Expected": "DLP policies configured for Teams",
+    "Actual": "Manual review required",
+    "Evidence": "Manual inspection needed",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "3.2.1",
+    "Title": "Ensure external file sharing in Teams is enabled only for approved cloud storage",
+    "Severity": "Medium",
+    "Status": "Pass",
+    "Expected": "External sharing limited to approved providers",
+    "Actual": "External sharing properly configured",
+    "Evidence": "AllowedDomainList configured",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "5.1.2",
+    "Title": "Ensure external sharing of calendars is not enabled",
+    "Severity": "Low",
+    "Status": "Pass",
+    "Expected": "External calendar sharing disabled",
+    "Actual": "External calendar sharing is disabled",
+    "Evidence": "CalendarSharingEnabled=False",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "5.2.1",
+    "Title": "Ensure mail transport rules do not forward email to external domains",
+    "Severity": "High",
+    "Status": "Fail",
+    "Expected": "No auto-forwarding to external domains",
+    "Actual": "Found 2 rules forwarding to external domains",
+    "Evidence": "TransportRule 'Forward-External' forwards to external.com",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "6.1.1",
+    "Title": "Ensure Microsoft Defender for Office 365 is enabled",
+    "Severity": "High",
+    "Status": "Pass",
+    "Expected": "Defender for Office 365 enabled",
+    "Actual": "Defender for Office 365 Plan 1 enabled",
+    "Evidence": "ATP policies configured",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  },
+  {
+    "ControlId": "6.2.1",
+    "Title": "Ensure Safe Links for Office applications is enabled",
+    "Severity": "Medium",
+    "Status": "Manual",
+    "Expected": "Safe Links enabled for Office apps",
+    "Actual": "Manual review of policy required",
+    "Evidence": "Policy exists but needs verification",
+    "Reference": "CIS Microsoft 365 Foundations Benchmark v3.0.0",
+    "Timestamp": "2024-11-14T06:33:29Z"
+  }
+]

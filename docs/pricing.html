@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get started with M365 Security Toolkit. Free open-source toolkit with optional professional services and enterprise support.">
+    <title>Get Started | M365 Security Toolkit</title>
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <style>
+        .pricing-card {
+            background: var(--white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            transition: transform var(--transition-base);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .pricing-card.featured {
+            border: 3px solid var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .pricing-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .pricing-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .pricing-price {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .pricing-subtitle {
+            color: var(--gray-600);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin: var(--spacing-xl) 0;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            padding: var(--spacing-sm) 0;
+            color: var(--gray-700);
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-sm);
+        }
+        
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: var(--font-weight-bold);
+            flex-shrink: 0;
+        }
+        
+        .contact-form {
+            background: var(--white);
+            padding: var(--spacing-2xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--gray-900);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-base);
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: 2px solid var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: var(--danger-color);
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="./" class="navbar-brand">🛡️ M365 Security Toolkit</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+            <ul class="navbar-nav">
+                <li><a href="./">Home</a></li>
+                <li><a href="./live-dashboard.html">Live Dashboard</a></li>
+                <li><a href="./features.html">Features</a></li>
+                <li><a href="./documentation.html">Documentation</a></li>
+                <li><a href="./demo.html">Demo</a></li>
+                <li><a href="./pricing.html" class="btn-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero" style="margin-top: 2rem;">
+            <h1>💼 Get Started</h1>
+            <p class="subtitle">Free open-source toolkit with optional professional services</p>
+        </div>
+
+        <div class="section">
+            <div class="grid grid-3">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">Open Source</h3>
+                        <div class="pricing-price">$0</div>
+                        <p class="pricing-subtitle">Forever free</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Full source code access</li>
+                        <li>15+ CIS compliance controls</li>
+                        <li>Interactive HTML dashboards</li>
+                        <li>JSON, CSV, Excel reports</li>
+                        <li>GitHub Actions integration</li>
+                        <li>Community support</li>
+                        <li>MIT License</li>
+                    </ul>
+                    <a href="https://github.com/Heyson315/Easy-Ai" class="btn btn-outline">Get Started</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">Professional Services</h3>
+                        <div class="pricing-price">Custom</div>
+                        <p class="pricing-subtitle">Tailored to your needs</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Everything in Open Source</li>
+                        <li>Custom control development</li>
+                        <li>Multi-tenant deployment</li>
+                        <li>QuickBooks integration</li>
+                        <li>SQL Server reporting</li>
+                        <li>SharePoint customization</li>
+                        <li>Priority email support</li>
+                        <li>Training sessions</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary">Contact Us</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">Enterprise Support</h3>
+                        <div class="pricing-price">Custom</div>
+                        <p class="pricing-subtitle">For large organizations</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Everything in Professional</li>
+                        <li>Dedicated support team</li>
+                        <li>SLA guarantees</li>
+                        <li>Custom feature development</li>
+                        <li>On-site training</li>
+                        <li>Annual audit reviews</li>
+                        <li>Compliance consulting</li>
+                        <li>24/7 emergency support</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section section-white" id="contact">
+            <h2 class="section-title text-center mb-3">Contact Us</h2>
+            <p class="section-subtitle text-center mb-4">
+                Have questions? Want to discuss professional services? Get in touch!
+            </p>
+
+            <div style="max-width: 600px; margin: 0 auto;">
+                <form class="contact-form" data-validate action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company">Company/Organization</label>
+                        <input type="text" id="company" name="company">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interest">Interest *</label>
+                        <select id="interest" name="interest" required>
+                            <option value="">Select...</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="professional">Professional Services</option>
+                            <option value="enterprise">Enterprise Support</option>
+                            <option value="custom">Custom Development</option>
+                            <option value="training">Training & Consulting</option>
+                            <option value="partnership">Partnership Opportunity</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+
+                    <p style="margin-top: var(--spacing-md); font-size: var(--font-size-sm); color: var(--gray-600); text-align: center;">
+                        Or email us directly at: <a href="mailto:support@rahmanfinance.com">support@rahmanfinance.com</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header text-center">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="feature-detail">
+                    <h3>Is the toolkit really free?</h3>
+                    <p>Yes! The M365 Security Toolkit is 100% free and open-source under the MIT License. You can use it for personal or commercial purposes without any cost. Professional services and custom development are available for organizations needing additional support.</p>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>What M365 licenses do I need?</h3>
+                    <p>The toolkit works with Microsoft 365 Business Basic, Business Standard, Business Premium, and Enterprise (E3/E5) plans. Some advanced controls require E3/E5 features like Microsoft Defender for Office 365.</p>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>Can I use this for multiple tenants?</h3>
+                    <p>Absolutely! The toolkit supports multi-tenant audits, making it perfect for MSPs managing multiple client M365 environments. The GitHub Action includes batch configuration for parallel tenant audits.</p>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>How often should I run audits?</h3>
+                    <p>We recommend monthly audits as a baseline. High-security environments may want weekly or even daily automated checks. The GitHub Action can be scheduled using cron expressions for automated recurring audits.</p>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>Does this modify my M365 tenant?</h3>
+                    <p>By default, the toolkit is read-only and will not make any changes. Remediation features are optional and include a -WhatIf preview mode to review changes before applying them. All remediation actions are logged for audit purposes.</p>
+                </div>
+
+                <div class="feature-detail">
+                    <h3>Can I customize the controls?</h3>
+                    <p>Yes! The PowerShell module is fully customizable. You can add custom controls, modify existing ones, or disable checks that don't apply to your organization. Documentation on custom control development is available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>M365 Security Toolkit</h4>
+                    <p style="color: var(--gray-600); margin-top: 0.5rem;">
+                        Enterprise-grade Microsoft 365 security auditing and compliance automation.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <strong>Rahman Finance and Accounting P.L.LLC</strong>
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>Email: support@rahmanfinance.com</li>
+                        <li>GitHub: <a href="https://github.com/Heyson315/Easy-Ai">Heyson315/Easy-Ai</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="./privacy.html">Privacy Policy</a></li>
+                        <li><a href="./terms.html">Terms of Service</a></li>
+                        <li><a href="https://github.com/Heyson315/Easy-Ai/blob/Primary/LICENSE">MIT License</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="./documentation.html">Documentation</a></li>
+                        <li><a href="./features.html">Features</a></li>
+                        <li><a href="./demo.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Rahman Finance and Accounting P.L.LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./assets/js/app.js"></script>
+</body>
+</html>

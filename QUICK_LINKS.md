@@ -30,7 +30,7 @@ cat PROJECT_STATUS.md | less
 ```
 
 ### Report a Bug
-1. Check existing issues: https://github.com/Heyson315/share-report/issues
+1. Check existing issues: https://github.com/Heyson315/Easy-Ai/issues
 2. Use template: `.github/ISSUE_TEMPLATE/bug_report.md`
 3. Follow process: `BUG_TRACKING.md`
 4. Add labels: `bug`, `priority-pX`, `component-name`
