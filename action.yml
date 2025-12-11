@@ -167,7 +167,7 @@ runs:
         $scriptPath = "${{ github.action_path }}/scripts/powershell/Process-M365CISResults.ps1"
         $params = @{
             JsonPath = "${{ steps.audit.outputs.audit-report-json }}"
-            CompareWithBaseline = $${{ inputs.compare-with-baseline }}
+            CompareWithBaseline = ${{ inputs.compare-with-baseline }}
             BaselineArtifactName = "${{ inputs.baseline-artifact-name }}"
         }
         & $scriptPath @params
