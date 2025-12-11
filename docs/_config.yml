@@ -1,0 +1,40 @@
+title: "M365 Security Toolkit - Rahman Finance and Accounting P.L.LLC"
+description: "Enterprise-grade Microsoft 365 security auditing and compliance automation"
+theme: jekyll-theme-cayman
+baseurl: "/Easy-Ai"
+url: "https://heyson315.github.io"
+
+# SEO settings
+author:
+  name: "Rahman Finance and Accounting P.L.LLC"
+  email: "support@rahmanfinance.com"
+
+# Social links
+github_username: Heyson315
+repository: Heyson315/Easy-Ai
+
+# Google Analytics (optional - add your tracking ID)
+# google_analytics: UA-XXXXXXXXX-X
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Exclude files from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+      image: /assets/images/og-image.png

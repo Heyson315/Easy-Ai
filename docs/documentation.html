@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive documentation for M365 Security Toolkit including getting started guides, API reference, troubleshooting, and deployment instructions.">
+    <title>Documentation Hub | M365 Security Toolkit</title>
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <style>
+        .doc-category {
+            background: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .doc-list {
+            list-style: none;
+        }
+        
+        .doc-list li {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .doc-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .doc-list a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .doc-list a:hover {
+            color: var(--primary-dark);
+        }
+        
+        .doc-badge {
+            background: var(--gray-200);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-sm);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="./" class="navbar-brand">🛡️ M365 Security Toolkit</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+            <ul class="navbar-nav">
+                <li><a href="./">Home</a></li>
+                <li><a href="./live-dashboard.html">Live Dashboard</a></li>
+                <li><a href="./features.html">Features</a></li>
+                <li><a href="./documentation.html">Documentation</a></li>
+                <li><a href="./demo.html">Demo</a></li>
+                <li><a href="./pricing.html" class="btn-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero" style="margin-top: 2rem;">
+            <h1>📚 Documentation Hub</h1>
+            <p class="subtitle">Everything you need to deploy and use the M365 Security Toolkit</p>
+        </div>
+
+        <div class="section">
+            <div class="grid grid-2">
+                <div class="doc-category">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md);">🚀 Getting Started</h3>
+                    <ul class="doc-list">
+                        <li><a href="../README.md">Project Overview <span class="doc-badge">Essential</span></a></li>
+                        <li><a href="../docs/README.md">Quick Start Guide</a></li>
+                        <li><a href="../docs/M365_SERVICE_PRINCIPAL_SETUP.md">Service Principal Setup</a></li>
+                        <li><a href="../docs/PRODUCTION_DEPLOYMENT.md">Production Deployment</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-category">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md);">⚙️ Configuration</h3>
+                    <ul class="doc-list">
+                        <li><a href="../docs/SECURITY_M365_CIS.md">CIS Benchmark Controls</a></li>
+                        <li><a href="../docs/CPA_DEVELOPMENT_ENVIRONMENT.md">Development Environment</a></li>
+                        <li><a href="../docs/GIT_BRANCH_STRATEGY.md">Git Workflow</a></li>
+                        <li><a href="../docs/SECURE_CODING_GUIDE.md">Secure Coding Guide</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-category">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md);">📖 API Reference</h3>
+                    <ul class="doc-list">
+                        <li><a href="../docs/API_REFERENCE.md">API Documentation</a></li>
+                        <li><a href="../docs/USAGE_SHAREPOINT.md">SharePoint Integration</a></li>
+                        <li><a href="../docs/USAGE_GPT5.md">AI Integration (GPT-5)</a></li>
+                        <li><a href="../docs/CUSTOM_MCP_SERVER_GUIDE.md">MCP Server Guide</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-category">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md);">🔧 Troubleshooting</h3>
+                    <ul class="doc-list">
+                        <li><a href="../docs/TROUBLESHOOTING.md">General Troubleshooting</a></li>
+                        <li><a href="../docs/ACTION_TROUBLESHOOTING.md">GitHub Actions Issues</a></li>
+                        <li><a href="../docs/FAQ.md">Frequently Asked Questions</a></li>
+                        <li><a href="https://github.com/Heyson315/Easy-Ai/issues">Issue Tracker</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-category">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md);">⚡ Performance</h3>
+                    <ul class="doc-list">
+                        <li><a href="../docs/PERFORMANCE_OPTIMIZATIONS.md">Performance Guide</a></li>
+                        <li><a href="../docs/OPTIMIZATION_TOOLS.md">Optimization Tools</a></li>
+                    </ul>
+                </div>
+
+                <div class="doc-category">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md);">🎨 Design Resources</h3>
+                    <ul class="doc-list">
+                        <li><a href="../docs/WEB_DESIGN_GUIDE.md">Web Design Guide</a></li>
+                        <li><a href="../docs/WEB_DESIGN_IMPLEMENTATION_SUMMARY.md">Implementation Summary</a></li>
+                        <li><a href="../docs/STRUCTURE.md">Project Structure</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section section-white text-center">
+            <h2 class="section-title">Need Help?</h2>
+            <p class="section-subtitle mb-4">Get support from our community and maintainers</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/Heyson315/Easy-Ai/issues" class="btn btn-primary">Report an Issue</a>
+                <a href="https://github.com/Heyson315/Easy-Ai/discussions" class="btn btn-outline">Join Discussions</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-bottom text-center">
+                <p>&copy; 2024 Rahman Finance and Accounting P.L.LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./assets/js/app.js"></script>
+</body>
+</html>
