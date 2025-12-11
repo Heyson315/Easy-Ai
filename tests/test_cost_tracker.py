@@ -74,12 +74,12 @@ class TestGPT5CostTracker:
         with TemporaryDirectory() as td:
             log_file = Path(td) / "history.json"
 
-            # First session
-            tracker1 = GPT5CostTracker(log_file=str(log_file))
+            # First session (with auto_save for backward compatibility testing)
+            tracker1 = GPT5CostTracker(log_file=str(log_file), auto_save=True)
             tracker1.track_request("gpt-5-mini", 1000, 500)
 
-            # Second session
-            tracker2 = GPT5CostTracker(log_file=str(log_file))
+            # Second session (load saved history)
+            tracker2 = GPT5CostTracker(log_file=str(log_file), auto_save=True)
             assert len(tracker2.history) == 1
             assert tracker2.history[0]["model"] == "gpt-5-mini"
 
@@ -92,7 +92,7 @@ class TestGPT5CostTracker:
             log_file = Path(td) / "log.json"
             tracker = GPT5CostTracker(log_file=str(log_file))
 
-            # Mock history
+            # Mock history with direct assignment (bypassing track_request)
             now = datetime.now()
             eight_days_ago = (now - timedelta(days=8)).isoformat()
             two_days_ago = (now - timedelta(days=2)).isoformat()
@@ -104,6 +104,9 @@ class TestGPT5CostTracker:
                 {"timestamp": eight_days_ago, "cost": {"total": 3.0}},
                 {"timestamp": last_month, "cost": {"total": 4.0}},
             ]
+            
+            # Clear the date cache since we're manually setting history
+            tracker._date_cache.clear()
 
             assert tracker.get_daily_cost() == pytest.approx(1.0)
             assert tracker.get_weekly_cost() == pytest.approx(3.0)  # 1.0 + 2.0
@@ -114,6 +117,8 @@ class TestGPT5CostTracker:
             monthly_cost = 0.0
             if now.month == (now - timedelta(days=2)).month:
                 monthly_cost += 2.0
+            if now.month == (now - timedelta(days=8)).month:
+                monthly_cost += 3.0
             monthly_cost += 1.0
 
             assert tracker.get_monthly_cost() == pytest.approx(monthly_cost)
