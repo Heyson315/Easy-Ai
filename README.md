@@ -21,6 +21,7 @@ Enterprise-ready Microsoft 365 security auditing and SharePoint permissions anal
 ### ✨ Key Features
 
 - 🔐 **CIS Controls Compliance**: Automated M365 CIS benchmark assessments
+- 🛡️ **Security Alert Management**: Comprehensive investigation, remediation, and tracking system
 - 📊 **SharePoint Analysis**: Detailed permissions and access reporting  
 - 🤖 **GitHub Actions CI/CD**: Automated quality checks and monthly audits
 - 🧠 **AI-Assisted Development**: Comprehensive GitHub Copilot instructions for immediate productivity
@@ -229,7 +230,34 @@ python -m src.integrations.sharepoint_connector --input "data/processed/sharepoi
 
 **Output**: Detailed Excel reports with user access summaries, permission inheritance analysis, and security recommendations
 
-### 3. Web Design & Dashboard Creation
+### 3. Security Alert Investigation & Remediation
+
+```bash
+# Collect alerts from all sources (Bandit, Safety, CodeQL, M365 CIS)
+python scripts/investigate_security_alerts.py --collect
+
+# Investigate new alerts
+python scripts/investigate_security_alerts.py --list --status new
+python scripts/investigate_security_alerts.py --investigate --alert-id <alert-id>
+
+# Remediate alerts (with WhatIf preview)
+python scripts/remediate_security_alerts.py --alert-id <alert-id> --whatif
+python scripts/remediate_security_alerts.py --alert-id <alert-id> --auto
+
+# Generate compliance report
+python scripts/generate_alert_summary.py --format all
+```
+
+**Features**:
+- Multi-source alert aggregation (Bandit, Safety, CodeQL, M365 CIS)
+- Intelligent false positive detection
+- Automated remediation for safe issues
+- Escalation workflow for manual review
+- Compliance-ready reports (JSON/HTML/Excel)
+
+📖 **Complete Guide**: [docs/SECURITY_ALERT_SYSTEM.md](docs/SECURITY_ALERT_SYSTEM.md)
+
+### 4. Web Design & Dashboard Creation
 
 ```bash
 # Use provided templates for SharePoint

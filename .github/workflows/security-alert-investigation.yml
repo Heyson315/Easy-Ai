@@ -1,0 +1,388 @@
+name: 🔐 Security Alert Investigation & Remediation
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      auto_remediate:
+        description: 'Auto-remediate safe issues'
+        required: false
+        type: boolean
+        default: false
+      severity_filter:
+        description: 'Filter by severity (CRITICAL, HIGH, MEDIUM, LOW, or ALL)'
+        required: false
+        type: choice
+        options:
+          - ALL
+          - CRITICAL
+          - HIGH
+          - MEDIUM
+          - LOW
+        default: 'ALL'
+  pull_request:
+    branches:
+      - Primary
+    paths:
+      - '.github/workflows/security-alert-investigation.yml'
+      - 'scripts/investigate_security_alerts.py'
+      - 'scripts/remediate_security_alerts.py'
+      - 'scripts/generate_alert_summary.py'
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+
+jobs:
+  collect-alerts:
+    name: 🔍 Collect Security Alerts
+    runs-on: ubuntu-latest
+    outputs:
+      has-alerts: ${{ steps.collect.outputs.has-alerts }}
+      critical-count: ${{ steps.collect.outputs.critical-count }}
+      high-count: ${{ steps.collect.outputs.high-count }}
+      total-count: ${{ steps.collect.outputs.total-count }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install bandit safety pandas openpyxl
+
+      - name: Download existing security reports
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: security-reports
+          path: output/reports/security/
+
+      - name: Download existing alerts database
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: alerts-database
+          path: data/security/
+
+      - name: Run Bandit security scan
+        continue-on-error: true
+        run: |
+          mkdir -p output/reports/security
+          bandit -r scripts/ src/ -f json -o output/reports/security/bandit-report.json --ini .bandit || true
+
+      - name: Run Safety dependency scan
+        continue-on-error: true
+        run: |
+          safety check --file requirements.txt --output json > output/reports/security/safety-report.json || true
+
+      - name: Collect M365 CIS alerts (if available)
+        continue-on-error: true
+        run: |
+          # Copy latest M365 CIS audit if exists
+          if [ -d "output/reports/security" ]; then
+            cp output/reports/security/m365_cis_audit*.json output/reports/security/ 2>/dev/null || true
+          fi
+
+      - name: Collect all security alerts
+        id: collect
+        run: |
+          python scripts/investigate_security_alerts.py --collect \
+            --alerts-db data/security/alerts.json \
+            --reports-dir output/reports/security
+
+          # Check if we have alerts
+          if [ -f "data/security/alerts.json" ]; then
+            TOTAL=$(jq '.alerts | length' data/security/alerts.json)
+            CRITICAL=$(jq '[.alerts[] | select(.severity == "CRITICAL")] | length' data/security/alerts.json)
+            HIGH=$(jq '[.alerts[] | select(.severity == "HIGH")] | length' data/security/alerts.json)
+
+            echo "has-alerts=true" >> $GITHUB_OUTPUT
+            echo "total-count=$TOTAL" >> $GITHUB_OUTPUT
+            echo "critical-count=$CRITICAL" >> $GITHUB_OUTPUT
+            echo "high-count=$HIGH" >> $GITHUB_OUTPUT
+
+            echo "📊 Collected $TOTAL total alerts"
+            echo "   - Critical: $CRITICAL"
+            echo "   - High: $HIGH"
+          else
+            echo "has-alerts=false" >> $GITHUB_OUTPUT
+            echo "total-count=0" >> $GITHUB_OUTPUT
+            echo "critical-count=0" >> $GITHUB_OUTPUT
+            echo "high-count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload alerts database
+        uses: actions/upload-artifact@v4
+        with:
+          name: alerts-database
+          path: data/security/alerts.json
+          retention-days: 90
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: output/reports/security/
+          retention-days: 30
+
+  investigate-alerts:
+    name: 🔎 Investigate Alerts
+    runs-on: ubuntu-latest
+    needs: collect-alerts
+    if: needs.collect-alerts.outputs.has-alerts == 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install pandas openpyxl
+
+      - name: Download alerts database
+        uses: actions/download-artifact@v4
+        with:
+          name: alerts-database
+          path: data/security/
+
+      - name: Download security reports
+        uses: actions/download-artifact@v4
+        with:
+          name: security-reports
+          path: output/reports/security/
+
+      - name: Investigate new alerts
+        run: |
+          # List all new alerts
+          python scripts/investigate_security_alerts.py --list --status new
+
+          # Investigate each new alert (marks as "investigating")
+          NEW_ALERTS=$(jq -r '.alerts | to_entries[] | select(.value.status == "new") | .key' data/security/alerts.json)
+
+          for ALERT_ID in $NEW_ALERTS; do
+            echo "🔍 Investigating: $ALERT_ID"
+            python scripts/investigate_security_alerts.py --investigate --alert-id "$ALERT_ID" || true
+          done
+
+      - name: Upload updated alerts database
+        uses: actions/upload-artifact@v4
+        with:
+          name: alerts-database
+          path: data/security/alerts.json
+          retention-days: 90
+
+  remediate-alerts:
+    name: 🔧 Remediate Alerts
+    runs-on: ubuntu-latest
+    needs: [collect-alerts, investigate-alerts]
+    if: |
+      needs.collect-alerts.outputs.has-alerts == 'true' &&
+      (github.event_name == 'schedule' || github.event.inputs.auto_remediate == 'true')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install pandas openpyxl
+
+      - name: Download alerts database
+        uses: actions/download-artifact@v4
+        with:
+          name: alerts-database
+          path: data/security/
+
+      - name: Auto-remediate safe issues
+        id: remediate
+        run: |
+          mkdir -p output/reports/security
+
+          # Get alerts that can be auto-remediated
+          INVESTIGATING_ALERTS=$(jq -r '.alerts | to_entries[] | select(.value.status == "investigating") | .key' data/security/alerts.json)
+
+          REMEDIATED=0
+          ESCALATED=0
+          FAILED=0
+
+          for ALERT_ID in $INVESTIGATING_ALERTS; do
+            echo "🔧 Attempting remediation: $ALERT_ID"
+
+            # Try auto-remediation (dry run first)
+            if python scripts/remediate_security_alerts.py --alert-id "$ALERT_ID" --whatif; then
+              # Apply remediation
+              if python scripts/remediate_security_alerts.py --alert-id "$ALERT_ID" --auto; then
+                REMEDIATED=$((REMEDIATED + 1))
+                echo "✅ Remediated: $ALERT_ID"
+              else
+                # Escalate if auto-remediation fails
+                python scripts/remediate_security_alerts.py --escalate --alert-id "$ALERT_ID" --escalation-reason "Auto-remediation failed" || true
+                ESCALATED=$((ESCALATED + 1))
+                echo "📢 Escalated: $ALERT_ID"
+              fi
+            else
+              # Escalate if cannot auto-remediate
+              python scripts/remediate_security_alerts.py --escalate --alert-id "$ALERT_ID" --escalation-reason "Manual remediation required" || true
+              ESCALATED=$((ESCALATED + 1))
+              echo "📢 Escalated: $ALERT_ID"
+            fi
+          done
+
+          echo "remediated-count=$REMEDIATED" >> $GITHUB_OUTPUT
+          echo "escalated-count=$ESCALATED" >> $GITHUB_OUTPUT
+
+          echo "📊 Remediation Summary:"
+          echo "   - Remediated: $REMEDIATED"
+          echo "   - Escalated: $ESCALATED"
+
+      - name: Upload updated alerts database
+        uses: actions/upload-artifact@v4
+        with:
+          name: alerts-database
+          path: data/security/alerts.json
+          retention-days: 90
+
+      - name: Upload remediation log
+        uses: actions/upload-artifact@v4
+        with:
+          name: remediation-log
+          path: output/reports/security/remediation_log.json
+          retention-days: 90
+
+  generate-report:
+    name: 📊 Generate Summary Report
+    runs-on: ubuntu-latest
+    needs: [collect-alerts, investigate-alerts]
+    if: needs.collect-alerts.outputs.has-alerts == 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install pandas openpyxl
+
+      - name: Download alerts database
+        uses: actions/download-artifact@v4
+        with:
+          name: alerts-database
+          path: data/security/
+
+      - name: Download remediation log
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: remediation-log
+          path: output/reports/security/
+
+      - name: Generate compliance report
+        run: |
+          python scripts/generate_alert_summary.py \
+            --format all \
+            --output-dir output/reports/security \
+            --alerts-db data/security/alerts.json \
+            --remediation-log output/reports/security/remediation_log.json
+
+      - name: Upload summary reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: alert-summary-reports
+          path: |
+            output/reports/security/alert_summary_*.json
+            output/reports/security/alert_summary_*.html
+            output/reports/security/alert_summary_*.xlsx
+          retention-days: 365
+
+      - name: Display summary
+        run: |
+          echo "## 🛡️ Security Alert Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Total Alerts:** ${{ needs.collect-alerts.outputs.total-count }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Critical:** ${{ needs.collect-alerts.outputs.critical-count }}" >> $GITHUB_STEP_SUMMARY
+          echo "**High:** ${{ needs.collect-alerts.outputs.high-count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "output/reports/security/alert_summary_"*.html ]; then
+            echo "📄 Reports generated successfully" >> $GITHUB_STEP_SUMMARY
+            echo "- JSON: Summary data" >> $GITHUB_STEP_SUMMARY
+            echo "- HTML: Interactive report" >> $GITHUB_STEP_SUMMARY
+            echo "- Excel: Detailed spreadsheet" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  notify-critical:
+    name: 🚨 Notify on Critical Issues
+    runs-on: ubuntu-latest
+    needs: [collect-alerts, generate-report]
+    if: |
+      needs.collect-alerts.outputs.has-alerts == 'true' &&
+      needs.collect-alerts.outputs.critical-count > 0
+
+    steps:
+      - name: Create issue for critical alerts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const criticalCount = ${{ needs.collect-alerts.outputs.critical-count }};
+            const highCount = ${{ needs.collect-alerts.outputs.high-count }};
+            const totalCount = ${{ needs.collect-alerts.outputs.total-count }};
+
+            const body = `## 🚨 Critical Security Alerts Detected
+
+            **Summary:**
+            - Critical: ${criticalCount}
+            - High: ${highCount}
+            - Total: ${totalCount}
+
+            **Action Required:**
+            Review the alerts in the [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) and take appropriate action.
+
+            **Reports:**
+            Download the summary reports from the workflow artifacts for detailed analysis.
+
+            **Auto-generated:** ${new Date().toISOString()}
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Critical Security Alerts - ${criticalCount} found`,
+              body: body,
+              labels: ['security', 'critical', 'automated']
+            });
