@@ -33,6 +33,10 @@ except ImportError:
     print("⚠️  pandas not available - Excel export disabled")
 
 
+# Color scheme constants for reports
+HEADER_COLOR = "4472C4"  # Microsoft blue for headers
+
+
 class AlertSummaryGenerator:
     """Generate comprehensive security alert summary reports."""
 
@@ -450,7 +454,7 @@ class AlertSummaryGenerator:
             cell.font = Font(bold=True, size=14)
         for cell in ws_summary[4]:
             cell.font = Font(bold=True)
-            cell.fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+            cell.fill = PatternFill(start_color=HEADER_COLOR, end_color=HEADER_COLOR, fill_type="solid")
 
         # Alerts sheet
         ws_alerts = wb.create_sheet("Alerts")
@@ -472,7 +476,7 @@ class AlertSummaryGenerator:
         # Format alerts header
         for cell in ws_alerts[1]:
             cell.font = Font(bold=True)
-            cell.fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+            cell.fill = PatternFill(start_color=HEADER_COLOR, end_color=HEADER_COLOR, fill_type="solid")
 
         # Save workbook
         output_path.parent.mkdir(parents=True, exist_ok=True)
