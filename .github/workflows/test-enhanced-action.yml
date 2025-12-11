@@ -46,7 +46,7 @@ jobs:
 
   test-with-secrets:
     name: Test with M365 Tenant
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     if: github.event.inputs.test-mode == 'full-audit'
     needs: validate-action
     permissions:
