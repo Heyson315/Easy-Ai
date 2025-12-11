@@ -41,24 +41,31 @@ class GPT5CostTracker:
         "gpt-5-nano": {"input": 0.75, "cached_input": 0.375, "output": 2.25},
     }
 
-    def __init__(self, budget_limit: Optional[float] = None, log_file: Optional[str] = None):
+    def __init__(self, budget_limit: Optional[float] = None, log_file: Optional[str] = None, auto_save: bool = False):
         """
         Initialize cost tracker.
 
         Args:
             budget_limit: Optional daily budget limit in USD (triggers warnings)
             log_file: Path to JSON log file for tracking usage history
+            auto_save: If True, saves after every request. If False (default), call save() manually.
+                      Performance optimization: Set to False for high-frequency usage.
         """
         self.budget_limit = budget_limit
         self.log_file = log_file or "output/reports/gpt5_cost_log.json"
+        self.auto_save = auto_save
         self.session_costs = []
         self.total_tokens = {"input": 0, "cached_input": 0, "output": 0}
         self.total_cost = 0.0
+        self._unsaved_entries = 0  # Track unsaved entries
 
         # Load existing log
         self.log_path = Path(self.log_file)
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         self.history = self._load_history()
+        
+        # Cache for parsed dates to avoid repeated parsing
+        self._date_cache: Dict[str, datetime] = {}
 
     def _load_history(self) -> List[Dict]:
         """Load cost history from log file."""
@@ -74,6 +81,28 @@ class GPT5CostTracker:
         """Save cost history to log file."""
         with open(self.log_path, "w", encoding="utf-8") as f:
             json.dump(self.history, f, indent=2)
+        self._unsaved_entries = 0  # Reset counter after save
+    
+    def save(self):
+        """
+        Explicitly save history to disk.
+        
+        Performance tip: Call this at the end of your session rather than
+        relying on auto_save=True for better performance.
+        """
+        if self._unsaved_entries > 0:
+            self._save_history()
+    
+    def _get_parsed_date(self, timestamp_str: str) -> datetime:
+        """
+        Get parsed datetime with caching to avoid repeated parsing.
+        
+        Performance optimization: Caches parsed dates to avoid O(n) datetime parsing
+        in loops when filtering by date.
+        """
+        if timestamp_str not in self._date_cache:
+            self._date_cache[timestamp_str] = datetime.fromisoformat(timestamp_str)
+        return self._date_cache[timestamp_str]
 
     def track_request(
         self,
@@ -140,7 +169,13 @@ class GPT5CostTracker:
 
         self.session_costs.append(entry)
         self.history.append(entry)
-        self._save_history()
+        self._unsaved_entries += 1
+        
+        # Only auto-save if enabled (performance optimization)
+        if self.auto_save:
+            self._save_history()
+        elif self._unsaved_entries >= 10:  # Auto-save every 10 entries as safety fallback
+            self._save_history()
 
         # Check budget
         if self.budget_limit:
@@ -157,31 +192,44 @@ class GPT5CostTracker:
         }
 
     def get_daily_cost(self) -> float:
-        """Get total cost for today."""
+        """
+        Get total cost for today.
+        
+        Performance optimization: Uses cached datetime parsing.
+        """
         today = datetime.now().date()
         daily_cost = sum(
             entry["cost"]["total"]
             for entry in self.history
-            if datetime.fromisoformat(entry["timestamp"]).date() == today
+            if self._get_parsed_date(entry["timestamp"]).date() == today
         )
         return daily_cost
 
     def get_weekly_cost(self) -> float:
-        """Get total cost for the past 7 days."""
+        """
+        Get total cost for the past 7 days.
+        
+        Performance optimization: Uses cached datetime parsing.
+        """
         week_ago = datetime.now() - timedelta(days=7)
         weekly_cost = sum(
-            entry["cost"]["total"] for entry in self.history if datetime.fromisoformat(entry["timestamp"]) >= week_ago
+            entry["cost"]["total"] for entry in self.history 
+            if self._get_parsed_date(entry["timestamp"]) >= week_ago
         )
         return weekly_cost
 
     def get_monthly_cost(self) -> float:
-        """Get total cost for the current month."""
+        """
+        Get total cost for the current month.
+        
+        Performance optimization: Uses cached datetime parsing and single comparison.
+        """
         today = datetime.now()
         monthly_cost = sum(
             entry["cost"]["total"]
             for entry in self.history
-            if datetime.fromisoformat(entry["timestamp"]).month == today.month
-            and datetime.fromisoformat(entry["timestamp"]).year == today.year
+            if (parsed := self._get_parsed_date(entry["timestamp"])) and
+               parsed.month == today.month and parsed.year == today.year
         )
         return monthly_cost
 
@@ -225,9 +273,13 @@ class GPT5CostTracker:
         print("=" * 80 + "\n")
 
     def print_detailed_report(self, days: int = 30):
-        """Print detailed cost report."""
+        """
+        Print detailed cost report.
+        
+        Performance optimization: Uses cached datetime parsing for filtering.
+        """
         cutoff = datetime.now() - timedelta(days=days)
-        recent = [e for e in self.history if datetime.fromisoformat(e["timestamp"]) >= cutoff]
+        recent = [e for e in self.history if self._get_parsed_date(e["timestamp"]) >= cutoff]
 
         print("\n" + "=" * 80)
         print(f"  GPT-5 Cost Report - Last {days} Days")
@@ -315,6 +367,14 @@ class GPT5CostTracker:
                 print(rec)
         else:
             print("   ✅ No major optimization opportunities detected")
+    
+    def __del__(self):
+        """Ensure history is saved when tracker is destroyed."""
+        try:
+            self.save()
+        except Exception:
+            # Ignore errors during cleanup
+            pass
 
     def export_to_csv(self, output_path: str = "output/reports/gpt5_costs.csv"):
         """Export cost history to CSV for analysis."""

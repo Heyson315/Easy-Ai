@@ -223,6 +223,9 @@ def create_purview_action_plan():
         ["• Existing logs are retained according to new policy"],
     ]
 
+    # Optimize: Pre-compute formatting rules to avoid repeated checks
+    POWERSHELL_COMMANDS = {"New-", "Get-", "Connect-", "Search-", "Import-"}
+    
     for row_idx, content in enumerate(ps_content, start=1):
         cell = ws_ps.cell(row=row_idx, column=1, value=content[0])
         if row_idx == 1:
@@ -233,13 +236,8 @@ def create_purview_action_plan():
             cell.fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
         elif content[0].startswith("#"):
             cell.font = Font(italic=True, color="008000")
-        elif (
-            content[0].startswith("New-")
-            or content[0].startswith("Get-")
-            or content[0].startswith("Connect-")
-            or content[0].startswith("Search-")
-            or content[0].startswith("Import-")
-        ):
+        elif any(content[0].startswith(cmd) for cmd in POWERSHELL_COMMANDS):
+            # Performance: Check prefix once using set instead of multiple startswith calls
             cell.font = Font(name="Consolas", size=10)
         elif "    -" in content[0]:
             cell.font = Font(name="Consolas", size=9, color="4472C4")
