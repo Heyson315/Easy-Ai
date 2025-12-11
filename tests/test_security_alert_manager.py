@@ -17,7 +17,7 @@ from src.core.security_alert_manager import (
     AlertStatus,
     RemediationAction,
     InvestigationReport,
-    RemediationResult
+    RemediationResult,
 )
 
 
@@ -34,7 +34,7 @@ def sample_audit_data():
             "Status": "Fail",
             "Evidence": "Basic authentication detected on protocol: SMTP",
             "Reference": "CIS M365 Foundations v3.0 L1",
-            "Timestamp": "2025-12-11T10:00:00"
+            "Timestamp": "2025-12-11T10:00:00",
         },
         {
             "ControlId": "CIS-EXO-2",
@@ -45,7 +45,7 @@ def sample_audit_data():
             "Status": "Fail",
             "Evidence": "AutoForwardEnabled is True",
             "Reference": "CIS M365 Foundations v3.0 L1",
-            "Timestamp": "2025-12-11T10:01:00"
+            "Timestamp": "2025-12-11T10:01:00",
         },
         {
             "ControlId": "CIS-AAD-1",
@@ -56,7 +56,7 @@ def sample_audit_data():
             "Status": "Fail",
             "Evidence": "Found 8 users with Global Administrator role",
             "Reference": "CIS M365 Foundations v3.0 L1",
-            "Timestamp": "2025-12-11T10:02:00"
+            "Timestamp": "2025-12-11T10:02:00",
         },
         {
             "ControlId": "CIS-SPO-1",
@@ -67,7 +67,7 @@ def sample_audit_data():
             "Status": "Manual",
             "Evidence": "Not connected to SharePoint",
             "Reference": "CIS M365 Foundations v3.0 L1",
-            "Timestamp": "2025-12-11T10:03:00"
+            "Timestamp": "2025-12-11T10:03:00",
         },
         {
             "ControlId": "CIS-AAD-2",
@@ -78,8 +78,8 @@ def sample_audit_data():
             "Status": "Pass",
             "Evidence": "All users have MFA enabled",
             "Reference": "CIS M365 Foundations v3.0 L1",
-            "Timestamp": "2025-12-11T10:04:00"
-        }
+            "Timestamp": "2025-12-11T10:04:00",
+        },
     ]
 
 
@@ -89,10 +89,10 @@ def temp_audit_file(sample_audit_data):
     with TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
         audit_file = tmpdir / "test_audit.json"
-        
+
         with open(audit_file, "w", encoding="utf-8") as f:
             json.dump(sample_audit_data, f)
-        
+
         yield audit_file
 
 
@@ -106,11 +106,7 @@ def temp_output_dir():
 @pytest.fixture
 def alert_manager(temp_audit_file, temp_output_dir):
     """Create a SecurityAlertManager instance for testing"""
-    return SecurityAlertManager(
-        audit_path=temp_audit_file,
-        output_dir=temp_output_dir,
-        dry_run=True
-    )
+    return SecurityAlertManager(audit_path=temp_audit_file, output_dir=temp_output_dir, dry_run=True)
 
 
 class TestSecurityAlertCollection:
@@ -119,7 +115,7 @@ class TestSecurityAlertCollection:
     def test_collect_alerts_from_audit(self, alert_manager):
         """Test that alerts are correctly collected from audit results"""
         count = alert_manager.collect_alerts()
-        
+
         # Should only collect failed controls (3 out of 5)
         assert count == 3
         assert len(alert_manager.alerts) == 3
@@ -127,7 +123,7 @@ class TestSecurityAlertCollection:
     def test_alerts_sorted_by_severity(self, alert_manager):
         """Test that alerts are sorted by severity (Critical > High > Medium > Low)"""
         alert_manager.collect_alerts()
-        
+
         # First alert should be Critical
         assert alert_manager.alerts[0].severity == "Critical"
         # Followed by High severity alerts
@@ -137,7 +133,7 @@ class TestSecurityAlertCollection:
     def test_alert_fields_populated(self, alert_manager):
         """Test that alert fields are correctly populated from audit data"""
         alert_manager.collect_alerts()
-        
+
         alert = alert_manager.alerts[0]
         assert alert.control_id == "CIS-AAD-1"
         assert alert.title == "Limit Global Administrator role assignments"
@@ -153,10 +149,10 @@ class TestSecurityAlertCollection:
             empty_file = tmpdir / "empty.json"
             with open(empty_file, "w") as f:
                 json.dump([], f)
-            
+
             manager = SecurityAlertManager(empty_file, temp_output_dir, dry_run=True)
             count = manager.collect_alerts()
-            
+
             assert count == 0
             assert len(manager.alerts) == 0
 
@@ -168,9 +164,9 @@ class TestAlertInvestigation:
         """Test that investigating an alert creates an investigation report"""
         alert_manager.collect_alerts()
         alert = alert_manager.alerts[0]
-        
+
         investigation = alert_manager.investigate_alert(alert)
-        
+
         assert isinstance(investigation, InvestigationReport)
         assert investigation.alert_id == alert.alert_id
         assert investigation.severity == alert.severity
@@ -189,9 +185,9 @@ class TestAlertInvestigation:
             timestamp=datetime.now().isoformat(),
             reference="Test",
             expected="Connected",
-            actual="Not connected"
+            actual="Not connected",
         )
-        
+
         result = alert_manager._check_false_positive(alert)
         assert result is True
 
@@ -199,17 +195,17 @@ class TestAlertInvestigation:
         """Test that investigation updates alert status"""
         alert_manager.collect_alerts()
         alert = alert_manager.alerts[0]
-        
+
         initial_status = alert.alert_status
         alert_manager.investigate_alert(alert)
-        
+
         # Status should change from OPEN
         assert alert.alert_status != initial_status
 
     def test_remediation_action_determination(self, alert_manager):
         """Test that appropriate remediation actions are determined"""
         alert_manager.collect_alerts()
-        
+
         for alert in alert_manager.alerts:
             action = alert_manager._determine_remediation_action(alert)
             assert action in [a.value for a in RemediationAction]
@@ -222,10 +218,10 @@ class TestRemediation:
         """Test that remediation is applied for valid alerts"""
         alert_manager.collect_alerts()
         alert = alert_manager.alerts[1]  # High severity alert
-        
+
         investigation = alert_manager.investigate_alert(alert)
         result = alert_manager.apply_remediation(alert, investigation)
-        
+
         assert isinstance(result, RemediationResult)
         assert result.dry_run is True
 
@@ -242,9 +238,9 @@ class TestRemediation:
             timestamp=datetime.now().isoformat(),
             reference="Test",
             expected="Module loaded",
-            actual="Module not found"
+            actual="Module not found",
         )
-        
+
         investigation = InvestigationReport(
             alert_id=alert.alert_id,
             severity=alert.severity,
@@ -253,11 +249,11 @@ class TestRemediation:
             endpoints=[],
             user_activity=[],
             is_false_positive=True,
-            false_positive_reason="Module missing"
+            false_positive_reason="Module missing",
         )
-        
+
         result = alert_manager.apply_remediation(alert, investigation)
-        
+
         assert result.success is True
         assert result.action == "none"
         assert "false positive" in result.details.lower()
@@ -267,10 +263,10 @@ class TestRemediation:
         alert_manager.collect_alerts()
         # Critical alert about admin roles should require manual review
         alert = alert_manager.alerts[0]
-        
+
         investigation = alert_manager.investigate_alert(alert)
         result = alert_manager.apply_remediation(alert, investigation)
-        
+
         # Should be escalated for manual review
         assert alert.escalated is True
         assert alert.alert_status == AlertStatus.ESCALATED.value
@@ -278,13 +274,13 @@ class TestRemediation:
     def test_dry_run_mode(self, alert_manager):
         """Test that dry run mode doesn't apply actual changes"""
         assert alert_manager.dry_run is True
-        
+
         alert_manager.collect_alerts()
         alert = alert_manager.alerts[1]
-        
+
         investigation = alert_manager.investigate_alert(alert)
         result = alert_manager.apply_remediation(alert, investigation)
-        
+
         # Verify dry_run flag is set in result
         assert result.dry_run is True
 
@@ -296,9 +292,9 @@ class TestAlertProcessing:
         """Test that all alerts are processed correctly"""
         alert_manager.collect_alerts()
         initial_count = len(alert_manager.alerts)
-        
+
         stats = alert_manager.process_all_alerts()
-        
+
         assert stats["total_alerts"] == initial_count
         assert stats["investigated"] == initial_count
         assert stats["remediated"] >= 0
@@ -309,12 +305,12 @@ class TestAlertProcessing:
         """Test that resolved alerts are closed"""
         alert_manager.collect_alerts()
         alert_manager.process_all_alerts()
-        
+
         closed_count = alert_manager.close_resolved_alerts()
-        
+
         # At least some alerts should be closed
         assert closed_count >= 0
-        
+
         # Check that closed alerts have correct status
         for alert in alert_manager.alerts:
             if alert.remediation_applied or alert.false_positive:
@@ -328,16 +324,16 @@ class TestReporting:
         """Test remediation log generation"""
         alert_manager.collect_alerts()
         alert_manager.process_all_alerts()
-        
+
         log_path = alert_manager.generate_remediation_log()
-        
+
         assert log_path.exists()
         assert log_path.suffix == ".json"
-        
+
         # Verify log content
         with open(log_path, "r") as f:
             log_data = json.load(f)
-        
+
         assert "generated" in log_data
         assert "dry_run" in log_data
         assert "alerts" in log_data
@@ -348,21 +344,21 @@ class TestReporting:
         """Test summary report generation"""
         alert_manager.collect_alerts()
         alert_manager.process_all_alerts()
-        
+
         summary_path = alert_manager.generate_summary_report()
-        
+
         assert summary_path.exists()
         assert summary_path.suffix == ".json"
-        
+
         # Verify summary content
         with open(summary_path, "r") as f:
             summary = json.load(f)
-        
+
         assert "report_date" in summary
         assert "statistics" in summary
         assert "actions_taken" in summary
         assert "pending_escalations" in summary
-        
+
         # Verify statistics
         stats = summary["statistics"]
         assert "total_alerts" in stats
@@ -374,20 +370,20 @@ class TestReporting:
         """Test that summary report statistics are accurate"""
         alert_manager.collect_alerts()
         alert_manager.process_all_alerts()
-        
+
         summary_path = alert_manager.generate_summary_report()
-        
+
         with open(summary_path, "r") as f:
             summary = json.load(f)
-        
+
         stats = summary["statistics"]
-        
+
         # Total should equal sum of outcomes
         total = stats["total_alerts"]
         remediated = stats["remediated"]
         escalated = stats["escalated"]
         false_positives = stats["false_positives"]
-        
+
         # All alerts should be accounted for
         assert remediated + escalated + false_positives <= total
 
@@ -395,14 +391,14 @@ class TestReporting:
         """Test that escalated alerts have detailed information in summary"""
         alert_manager.collect_alerts()
         alert_manager.process_all_alerts()
-        
+
         summary_path = alert_manager.generate_summary_report()
-        
+
         with open(summary_path, "r") as f:
             summary = json.load(f)
-        
+
         escalations = summary["pending_escalations"]
-        
+
         # Each escalation should have required fields
         for escalation in escalations:
             assert "alert_id" in escalation
@@ -420,7 +416,7 @@ class TestEdgeCases:
         """Test handling of invalid audit file"""
         invalid_file = Path("/nonexistent/file.json")
         manager = SecurityAlertManager(invalid_file, temp_output_dir, dry_run=True)
-        
+
         count = manager.collect_alerts()
         assert count == 0
 
@@ -431,10 +427,10 @@ class TestEdgeCases:
             bad_file = tmpdir / "bad.json"
             with open(bad_file, "w") as f:
                 f.write("{invalid json")
-            
+
             manager = SecurityAlertManager(bad_file, temp_output_dir, dry_run=True)
             count = manager.collect_alerts()
-            
+
             assert count == 0
 
     def test_output_directory_creation(self):
@@ -444,12 +440,12 @@ class TestEdgeCases:
             audit_file = tmpdir / "audit.json"
             with open(audit_file, "w") as f:
                 json.dump([], f)
-            
+
             output_dir = tmpdir / "new" / "output" / "dir"
             assert not output_dir.exists()
-            
+
             manager = SecurityAlertManager(audit_file, output_dir, dry_run=True)
-            
+
             assert output_dir.exists()
 
 

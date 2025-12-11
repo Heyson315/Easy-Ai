@@ -1,0 +1,46 @@
+{
+  "report_date": "2025-12-11T04:27:25.696298",
+  "dry_run_mode": true,
+  "statistics": {
+    "total_alerts": 1,
+    "remediated": 0,
+    "escalated": 1,
+    "false_positives": 0,
+    "closed": 0,
+    "by_severity": {
+      "High": {
+        "total": 1,
+        "remediated": 0,
+        "escalated": 1
+      }
+    }
+  },
+  "actions_taken": [],
+  "pending_escalations": [
+    {
+      "alert_id": "ALERT-CIS-EXO-2-20251211042725",
+      "control_id": "CIS-EXO-2",
+      "title": "Disable external auto-forwarding (TransportConfig)",
+      "severity": "High",
+      "evidence": "\r\n\r\nAddressBookPolicyRoutingEnabled                             : False\r\nAllowLegacyTLSClients                                       : False\r\nAnonymousSenderToRecipientRatePerHour                       : 1800\r\nClearCategories                                             : True\r\nConvertDisclaimerWrapperToEml                               : False\r\nDSNConversionMode                                           : PreserveDSNBody\r\nJournalArchivingEnabled                                     : False\r\nEnableExternalHTTPMailDelivery                              : False\r\nExternalDelayDsnEnabled                                     : True\r\nExternalDsnDefaultLanguage                                  : \r\nExternalDsnLanguageDetectionEnabled                         : True\r\nExternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nExternalDsnReportingAuthority                               : \r\nExternalDsnSendHtml                                         : True\r\nExternalPostmasterAddress                                   : \r\nGenerateCopyOfDSNFor                                        : {}\r\nHygieneSuite                                                : Premium\r\nInternalDelayDsnEnabled                                     : True\r\nInternalDsnDefaultLanguage                                  : \r\nInternalDsnLanguageDetectionEnabled                         : True\r\nInternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nInternalDsnReportingAuthority                               : \r\nInternalDsnSendHtml                                         : True\r\nInternalSMTPServers                                         : {}\r\nJournalMessageExpirationDays                                : 0\r\nJournalingReportNdrTo                                       : <>\r\nLegacyJournalingMigrationEnabled                            : False\r\nLegacyArchiveJournalingEnabled                              : False\r\nLegacyArchiveLiveJournalingEnabled                          : False\r\nRedirectUnprovisionedUserMessagesForLegacyArchiveJournaling : False\r\nRedirectDLMessagesForLegacyArchiveJournaling                : False\r\nMaxDumpsterSizePerDatabase                                  : 18 MB (18,874,368 bytes)\r\nMaxDumpsterTime                                             : 7.00:00:00\r\nMaxReceiveSize                                              : Unlimited\r\nMaxRecipientEnvelopeLimit                                   : Unlimited\r\nMaxSendSize                                                 : Unlimited\r\nMessageExpiration                                           : 1.00:00:00\r\nMigrationEnabled                                            : True\r\nOpenDomainRoutingEnabled                                    : False\r\nRfc2231EncodingEnabled                                      : False\r\nSafetyNetHoldTime                                           : 7.00:00:00\r\nSmtpClientAuthenticationDisabled                            : False\r\nSupervisionTags                                             : {Reject, Allow}\r\nTLSReceiveDomainSecureList                                  : {}\r\nTLSSendDomainSecureList                                     : {}\r\nVerifySecureSubmitEnabled                                   : False\r\nVoicemailJournalingEnabled                                  : True\r\nHeaderPromotionModeSetting                                  : NoCreate\r\nXexch50Enabled                                              : True\r\n\r\n\r\n\r\n",
+      "investigation_summary": {
+        "logs": [
+          "Audit log entry: \r\n\r\nAddressBookPolicyRoutingEnabled                             : False\r\nAllowLegacyTLSClients                                       : False\r\nAnonymousSenderToRecipientRatePerHour                       : 1800\r\nClearCategories                                             : True\r\nConvertDisclaimerWrapperToEml                               : False\r\nDSNConversionMode                                           : PreserveDSNBody\r\nJournalArchivingEnabled                                     : False\r\nEnableExternalHTTPMailDelivery                              : False\r\nExternalDelayDsnEnabled                                     : True\r\nExternalDsnDefaultLanguage                                  : \r\nExternalDsnLanguageDetectionEnabled                         : True\r\nExternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nExternalDsnReportingAuthority                               : \r\nExternalDsnSendHtml                                         : True\r\nExternalPostmasterAddress                                   : \r\nGenerateCopyOfDSNFor                                        : {}\r\nHygieneSuite                                                : Premium\r\nInternalDelayDsnEnabled                                     : True\r\nInternalDsnDefaultLanguage                                  : \r\nInternalDsnLanguageDetectionEnabled                         : True\r\nInternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nInternalDsnReportingAuthority                               : \r\nInternalDsnSendHtml                                         : True\r\nInternalSMTPServers                                         : {}\r\nJournalMessageExpirationDays                                : 0\r\nJournalingReportNdrTo                                       : <>\r\nLegacyJournalingMigrationEnabled                            : False\r\nLegacyArchiveJournalingEnabled                              : False\r\nLegacyArchiveLiveJournalingEnabled                          : False\r\nRedirectUnprovisionedUserMessagesForLegacyArchiveJournaling : False\r\nRedirectDLMessagesForLegacyArchiveJournaling                : False\r\nMaxDumpsterSizePerDatabase                                  : 18 MB (18,874,368 bytes)\r\nMaxDumpsterTime                                             : 7.00:00:00\r\nMaxReceiveSize                                              : Unlimited\r\nMaxRecipientEnvelopeLimit                                   : Unlimited\r\nMaxSendSize                                                 : Unlimited\r\nMessageExpiration                                           : 1.00:00:00\r\nMigrationEnabled                                            : True\r\nOpenDomainRoutingEnabled                                    : False\r\nRfc2231EncodingEnabled                                      : False\r\nSafetyNetHoldTime                                           : 7.00:00:00\r\nSmtpClientAuthenticationDisabled                            : False\r\nSupervisionTags                                             : {Reject, Allow}\r\nTLSReceiveDomainSecureList                                  : {}\r\nTLSSendDomainSecureList                                     : {}\r\nVerifySecureSubmitEnabled                                   : False\r\nVoicemailJournalingEnabled                                  : True\r\nHeaderPromotionModeSetting                                  : NoCreate\r\nXexch50Enabled                                              : True\r\n\r\n\r\n\r\n",
+          "Control check timestamp: 2025-11-11T12:18:43",
+          "Expected configuration: ExternalClientForwardingDisabled=True",
+          "Actual configuration: ExternalClientForwardingDisabled="
+        ],
+        "recommended_action": "manual_review"
+      },
+      "remediation_details": "Requires manual review - escalating to security team",
+      "next_steps": [
+        "Review control CIS-EXO-2: Disable external auto-forwarding (TransportConfig)",
+        "Verify current configuration: ExternalClientForwardingDisabled=",
+        "Implement recommended configuration: ExternalClientForwardingDisabled=True",
+        "Reference: CIS M365 Foundations v3.0 L1; EXO TransportConfig",
+        "Validate changes in test environment before production",
+        "Update security documentation with changes made"
+      ]
+    }
+  ]
+}

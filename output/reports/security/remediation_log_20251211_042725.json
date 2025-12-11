@@ -1,0 +1,51 @@
+{
+  "generated": "2025-12-11T04:27:25.696024",
+  "dry_run": true,
+  "alerts": [
+    {
+      "alert_id": "ALERT-CIS-EXO-2-20251211042725",
+      "control_id": "CIS-EXO-2",
+      "title": "Disable external auto-forwarding (TransportConfig)",
+      "severity": "High",
+      "status": "Fail",
+      "evidence": "\r\n\r\nAddressBookPolicyRoutingEnabled                             : False\r\nAllowLegacyTLSClients                                       : False\r\nAnonymousSenderToRecipientRatePerHour                       : 1800\r\nClearCategories                                             : True\r\nConvertDisclaimerWrapperToEml                               : False\r\nDSNConversionMode                                           : PreserveDSNBody\r\nJournalArchivingEnabled                                     : False\r\nEnableExternalHTTPMailDelivery                              : False\r\nExternalDelayDsnEnabled                                     : True\r\nExternalDsnDefaultLanguage                                  : \r\nExternalDsnLanguageDetectionEnabled                         : True\r\nExternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nExternalDsnReportingAuthority                               : \r\nExternalDsnSendHtml                                         : True\r\nExternalPostmasterAddress                                   : \r\nGenerateCopyOfDSNFor                                        : {}\r\nHygieneSuite                                                : Premium\r\nInternalDelayDsnEnabled                                     : True\r\nInternalDsnDefaultLanguage                                  : \r\nInternalDsnLanguageDetectionEnabled                         : True\r\nInternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nInternalDsnReportingAuthority                               : \r\nInternalDsnSendHtml                                         : True\r\nInternalSMTPServers                                         : {}\r\nJournalMessageExpirationDays                                : 0\r\nJournalingReportNdrTo                                       : <>\r\nLegacyJournalingMigrationEnabled                            : False\r\nLegacyArchiveJournalingEnabled                              : False\r\nLegacyArchiveLiveJournalingEnabled                          : False\r\nRedirectUnprovisionedUserMessagesForLegacyArchiveJournaling : False\r\nRedirectDLMessagesForLegacyArchiveJournaling                : False\r\nMaxDumpsterSizePerDatabase                                  : 18 MB (18,874,368 bytes)\r\nMaxDumpsterTime                                             : 7.00:00:00\r\nMaxReceiveSize                                              : Unlimited\r\nMaxRecipientEnvelopeLimit                                   : Unlimited\r\nMaxSendSize                                                 : Unlimited\r\nMessageExpiration                                           : 1.00:00:00\r\nMigrationEnabled                                            : True\r\nOpenDomainRoutingEnabled                                    : False\r\nRfc2231EncodingEnabled                                      : False\r\nSafetyNetHoldTime                                           : 7.00:00:00\r\nSmtpClientAuthenticationDisabled                            : False\r\nSupervisionTags                                             : {Reject, Allow}\r\nTLSReceiveDomainSecureList                                  : {}\r\nTLSSendDomainSecureList                                     : {}\r\nVerifySecureSubmitEnabled                                   : False\r\nVoicemailJournalingEnabled                                  : True\r\nHeaderPromotionModeSetting                                  : NoCreate\r\nXexch50Enabled                                              : True\r\n\r\n\r\n\r\n",
+      "timestamp": "2025-11-11T12:18:43",
+      "reference": "CIS M365 Foundations v3.0 L1; EXO TransportConfig",
+      "expected": "ExternalClientForwardingDisabled=True",
+      "actual": "ExternalClientForwardingDisabled=",
+      "alert_status": "escalated",
+      "investigation_notes": "",
+      "remediation_applied": false,
+      "remediation_action": null,
+      "escalated": true,
+      "false_positive": false
+    }
+  ],
+  "investigations": {
+    "ALERT-CIS-EXO-2-20251211042725": {
+      "alert_id": "ALERT-CIS-EXO-2-20251211042725",
+      "severity": "High",
+      "source": "M365 CIS Control CIS-EXO-2",
+      "logs": [
+        "Audit log entry: \r\n\r\nAddressBookPolicyRoutingEnabled                             : False\r\nAllowLegacyTLSClients                                       : False\r\nAnonymousSenderToRecipientRatePerHour                       : 1800\r\nClearCategories                                             : True\r\nConvertDisclaimerWrapperToEml                               : False\r\nDSNConversionMode                                           : PreserveDSNBody\r\nJournalArchivingEnabled                                     : False\r\nEnableExternalHTTPMailDelivery                              : False\r\nExternalDelayDsnEnabled                                     : True\r\nExternalDsnDefaultLanguage                                  : \r\nExternalDsnLanguageDetectionEnabled                         : True\r\nExternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nExternalDsnReportingAuthority                               : \r\nExternalDsnSendHtml                                         : True\r\nExternalPostmasterAddress                                   : \r\nGenerateCopyOfDSNFor                                        : {}\r\nHygieneSuite                                                : Premium\r\nInternalDelayDsnEnabled                                     : True\r\nInternalDsnDefaultLanguage                                  : \r\nInternalDsnLanguageDetectionEnabled                         : True\r\nInternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)\r\nInternalDsnReportingAuthority                               : \r\nInternalDsnSendHtml                                         : True\r\nInternalSMTPServers                                         : {}\r\nJournalMessageExpirationDays                                : 0\r\nJournalingReportNdrTo                                       : <>\r\nLegacyJournalingMigrationEnabled                            : False\r\nLegacyArchiveJournalingEnabled                              : False\r\nLegacyArchiveLiveJournalingEnabled                          : False\r\nRedirectUnprovisionedUserMessagesForLegacyArchiveJournaling : False\r\nRedirectDLMessagesForLegacyArchiveJournaling                : False\r\nMaxDumpsterSizePerDatabase                                  : 18 MB (18,874,368 bytes)\r\nMaxDumpsterTime                                             : 7.00:00:00\r\nMaxReceiveSize                                              : Unlimited\r\nMaxRecipientEnvelopeLimit                                   : Unlimited\r\nMaxSendSize                                                 : Unlimited\r\nMessageExpiration                                           : 1.00:00:00\r\nMigrationEnabled                                            : True\r\nOpenDomainRoutingEnabled                                    : False\r\nRfc2231EncodingEnabled                                      : False\r\nSafetyNetHoldTime                                           : 7.00:00:00\r\nSmtpClientAuthenticationDisabled                            : False\r\nSupervisionTags                                             : {Reject, Allow}\r\nTLSReceiveDomainSecureList                                  : {}\r\nTLSSendDomainSecureList                                     : {}\r\nVerifySecureSubmitEnabled                                   : False\r\nVoicemailJournalingEnabled                                  : True\r\nHeaderPromotionModeSetting                                  : NoCreate\r\nXexch50Enabled                                              : True\r\n\r\n\r\n\r\n",
+        "Control check timestamp: 2025-11-11T12:18:43",
+        "Expected configuration: ExternalClientForwardingDisabled=True",
+        "Actual configuration: ExternalClientForwardingDisabled="
+      ],
+      "endpoints": [],
+      "user_activity": [],
+      "is_false_positive": false,
+      "false_positive_reason": "",
+      "recommended_action": "manual_review"
+    }
+  },
+  "remediations": {
+    "ALERT-CIS-EXO-2-20251211042725": {
+      "success": false,
+      "action": "manual_review",
+      "details": "Requires manual review - escalating to security team",
+      "timestamp": "2025-12-11T04:27:25.695928",
+      "dry_run": true
+    }
+  }
+}
