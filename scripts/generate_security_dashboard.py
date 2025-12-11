@@ -12,17 +12,20 @@ Features:
 
 import argparse
 import html
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from src.core.file_io import ensure_parent_dir, load_json_with_bom  # noqa: E402
+
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, "r", encoding="utf-8-sig") as f:
-        return json.load(f)
+    return load_json_with_bom(json_path, exit_on_error=False)
 
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -492,7 +495,7 @@ def generate_html_dashboard(
 """
 
     # Write HTML to file
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(output_path)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 

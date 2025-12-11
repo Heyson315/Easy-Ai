@@ -24,18 +24,11 @@ import sys
 from pathlib import Path
 
 # Add src directory to path (must be before src imports)
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # pylint: disable=wrong-import-position
+from src.core.console_utils import print_header  # noqa: E402
 from src.integrations.openai_gpt5 import GPT5Client, analyze_with_reasoning, quick_chat  # noqa: E402
-
-
-def print_header(title: str):
-    """Print formatted section header."""
-    print("\n" + "=" * 80)
-    print(f"  {title}")
-    print("=" * 80 + "\n")
 
 
 def demo_1_simple_chat():

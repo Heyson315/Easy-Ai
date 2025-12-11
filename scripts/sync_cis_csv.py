@@ -6,8 +6,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd  # noqa: E402
 
-from src.core.file_io import CIS_AUDIT_COLUMNS  # noqa: E402
-from src.core.file_io import ensure_parent_dir, load_json_with_bom, normalize_audit_data  # noqa: E402
+from src.core.file_io import (  # noqa: E402
+    CIS_AUDIT_COLUMNS,
+    ensure_parent_dir,
+    load_json_with_bom,
+    normalize_audit_data,
+)
 
 JSON_PATH = Path("output/reports/security/m365_cis_audit.json")
 CSV_PATH = Path("output/reports/security/m365_cis_audit.csv")

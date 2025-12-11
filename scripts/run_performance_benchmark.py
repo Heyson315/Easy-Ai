@@ -162,12 +162,10 @@ def run_performance_benchmarks() -> Dict[str, Any]:
         results.append(result)
 
         # 3. Benchmark statistics calculation
-        import json
-
         from scripts.generate_security_dashboard import calculate_statistics
+        from src.core.file_io import load_json_with_bom
 
-        with open(test_json, "r") as f:
-            audit_data = json.load(f)
+        audit_data = load_json_with_bom(test_json, exit_on_error=False)
 
         result = benchmark_operation(
             "Statistics Calculation (200 controls)",

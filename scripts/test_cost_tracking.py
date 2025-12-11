@@ -12,18 +12,16 @@ import sys
 from pathlib import Path
 
 # Add project root to path (must be before src imports)
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # pylint: disable=wrong-import-position
+from src.core.console_utils import print_header  # noqa: E402
 from src.core.cost_tracker import GPT5CostTracker  # noqa: E402
 
 
 def demo_cost_tracking():
     """Demonstrate cost tracking features."""
-    print("\n" + "=" * 80)
-    print("  GPT-5 Cost Tracking Demo - Development/Testing Mode")
-    print("=" * 80)
+    print_header("GPT-5 Cost Tracking Demo - Development/Testing Mode")
 
     # Create tracker with $5 daily budget (good for development)
     print("\n🎯 Creating tracker with $5.00 daily budget limit...")

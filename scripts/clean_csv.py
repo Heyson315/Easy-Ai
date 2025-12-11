@@ -13,7 +13,13 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
 from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from src.core.file_io import ensure_parent_dir  # noqa: E402
 
 DEFAULT_INPUT = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
 DEFAULT_OUTPUT = Path("data/processed/sharepoint_permissions_clean.csv")
@@ -30,7 +36,7 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
     """
     in_path = Path(in_path)
     out_path = Path(out_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(out_path)
 
     stats = {
         "input_lines": 0,

@@ -21,6 +21,8 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
+from src.core.file_io import ensure_parent_dir
+
 
 def profile_function(func: Callable) -> Callable:
     """
@@ -75,7 +77,7 @@ def profile_script(func: Callable, output_file: str = None) -> None:
         # Save to file if requested
         if output_file:
             output_path = Path(output_file)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
+            ensure_parent_dir(output_path)
             with open(output_path, "w", encoding="utf-8") as f:
                 stats = pstats.Stats(profiler, stream=f)
                 stats.sort_stats("cumulative")

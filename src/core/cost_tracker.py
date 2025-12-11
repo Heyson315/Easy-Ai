@@ -22,6 +22,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from src.core.file_io import ensure_parent_dir
+
 
 class GPT5CostTracker:
     """
@@ -57,7 +59,7 @@ class GPT5CostTracker:
 
         # Load existing log
         self.log_path = Path(self.log_file)
-        self.log_path.parent.mkdir(parents=True, exist_ok=True)
+        ensure_parent_dir(self.log_path)
         self.history = self._load_history()
 
     def _load_history(self) -> List[Dict]:
@@ -321,7 +323,7 @@ class GPT5CostTracker:
         import csv
 
         output_file = Path(output_path)
-        output_file.parent.mkdir(parents=True, exist_ok=True)
+        ensure_parent_dir(output_file)
 
         with open(output_file, "w", newline="", encoding="utf-8") as f:
             if not self.history:

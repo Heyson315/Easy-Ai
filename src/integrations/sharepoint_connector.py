@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.core.file_io import ensure_parent_dir
+
 DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xlsx")
 
@@ -92,7 +94,7 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
 
 def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) -> None:
     output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_parent_dir(output_path)
 
     with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
         # Overview sheet
