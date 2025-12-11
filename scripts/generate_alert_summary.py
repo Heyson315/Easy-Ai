@@ -137,12 +137,8 @@ class AlertSummaryGenerator:
 
         # Calculate rates
         if stats["total_alerts"] > 0:
-            stats["remediation_rate"] = round(
-                (stats["remediated_count"] / stats["total_alerts"]) * 100, 2
-            )
-            stats["escalation_rate"] = round(
-                (stats["escalated_count"] / stats["total_alerts"]) * 100, 2
-            )
+            stats["remediation_rate"] = round((stats["remediated_count"] / stats["total_alerts"]) * 100, 2)
+            stats["escalation_rate"] = round((stats["escalated_count"] / stats["total_alerts"]) * 100, 2)
             stats["closure_rate"] = round(
                 ((stats["remediated_count"] + stats["closed_count"]) / stats["total_alerts"]) * 100, 2
             )
@@ -192,7 +188,9 @@ class AlertSummaryGenerator:
 
         # Generate recommendations based on metrics
         if stats["critical_severity_open"] > 0:
-            summary.append(f"  ⚠️  URGENT: {stats['critical_severity_open']} critical alerts require immediate attention")
+            summary.append(
+                f"  ⚠️  URGENT: {stats['critical_severity_open']} critical alerts require immediate attention"
+            )
 
         if stats["high_severity_open"] > 5:
             summary.append(f"  ⚠️  {stats['high_severity_open']} high-severity alerts pending review")
@@ -459,15 +457,17 @@ class AlertSummaryGenerator:
         ws_alerts.append(["ID", "Source", "Severity", "Status", "Title", "Created", "Last Seen"])
 
         for alert in self.alerts_db["alerts"].values():
-            ws_alerts.append([
-                alert.get("id", ""),
-                alert.get("source", ""),
-                alert.get("severity", ""),
-                alert.get("status", ""),
-                alert.get("title", "")[:50],
-                alert.get("created", ""),
-                alert.get("last_seen", ""),
-            ])
+            ws_alerts.append(
+                [
+                    alert.get("id", ""),
+                    alert.get("source", ""),
+                    alert.get("severity", ""),
+                    alert.get("status", ""),
+                    alert.get("title", "")[:50],
+                    alert.get("created", ""),
+                    alert.get("last_seen", ""),
+                ]
+            )
 
         # Format alerts header
         for cell in ws_alerts[1]:

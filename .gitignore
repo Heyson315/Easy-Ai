@@ -49,6 +49,14 @@ output/reports/security/**
 # Keep Excel out of Git to avoid repo bloat; use Git LFS if needed
 output/reports/security/*.xlsx
 
+# Security alert system - exclude sensitive data
+data/security/alerts.json
+data/security/*.json
+output/reports/security/remediation_log.json
+output/reports/security/escalations/
+output/reports/security/alert_summary_*.html
+output/reports/security/alert_summary_*.xlsx
+
 # Exclude test audit files
 output/reports/security/test_*.json
 output/reports/security/test_*.html
