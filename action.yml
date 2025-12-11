@@ -149,7 +149,7 @@ runs:
         $params = @{
             OutJson = "${{ inputs.output-path }}/m365_cis_audit.json"
             OutCsv = "${{ inputs.output-path }}/m365_cis_audit.csv"
-            Timestamped = $${{ inputs.timestamped }}
+            Timestamped = ${{ inputs.timestamped }}
         }
         if ('${{ inputs.spo-admin-url }}') {
             $params.SPOAdminUrl = '${{ inputs.spo-admin-url }}'
