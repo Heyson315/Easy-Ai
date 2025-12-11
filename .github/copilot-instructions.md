@@ -731,6 +731,366 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass `
   -OutputHtml "comparison.html"
 ```
 
+### 7. GitHub Pull Request Operations (GitHub MCP Tools)
+
+The repository includes GitHub MCP server tools for automated pull request analysis and management. These tools are available in the Copilot environment for AI agents.
+
+#### List Pull Requests
+
+**Tool:** `github-mcp-server-list_pull_requests`
+
+```python
+# List open PRs in the repository
+list_pull_requests(
+    owner="Heyson315",
+    repo="Easy-Ai",
+    state="open",  # Options: "open", "closed", "all"
+    sort="created",  # Options: "created", "updated", "popularity", "long-running"
+    direction="desc"  # Options: "asc", "desc"
+)
+
+# List PRs filtered by base branch
+list_pull_requests(
+    owner="Heyson315",
+    repo="Easy-Ai",
+    base="Primary",  # Filter by target branch
+    state="open"
+)
+
+# Pagination for large repositories
+list_pull_requests(
+    owner="Heyson315",
+    repo="Easy-Ai",
+    state="all",
+    page=1,
+    perPage=30  # Max 100
+)
+```
+
+**Common Use Cases:**
+- Get list of PRs pending review
+- Find stale/long-running PRs
+- Audit PR activity for compliance
+- Identify PRs by base/head branch
+
+#### Read Pull Request Details
+
+**Tool:** `github-mcp-server-pull_request_read`
+
+```python
+# Get PR details
+pull_request_read(
+    method="get",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123
+)
+
+# Get PR diff
+pull_request_read(
+    method="get_diff",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123
+)
+
+# Get PR commit status (CI/CD build status)
+pull_request_read(
+    method="get_status",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123
+)
+
+# Get files changed in PR
+pull_request_read(
+    method="get_files",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123,
+    page=1,
+    perPage=100
+)
+
+# Get review comments (code-level comments)
+pull_request_read(
+    method="get_review_comments",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123,
+    page=1,
+    perPage=50
+)
+
+# Get PR reviews
+pull_request_read(
+    method="get_reviews",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123
+)
+
+# Get general comments on PR
+pull_request_read(
+    method="get_comments",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    pullNumber=123
+)
+```
+
+**Available Methods:**
+1. `get` - Full PR details (title, description, author, status, etc.)
+2. `get_diff` - Unified diff of all changes
+3. `get_status` - CI/CD status checks and build results
+4. `get_files` - List of modified files with stats
+5. `get_review_comments` - Line-level code review comments
+6. `get_reviews` - PR reviews (approved/changes requested/commented)
+7. `get_comments` - General discussion comments
+
+#### Search Pull Requests
+
+**Tool:** `github-mcp-server-search_pull_requests`
+
+```python
+# Search PRs by author
+search_pull_requests(
+    query="author:Heyson315 is:pr is:open",
+    owner="Heyson315",  # Optional: scope to specific repo
+    repo="Easy-Ai"
+)
+
+# Search PRs with specific labels
+search_pull_requests(
+    query="label:security label:critical is:pr",
+    owner="Heyson315",
+    repo="Easy-Ai"
+)
+
+# Find PRs affecting specific files
+search_pull_requests(
+    query="is:pr path:scripts/powershell/ state:open"
+)
+
+# Search by review status
+search_pull_requests(
+    query="is:pr review:approved state:open",
+    sort="updated",  # Options: comments, reactions, created, updated
+    order="desc"
+)
+
+# Complex queries
+search_pull_requests(
+    query="is:pr created:>2025-12-01 author:copilot-swe-agent[bot] base:Primary"
+)
+```
+
+**GitHub Search Syntax for PRs:**
+- `is:pr` - Scope to pull requests (automatically added)
+- `is:open` / `is:closed` / `is:merged` - PR state
+- `author:USERNAME` - Filter by PR author
+- `assignee:USERNAME` - Filter by assignee
+- `label:LABEL` - Filter by label
+- `base:BRANCH` - Filter by target branch
+- `head:BRANCH` - Filter by source branch
+- `review:approved` / `review:changes_requested` / `review:required` - Review status
+- `created:>YYYY-MM-DD` - Created after date
+- `updated:<YYYY-MM-DD` - Updated before date
+- `path:FILE_PATH` - PRs affecting specific files/directories
+
+**Common Search Patterns:**
+```python
+# PRs awaiting review
+search_pull_requests(
+    query="is:pr is:open review:required",
+    sort="created",
+    order="asc"
+)
+
+# Stale PRs (no activity in 30 days)
+search_pull_requests(
+    query="is:pr is:open updated:<2025-11-11"
+)
+
+# PRs targeting Primary branch with CI failures
+search_pull_requests(
+    query="is:pr base:Primary status:failure"
+)
+
+# Security-related PRs
+search_pull_requests(
+    query="is:pr security OR vulnerability OR CVE in:title,body"
+)
+```
+
+#### Best Practices for PR Operations
+
+**1. Always Scope Searches:**
+```python
+# ❌ DON'T: Search all of GitHub (slow, irrelevant results)
+search_pull_requests(query="is:pr security")
+
+# ✅ DO: Scope to your repository
+search_pull_requests(
+    query="is:pr security",
+    owner="Heyson315",
+    repo="Easy-Ai"
+)
+```
+
+**2. Use Pagination for Large Result Sets:**
+```python
+# Get all PRs (100+ PRs)
+all_prs = []
+page = 1
+while True:
+    prs = list_pull_requests(
+        owner="Heyson315",
+        repo="Easy-Ai",
+        state="all",
+        page=page,
+        perPage=100
+    )
+    if not prs:
+        break
+    all_prs.extend(prs)
+    page += 1
+```
+
+**3. Respect Rate Limits:**
+- GitHub API allows 5,000 requests/hour for authenticated requests
+- Use pagination parameters wisely
+- Cache results when possible
+- Implement exponential backoff on failures
+
+**4. Combine Tools for Complete Analysis:**
+```python
+# Example: Analyze all open PRs for security review
+prs = list_pull_requests(
+    owner="Heyson315",
+    repo="Easy-Ai",
+    state="open"
+)
+
+for pr in prs:
+    # Get PR details
+    details = pull_request_read(
+        method="get",
+        owner="Heyson315",
+        repo="Easy-Ai",
+        pullNumber=pr["number"]
+    )
+    
+    # Get CI/CD status
+    status = pull_request_read(
+        method="get_status",
+        owner="Heyson315",
+        repo="Easy-Ai",
+        pullNumber=pr["number"]
+    )
+    
+    # Get files changed
+    files = pull_request_read(
+        method="get_files",
+        owner="Heyson315",
+        repo="Easy-Ai",
+        pullNumber=pr["number"]
+    )
+    
+    # Analyze for security implications
+    # ... your analysis logic
+```
+
+**5. Note on Author Filtering:**
+```python
+# ❌ DON'T: Use list_pull_requests for author filtering
+# It doesn't support author parameter
+
+# ✅ DO: Use search_pull_requests for author filtering
+search_pull_requests(
+    query="author:USERNAME is:pr",
+    owner="Heyson315",
+    repo="Easy-Ai"
+)
+```
+
+#### PR Workflow Automation Examples
+
+**Security Compliance Check:**
+```python
+# Check all open PRs for security compliance
+open_prs = list_pull_requests(
+    owner="Heyson315",
+    repo="Easy-Ai",
+    state="open"
+)
+
+for pr in open_prs:
+    files = pull_request_read(
+        method="get_files",
+        owner="Heyson315",
+        repo="Easy-Ai",
+        pullNumber=pr["number"]
+    )
+    
+    # Check if PR modifies security-sensitive files
+    security_files = [f for f in files if any(
+        pattern in f["filename"] for pattern in 
+        ["M365CIS", "audit", "security", "secrets"]
+    )]
+    
+    if security_files:
+        # Get review status
+        reviews = pull_request_read(
+            method="get_reviews",
+            owner="Heyson315",
+            repo="Easy-Ai",
+            pullNumber=pr["number"]
+        )
+        # Check if security team has approved
+        # ... validation logic
+```
+
+**Stale PR Monitoring:**
+```python
+# Find PRs with no activity in 30+ days
+stale_prs = search_pull_requests(
+    query="is:pr is:open updated:<2025-11-11",
+    owner="Heyson315",
+    repo="Easy-Ai",
+    sort="updated",
+    order="asc"
+)
+
+# Generate report or send notifications
+```
+
+**CI/CD Status Dashboard:**
+```python
+# Get status of all PRs for dashboard
+prs = list_pull_requests(
+    owner="Heyson315",
+    repo="Easy-Ai",
+    state="open"
+)
+
+dashboard_data = []
+for pr in prs:
+    status = pull_request_read(
+        method="get_status",
+        owner="Heyson315",
+        repo="Easy-Ai",
+        pullNumber=pr["number"]
+    )
+    dashboard_data.append({
+        "pr": pr["number"],
+        "title": pr["title"],
+        "author": pr["user"]["login"],
+        "ci_status": status["state"],  # success/failure/pending
+        "checks": status.get("statuses", [])
+    })
+```
+
 ## Project-Specific Conventions
 
 ### File Path Handling
@@ -1200,6 +1560,9 @@ client-secret: ${{ secrets.M365_CLIENT_SECRET }}
 | Use as GitHub Action 🆕 | `uses: Heyson315/Easy-Ai@v1` | In workflows |
 | View Project Status 🆕 | Open `PROJECT_STATUS_MAP.html` in browser | Root |
 | Check Bug Tracking 🆕 | Read `BUG_TRACKING.md` | Root |
+| List Pull Requests 🆕 | `github-mcp-server-list_pull_requests(owner, repo, state="open")` | GitHub MCP Tools |
+| Read PR Details 🆕 | `github-mcp-server-pull_request_read(method, owner, repo, pullNumber)` | GitHub MCP Tools |
+| Search Pull Requests 🆕 | `github-mcp-server-search_pull_requests(query, owner, repo)` | GitHub MCP Tools |
 
 ## AI Development Resources
 
