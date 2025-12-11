@@ -57,6 +57,44 @@ This guide explains how to configure GitHub Actions for your M365 Security & Sha
 - Version bumps are determined by labels (major, minor, patch)
 - No additional secrets or configuration required
 
+## 🖥️ Runner Requirements
+
+### Why Windows Runners for M365 Workflows?
+
+Several workflows in this repository require **`windows-latest`** runners for optimal compatibility with Microsoft 365 PowerShell modules:
+
+#### Workflows Using Windows Runners:
+1. **`m365-automated-audit.yml`** - M365 CIS Security Audit
+   - Requires: Windows for native M365 PowerShell module support
+   - Modules: ExchangeOnlineManagement, Microsoft.Graph, SharePoint Online
+
+2. **`m365-security-ci.yml`** - PowerShell Quality Checks
+   - Requires: Windows for PSScriptAnalyzer and Pester testing
+   - Job: `powershell-quality`
+
+3. **`test-enhanced-action.yml`** - Action Testing
+   - Requires: Windows for full M365 integration testing
+   - Job: `test-with-secrets`
+
+4. **`dependency-updates.yml`** - PowerShell Module Updates
+   - Requires: Windows for PowerShell Gallery access
+   - Job: `powershell-module-updates`
+
+#### Technical Rationale:
+- **M365 PowerShell Modules**: ExchangeOnlineManagement, Microsoft.Online.SharePoint.PowerShell, and some Microsoft.Graph modules have limited or no support on Linux
+- **PowerShell Core vs. Windows PowerShell**: While `pwsh` (PowerShell Core) runs on Linux, many M365 cmdlets require Windows-specific APIs
+- **Native Integration**: Windows runners provide the most reliable environment for M365 administrative tasks
+- **Module Installation**: Some modules fail to install or have reduced functionality on non-Windows platforms
+
+#### Cross-Platform Workflows:
+These workflows use **`ubuntu-latest`** (more cost-effective):
+- Python quality checks
+- Security scanning (CodeQL, Bandit)
+- Documentation deployment
+- Dependency vulnerability scanning
+
+> **💡 Tip**: GitHub Actions minutes on Windows runners consume at 2x rate compared to Linux runners, but they're necessary for M365 PowerShell compatibility.
+
 ## ⚙️ Configuration Required
 
 ### For Basic CI/CD (Works Immediately)
