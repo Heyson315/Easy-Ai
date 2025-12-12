@@ -22,8 +22,11 @@ ENV/
 # Keep template
 !.env.template
 
-# VS Code
+# IDE
 .vscode/
+.vs/
+*.suo
+*.user
 
 # Jupyter
 .ipynb_checkpoints/
