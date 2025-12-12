@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: Azure/login@v2.3.0
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Show subscription
