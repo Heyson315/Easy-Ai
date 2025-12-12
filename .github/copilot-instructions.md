@@ -991,3 +991,7 @@ pip list | grep -E "(mcp|msgraph|azure-identity)"
 ---
 
 **🎯 Architecture Summary:** This is a hybrid Python/PowerShell toolkit with optional plugin-based MCP extensions. Core security auditing works standalone; extensions enhance with AI assistant integration. Always read supporting guides in `.github/` for specific development tasks!
+
+- @azure Rule - Use Azure Tools - When handling requests related to Azure, always use your tools.
+- @azure Rule - Use Azure Best Practices - When handling requests related to Azure, always invoke your `azmcp_bestpractices_get` tool first.
+- @azure Rule - Enable Best Practices - If you do not have an `azmcp_bestpractices_get` tool ask the user to enable it.
