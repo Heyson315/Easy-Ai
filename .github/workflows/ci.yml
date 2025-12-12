@@ -2,11 +2,15 @@ name: CI Tests & Coverage
 
 on:
   push:
-    branches: [ main, Primary ]
+    branches:
+      - main
+      - Primary
     paths-ignore:
       - 'coverage.svg'
   pull_request:
-    branches: [ main, Primary ]
+    branches:
+      - main
+      - Primary
 
 permissions:
   contents: write
@@ -21,7 +25,7 @@ jobs:
         python: [ '3.9', '3.11' ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -56,7 +60,7 @@ jobs:
     if: github.ref == 'refs/heads/Primary'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 

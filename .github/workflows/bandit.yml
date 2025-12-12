@@ -13,10 +13,12 @@
 name: Bandit
 on:
   push:
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   schedule:
     - cron: '21 17 * * 1'
 
@@ -29,7 +31,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Bandit Scan
         uses: shundor/python-bandit-scan@ab1d87dfccc5a0ffab88be3aaac6ffe35c10d6cd
         with: # optional arguments
@@ -49,4 +51,7 @@ jobs:
           # skips: # optional, default is DEFAULT
           # path to a .bandit file that supplies command line arguments
           # ini_path: # optional, default is DEFAULT
+          skips: B101 # Skip assert_used check in test files
+          # path to a .bandit file that supplies command line arguments
+          ini_path: .bandit # Use project .bandit config
 

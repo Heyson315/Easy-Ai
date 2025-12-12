@@ -13,14 +13,16 @@
 
 name: Codacy Security Scan
 
-run-name: ubuntu-latest
+run-name: Codacy Security Scan for ${{ github.ref_name }}
 
 on:
   push:
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "Primary" ]
+    branches:
+      - "Primary"
   schedule:
     - cron: '19 19 * * 4'
 
@@ -38,7 +40,7 @@ jobs:
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI

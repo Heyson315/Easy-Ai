@@ -31,7 +31,8 @@ from typing import Dict, List, Optional
 
 # MCP imports
 try:
-    from mcp import McpError, Server
+    from mcp import McpError
+    from mcp.server import Server
 except ImportError:
     print("Error: MCP SDK not installed. Install with: pip install mcp", file=sys.stderr)
     sys.exit(1)

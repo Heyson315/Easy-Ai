@@ -1,0 +1,204 @@
+name: "M365 Security & Compliance Audit"
+description: "Enterprise-grade M365 CIS security audit with risk scoring, compliance trending, SARIF generation, and automated remediation"
+author: "Heyson315"
+
+branding:
+  icon: "shield"
+  color: "blue"
+
+inputs:
+  tenant-id:
+    description: "Azure AD Tenant ID"
+    required: true
+  client-id:
+    description: "Service Principal Client ID with required Graph API permissions"
+    required: true
+  client-secret:
+    description: "Service Principal Client Secret (use secrets.M365_CLIENT_SECRET)"
+    required: true
+  spo-admin-url:
+    description: "SharePoint Admin URL (e.g., https://contoso-admin.sharepoint.com)"
+    required: false
+  output-path:
+    description: "Path to save audit reports"
+    required: false
+    default: "output/reports"
+  tenant-config:
+    description: "JSON array for multi-tenant batch audits"
+    required: false
+  enable-auto-remediation:
+    description: "Enable automated remediation workflow"
+    required: false
+    default: "false"
+  auto-approve-remediation:
+    description: "Auto-approve remediation without manual intervention"
+    required: false
+    default: "false"
+  remediation-controls:
+    description: "Comma-separated list of control IDs to target for remediation"
+    required: false
+  upload-to-security-tab:
+    description: "Upload audit findings as a SARIF report to the GitHub Security tab"
+    required: false
+    default: "false"
+  security-severity-threshold:
+    description: "Minimum severity to upload to Security tab (critical, high, medium, low)"
+    required: false
+    default: "high"
+  compare-with-baseline:
+    description: "Enable compliance trend analysis by comparing with a baseline"
+    required: false
+    default: "false"
+  baseline-artifact-name:
+    description: "Name for the baseline compliance artifact"
+    required: false
+    default: "compliance-baseline"
+  timestamped:
+    description: "Append timestamp to report files"
+    required: false
+    default: "false"
+  artifact-retention-days:
+    description: "Retention days for uploaded artifacts"
+    required: false
+    default: "30"
+
+outputs:
+  audit-report-json:
+    description: "Path to the JSON audit report"
+    value: ${{ steps.audit.outputs.audit-report-json }}
+  audit-report-excel:
+    description: "Path to the generated Excel report"
+    value: ${{ steps.audit.outputs.audit-report-excel }}
+  dashboard-html:
+    description: "Path to the interactive HTML dashboard"
+    value: ${{ steps.audit.outputs.dashboard-html }}
+  compliance-score:
+    description: 'Overall compliance score (e.g., "85.3")'
+    value: ${{ steps.audit.outputs.compliance-score }}
+  controls-passed:
+    description: "Number of controls that passed"
+    value: ${{ steps.audit.outputs.controls-passed }}
+  controls-failed:
+    description: "Number of controls that failed"
+    value: ${{ steps.audit.outputs.controls-failed }}
+  controls-manual:
+    description: "Number of controls requiring manual verification"
+    value: ${{ steps.audit.outputs.controls-manual }}
+  risk-score:
+    description: "Overall risk score (0-100), weighted by finding severity"
+    value: ${{ steps.audit.outputs.risk-score }}
+  critical-findings:
+    description: "Count of critical severity findings"
+    value: ${{ steps.audit.outputs.critical-findings }}
+  high-findings:
+    description: "Count of high severity findings"
+    value: ${{ steps.audit.outputs.high-findings }}
+  medium-findings:
+    description: "Count of medium severity findings"
+    value: ${{ steps.audit.outputs.medium-findings }}
+  low-findings:
+    description: "Count of low severity findings"
+    value: ${{ steps.audit.outputs.low-findings }}
+  compliance-trend:
+    description: "Percentage change in compliance score vs. baseline"
+    value: ${{ steps.audit.outputs.compliance-trend }}
+  new-failures:
+    description: "Count of newly failing controls since baseline"
+    value: ${{ steps.audit.outputs.new-failures }}
+  fixed-issues:
+    description: "Count of controls fixed since baseline"
+    value: ${{ steps.audit.outputs.fixed-issues }}
+  trend-direction:
+    description: "Compliance trend direction: improving, stable, or declining"
+    value: ${{ steps.audit.outputs.trend-direction }}
+  sarif-report:
+    description: "Path to the SARIF 2.1.0 report for the Security tab"
+    value: ${{ steps.audit.outputs.sarif-report }}
+  security-findings-count:
+    description: "Total findings uploaded to the Security tab"
+    value: ${{ steps.audit.outputs.security-findings-count }}
+  remediated-controls:
+    description: "Comma-separated list of automatically remediated control IDs"
+    value: ${{ steps.audit.outputs.remediated-controls }}
+  remediation-report:
+    description: "Path to the detailed remediation log file"
+    value: ${{ steps.remediate.outputs.remediation-report }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Environment
+      shell: pwsh
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ${{ github.action_path }}/requirements.txt
+        pip install -r ${{ github.action_path }}/requirements-extensions.txt
+
+    - name: Authenticate to M365
+      id: auth
+      shell: pwsh
+      run: |
+        Import-Module "${{ github.action_path }}/scripts/powershell/modules/M365CIS.psm1" -Force
+        Connect-M365CIS -TenantId "${{ inputs.tenant-id }}" -ClientId "${{ inputs.client-id }}" -ClientSecret "${{ inputs.client-secret }}"
+
+    - name: Run M365 CIS Audit
+      id: audit
+      shell: pwsh
+      run: |
+        $scriptPath = "${{ github.action_path }}/scripts/powershell/Invoke-M365CISAudit.ps1"
+        $params = @{
+            OutJson = "${{ inputs.output-path }}/m365_cis_audit.json"
+            OutCsv = "${{ inputs.output-path }}/m365_cis_audit.csv"
+            Timestamped = ${{ inputs.timestamped }}
+        }
+        if ('${{ inputs.spo-admin-url }}') {
+            $params.SPOAdminUrl = '${{ inputs.spo-admin-url }}'
+        }
+        & $scriptPath @params
+
+        # Set outputs for other steps to use
+        echo "::set-output name=audit-report-json::${{ inputs.output-path }}/m365_cis_audit.json"
+
+    - name: Process Audit Results
+      id: process
+      shell: pwsh
+      run: |
+        # This script will calculate risk score, compliance, etc.
+        $scriptPath = "${{ github.action_path }}/scripts/powershell/Process-M365CISResults.ps1"
+        $params = @{
+            JsonPath = "${{ steps.audit.outputs.audit-report-json }}"
+            CompareWithBaseline = ${{ inputs.compare-with-baseline }}
+            BaselineArtifactName = "${{ inputs.baseline-artifact-name }}"
+        }
+        & $scriptPath @params
+
+    - name: Upload SARIF to Security Tab
+      if: ${{ inputs.upload-to-security-tab == 'true' }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.process.outputs.sarif-report }}
+
+    - name: Run Automated Remediation
+      id: remediate
+      if: ${{ inputs.enable-auto-remediation == 'true' }}
+      shell: pwsh
+      run: |
+        $scriptPath = "${{ github.action_path }}/scripts/powershell/PostRemediateM365CIS.ps1"
+        $params = @{
+            JsonPath = "${{ steps.audit.outputs.audit-report-json }}"
+            Controls = "${{ inputs.remediation-controls }}"
+        }
+        if ('${{ inputs.auto-approve-remediation }}' -eq 'true') {
+            $params.Force = $true
+        } else {
+            $params.WhatIf = $true
+        }
+        & $scriptPath @params
+
+    - name: Upload Reports as Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: m365-audit-reports
+        path: |
+          ${{ inputs.output-path }}
+        retention-days: ${{ inputs.artifact-retention-days }}

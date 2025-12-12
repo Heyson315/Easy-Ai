@@ -2,9 +2,11 @@ name: Security Scan
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
   schedule:
     - cron: '0 4 * * 1'
 
@@ -17,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -33,7 +35,7 @@ jobs:
 
       - name: Run Bandit
         run: |
-          bandit -r src -f json -o bandit-report.json || true
+          bandit -r src -f json -o bandit-report.json --ini .bandit || true
 
       - name: Run Safety
         run: |

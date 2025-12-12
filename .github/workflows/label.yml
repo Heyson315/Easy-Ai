@@ -10,13 +10,15 @@ on: [pull_request_target]
 
 jobs:
   label:
-
+    # Only run if this is a pull request (extra safety check)
+    if: github.event.pull_request != null
+    
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
 
     steps:
-    - uses: actions/labeler@v4
+    - uses: actions/labeler@v6
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"

@@ -1,0 +1,134 @@
+# GitHub Labeler Configuration for Easy-Ai Repository
+# This file configures automatic PR labeling based on changed files
+# Compatible with actions/labeler@v4
+#
+# Label Strategy:
+# - Labels are applied when ANY file matching the glob patterns is modified
+# - Multiple labels can be applied to a single PR if files from different categories are changed
+# - Patterns use glob syntax (* for any characters, ** for recursive directory matching)
+#
+# For more information: https://github.com/actions/labeler
+
+# Python Development
+# Triggers on: Python source files, Python configuration, dependencies
+python:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.py'
+      - 'requirements.txt'
+      - 'requirements-*.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'Pipfile'
+      - 'Pipfile.lock'
+
+# PowerShell Development
+# Triggers on: PowerShell scripts, modules, and manifests
+powershell:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.ps1'
+      - '**/*.psm1'
+      - '**/*.psd1'
+
+# Frontend/UI Changes
+# Triggers on: HTML, CSS, JavaScript, TypeScript files
+frontend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.html'
+      - '**/*.css'
+      - '**/*.js'
+      - '**/*.ts'
+      - 'web-templates/**/*'
+
+# Documentation Updates
+# Triggers on: Markdown files, documentation directories, README files
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**/*'
+      - 'README*'
+      - 'CHANGELOG*'
+      - 'CONTRIBUTING*'
+      - 'CODE_OF_CONDUCT*'
+      - 'LICENSE*'
+
+# Security & Compliance
+# Triggers on: Security policies, security workflows, audit/compliance files
+security:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'SECURITY.md'
+      - '.github/workflows/*security*.yml'
+      - '.github/workflows/*codeql*.yml'
+      - '**/*security*'
+      - '**/*audit*'
+      - '**/*compliance*'
+      - 'scripts/powershell/*Audit*.ps1'
+      - 'scripts/powershell/*Security*.ps1'
+      - 'config/benchmarks/**/*'
+
+# CI/CD & Automation
+# Triggers on: GitHub workflows, actions, Docker files, automation scripts
+ci-cd:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/workflows/**/*'
+      - '.github/actions/**/*'
+      - 'action.yml'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - 'docker-entrypoint.sh'
+
+# Configuration Files
+# Triggers on: JSON, YAML, TOML, INI config files
+config:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.json'
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '**/*.toml'
+      - '**/*.ini'
+      - '**/*.cfg'
+      - '.env.example'
+      - '.env.template'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'config/**/*'
+      - '.*rc'
+      - '.*ignore'
+
+# Dependencies
+# Triggers on: Package manager lock files and dependency manifests
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'requirements*.txt'
+      - 'package*.json'
+      - 'yarn.lock'
+      - 'Pipfile.lock'
+      - 'poetry.lock'
+      - 'Gemfile.lock'
+      - 'go.sum'
+
+# Tests
+# Triggers on: Test files, test directories, test configuration
+tests:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*test*.py'
+      - '**/*_test.py'
+      - 'test_*.py'
+      - 'tests/**/*'
+      - 'test/**/*'
+      - '**/*.test.js'
+      - '**/*.test.ts'
+      - '**/*.spec.js'
+      - '**/*.spec.ts'
+      - 'pytest.ini'
+      - '.coveragerc'
+      - 'coverage.svg'

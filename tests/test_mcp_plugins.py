@@ -7,8 +7,6 @@ These tests verify:
 - Plugin management tools (list_available_toolsets, load_toolset)
 """
 
-import sys
-import os
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -16,14 +14,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
-# Add repo root to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 # Skip MCP tests if MCP is not properly installed
 try:
     from mcp import McpError
-    from mcp.server import FastMCP
+
+    # from mcp.server import FastMCP
 
     MCP_AVAILABLE = True
 except ImportError:
@@ -201,7 +196,7 @@ class TestM365MCPServerPluginLoading:
             server._loaded_plugins = set()
 
             # Import McpError for testing
-            from mcp import McpError
+            # from mcp import McpError
 
             with pytest.raises(McpError) as exc_info:
                 server._load_plugin("nonexistent_plugin")
@@ -246,7 +241,7 @@ class TestM365MCPServerPluginLoading:
             }
             server._loaded_plugins = set()
 
-            from mcp import McpError
+            # from mcp import McpError
 
             with pytest.raises(McpError) as exc_info:
                 server._load_plugin("test_plugin")

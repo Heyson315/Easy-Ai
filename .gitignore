@@ -35,8 +35,9 @@ Thumbs.db
 # Output artifacts (exclude by default)
 output/**
 
-# Re-include security reports folder
+# Re-include security reports folder and README files
 !output/
+!output/README.md
 !output/reports/
 !output/reports/security/
 

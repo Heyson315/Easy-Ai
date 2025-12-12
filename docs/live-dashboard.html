@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Live M365 Security Compliance Dashboard with real-time audit data, interactive charts, and detailed control status reporting.">
+    <meta name="keywords" content="M365 Dashboard, Security Compliance, Real-time Monitoring, CIS Benchmark, Audit Dashboard">
+    <meta name="author" content="Rahman Finance and Accounting P.L.LLC">
+    
+    <title>Live Dashboard | M365 Security Toolkit</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/main.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        /* Dashboard-specific styles */
+        .dashboard-container {
+            background: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .dashboard-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--gray-900);
+        }
+        
+        .dashboard-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        
+        .filter-section {
+            background: var(--gray-100);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group label {
+            font-weight: var(--font-weight-medium);
+            color: var(--gray-700);
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-base);
+        }
+        
+        .controls-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-lg);
+        }
+        
+        .controls-table th,
+        .controls-table td {
+            padding: var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .controls-table th {
+            background: var(--gray-100);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            position: sticky;
+            top: 0;
+        }
+        
+        .controls-table tbody tr:hover {
+            background: var(--gray-100);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .status-badge.pass {
+            background: var(--success-light);
+            color: var(--success-dark);
+        }
+        
+        .status-badge.fail {
+            background: var(--danger-light);
+            color: var(--danger-dark);
+        }
+        
+        .status-badge.manual {
+            background: var(--warning-light);
+            color: var(--warning-dark);
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .severity-badge.critical {
+            background: #721c24;
+            color: var(--white);
+        }
+        
+        .severity-badge.high {
+            background: var(--danger-color);
+            color: var(--white);
+        }
+        
+        .severity-badge.medium {
+            background: var(--warning-color);
+            color: var(--gray-900);
+        }
+        
+        .severity-badge.low {
+            background: var(--info-color);
+            color: var(--white);
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-xl);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        @media (max-width: 768px) {
+            .controls-table {
+                font-size: var(--font-size-sm);
+            }
+            
+            .controls-table th,
+            .controls-table td {
+                padding: var(--spacing-sm);
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="./" class="navbar-brand">🛡️ M365 Security Toolkit</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                ☰
+            </button>
+            <ul class="navbar-nav">
+                <li><a href="./">Home</a></li>
+                <li><a href="./live-dashboard.html">Live Dashboard</a></li>
+                <li><a href="./features.html">Features</a></li>
+                <li><a href="./documentation.html">Documentation</a></li>
+                <li><a href="./demo.html">Demo</a></li>
+                <li><a href="./pricing.html" class="btn-primary">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="hero" style="margin-top: 2rem;">
+            <h1>📊 Live Security Dashboard</h1>
+            <p class="subtitle">
+                Real-time M365 security compliance monitoring with interactive controls and trend analysis
+            </p>
+        </div>
+
+        <!-- Statistics Overview -->
+        <div class="grid grid-4" style="margin: 2rem 0;">
+            <div class="stat-card">
+                <h3>Overall Score</h3>
+                <div class="stat-value pass" id="overallScore">Loading...</div>
+                <div class="stat-subtitle">Compliance Rate</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Passed</h3>
+                <div class="stat-value pass" id="passedControls">--</div>
+                <div class="stat-subtitle">Controls</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Failed</h3>
+                <div class="stat-value fail" id="failedControls">--</div>
+                <div class="stat-subtitle">Needs Fix</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Manual</h3>
+                <div class="stat-value manual" id="manualControls">--</div>
+                <div class="stat-subtitle">Review Required</div>
+            </div>
+        </div>
+
+        <!-- Severity Breakdown -->
+        <div class="grid grid-4" style="margin: 2rem 0;">
+            <div class="stat-card">
+                <h3>Critical</h3>
+                <div class="stat-value" style="color: #721c24;" id="criticalCount">--</div>
+                <div class="stat-subtitle">Issues</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>High</h3>
+                <div class="stat-value fail" id="highCount">--</div>
+                <div class="stat-subtitle">Severity</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Medium</h3>
+                <div class="stat-value warning" id="mediumCount">--</div>
+                <div class="stat-subtitle">Priority</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Low</h3>
+                <div class="stat-value" style="color: var(--info-color);" id="lowCount">--</div>
+                <div class="stat-subtitle">Impact</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Status Distribution</h3>
+                    <p class="chart-subtitle">Control status breakdown</p>
+                </div>
+                <canvas id="statusChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Severity Analysis</h3>
+                    <p class="chart-subtitle">Issues by severity level</p>
+                </div>
+                <canvas id="severityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container" style="margin: 2rem 0;">
+            <div class="chart-header">
+                <h3 class="chart-title">Category Compliance</h3>
+                <p class="chart-subtitle">Pass rate by M365 service category</p>
+            </div>
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <!-- Controls Table -->
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Control Details</h2>
+                <div class="dashboard-actions">
+                    <button class="btn btn-outline" onclick="exportToCSV()">Export CSV</button>
+                    <button class="btn btn-outline" onclick="exportToJSON()">Export JSON</button>
+                    <button class="btn btn-primary" onclick="refreshData()">Refresh Data</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter" onchange="applyFilters()">
+                        <option value="">All</option>
+                        <option value="pass">Pass</option>
+                        <option value="fail">Fail</option>
+                        <option value="manual">Manual</option>
+                    </select>
+
+                    <label for="severityFilter">Severity:</label>
+                    <select id="severityFilter" onchange="applyFilters()">
+                        <option value="">All</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+
+                    <label for="categoryFilter">Category:</label>
+                    <select id="categoryFilter" onchange="applyFilters()">
+                        <option value="">All</option>
+                    </select>
+
+                    <label for="searchBox">Search:</label>
+                    <input type="text" id="searchBox" placeholder="Search controls..." oninput="applyFilters()">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div style="overflow-x: auto;">
+                <table class="controls-table" id="controlsTable">
+                    <thead>
+                        <tr>
+                            <th>Control ID</th>
+                            <th>Title</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Expected</th>
+                            <th>Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="controlsTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                                <div class="loading"></div>
+                                <p style="margin-top: 1rem;">Loading audit data...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Last Update Info -->
+        <div class="text-center" style="margin: 2rem 0; color: var(--gray-600);">
+            <p>Last audit: <span id="lastAudit">Loading...</span></p>
+            <p>Next scheduled audit: <span data-date="next-month">--</span></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>M365 Security Toolkit</h4>
+                    <p style="color: var(--gray-600); margin-top: 0.5rem;">
+                        Enterprise-grade Microsoft 365 security auditing and compliance automation.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="./features.html">Features</a></li>
+                        <li><a href="./live-dashboard.html">Live Dashboard</a></li>
+                        <li><a href="./demo.html">Interactive Demo</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="./documentation.html">Getting Started</a></li>
+                        <li><a href="./documentation.html#api">API Reference</a></li>
+                        <li><a href="./documentation.html#troubleshooting">Troubleshooting</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/Heyson315/Easy-Ai">GitHub Repository</a></li>
+                        <li><a href="./privacy.html">Privacy Policy</a></li>
+                        <li><a href="./terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Rahman Finance and Accounting P.L.LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./assets/js/data-loader.js"></script>
+    <script src="./assets/js/app.js"></script>
+    <script>
+        let auditData = [];
+        let filteredData = [];
+        let charts = {};
+
+        // Initialize dashboard
+        async function initDashboard() {
+            try {
+                auditData = await window.DataLoader.fetchAuditData();
+                filteredData = auditData;
+                
+                updateStatistics();
+                renderCharts();
+                populateCategoryFilter();
+                renderTable();
+                updateLastAudit();
+            } catch (error) {
+                console.error('Failed to initialize dashboard:', error);
+                showError('Failed to load audit data. Please try again later.');
+            }
+        }
+
+        // Update statistics cards
+        function updateStatistics() {
+            const stats = window.DataLoader.processAuditData(auditData);
+            
+            document.getElementById('overallScore').textContent = stats.passRate + '%';
+            document.getElementById('passedControls').textContent = stats.passed;
+            document.getElementById('failedControls').textContent = stats.failed;
+            document.getElementById('manualControls').textContent = stats.manual;
+            
+            document.getElementById('criticalCount').textContent = stats.critical;
+            document.getElementById('highCount').textContent = stats.high;
+            document.getElementById('mediumCount').textContent = stats.medium;
+            document.getElementById('lowCount').textContent = stats.low;
+        }
+
+        // Render charts
+        function renderCharts() {
+            const stats = window.DataLoader.processAuditData(auditData);
+            
+            // Status chart
+            const statusCtx = document.getElementById('statusChart');
+            charts.status = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Passed', 'Failed', 'Manual'],
+                    datasets: [{
+                        data: [stats.passed, stats.failed, stats.manual],
+                        backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Severity chart
+            const severityCtx = document.getElementById('severityChart');
+            charts.severity = new Chart(severityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    datasets: [{
+                        label: 'Count',
+                        data: [stats.critical, stats.high, stats.medium, stats.low],
+                        backgroundColor: ['#721c24', '#dc3545', '#ffc107', '#17a2b8']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Category chart
+            const categories = Object.keys(stats.byCategory);
+            const categoryData = categories.map(cat => {
+                const total = stats.byCategory[cat].total;
+                const passed = stats.byCategory[cat].passed;
+                return total > 0 ? (passed / total * 100).toFixed(1) : 0;
+            });
+
+            const categoryCtx = document.getElementById('categoryChart');
+            charts.category = new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'Pass Rate (%)',
+                        data: categoryData,
+                        backgroundColor: '#0078d4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Populate category filter
+        function populateCategoryFilter() {
+            const stats = window.DataLoader.processAuditData(auditData);
+            const categories = Object.keys(stats.byCategory);
+            const select = document.getElementById('categoryFilter');
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('controlsTableBody');
+            tbody.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No controls match the current filters.</td></tr>';
+                return;
+            }
+
+            filteredData.forEach(control => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${control.ControlId}</strong></td>
+                    <td>${control.Title}</td>
+                    <td><span class="severity-badge ${control.Severity.toLowerCase()}">${control.Severity}</span></td>
+                    <td><span class="status-badge ${control.Status.toLowerCase()}">${control.Status}</span></td>
+                    <td>${control.Expected}</td>
+                    <td>${control.Actual}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const severityFilter = document.getElementById('severityFilter').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+            const filters = {
+                status: statusFilter ? [statusFilter] : [],
+                severity: severityFilter ? [severityFilter] : [],
+                category: categoryFilter,
+                search: searchTerm
+            };
+
+            filteredData = window.DataLoader.filterAuditData(auditData, filters);
+            renderTable();
+        }
+
+        // Export functions
+        function exportToCSV() {
+            const csv = window.DataLoader.exportToCSV(filteredData);
+            const filename = `m365_audit_${new Date().toISOString().split('T')[0]}.csv`;
+            window.DataLoader.downloadFile(csv, filename, 'text/csv');
+        }
+
+        function exportToJSON() {
+            const json = JSON.stringify(filteredData, null, 2);
+            const filename = `m365_audit_${new Date().toISOString().split('T')[0]}.json`;
+            window.DataLoader.downloadFile(json, filename, 'application/json');
+        }
+
+        // Refresh data
+        async function refreshData() {
+            window.DataLoader.cache.data = null;
+            await initDashboard();
+            window.M365Toolkit.showNotification('Dashboard data refreshed successfully', 'success');
+        }
+
+        // Update last audit date
+        function updateLastAudit() {
+            if (auditData.length > 0 && auditData[0].Timestamp) {
+                const date = new Date(auditData[0].Timestamp);
+                document.getElementById('lastAudit').textContent = date.toLocaleString();
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const tbody = document.getElementById('controlsTableBody');
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--danger-color);">${message}</td></tr>`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

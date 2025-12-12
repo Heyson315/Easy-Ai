@@ -257,6 +257,9 @@ def create_purview_action_plan():
         ["• Existing logs are retained according to new policy"],
     ]
 
+    # Optimize: Pre-compute formatting rules to avoid repeated checks
+    POWERSHELL_COMMANDS = {"New-", "Get-", "Connect-", "Search-", "Import-"}
+    
     for row_idx, content in enumerate(ps_content, start=1):
         cell = ws_ps.cell(row=row_idx, column=1, value=content[0])
         if row_idx == 1:
@@ -267,13 +270,8 @@ def create_purview_action_plan():
             cell.fill = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")
         elif content[0].startswith("#"):
             cell.font = Font(italic=True, color="008000")
-        elif (
-            content[0].startswith("New-")
-            or content[0].startswith("Get-")
-            or content[0].startswith("Connect-")
-            or content[0].startswith("Search-")
-            or content[0].startswith("Import-")
-        ):
+        elif any(content[0].startswith(cmd) for cmd in POWERSHELL_COMMANDS):
+            # Performance: Check prefix once using set instead of multiple startswith calls
             cell.font = Font(name="Consolas", size=10)
         elif "    -" in content[0]:
             cell.font = Font(name="Consolas", size=9, color="4472C4")
@@ -417,19 +415,19 @@ def create_purview_action_plan():
                 ws_ref.cell(row=row_idx, column=1, value=row_data[0]).font = Font(bold=True)
                 cell_value = ws_ref.cell(row=row_idx, column=2, value=row_data[1])
                 if row_data[1].startswith("http"):
-                    cell_value.font = Font(color="0563C1", underline="single")
+                    cell_value.hyperlink = row_data[1]
+                    cell_value.font = Font(color="0000FF", underline="single")
 
-    ws_ref.column_dimensions["A"].width = 30
-    ws_ref.column_dimensions["B"].width = 70
+    ws_ref.column_dimensions["A"].width = 25
+    ws_ref.column_dimensions["B"].width = 75
 
     # Save workbook
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = output_dir / f"purview_audit_retention_action_plan_{timestamp}.xlsx"
-    wb.save(output_file)
+    output_path = output_dir / f"purview_action_plan_{timestamp}.xlsx"
+    wb.save(output_path)
 
-    return output_file
+    print(f"\n✅ Successfully generated Purview Action Plan: {output_path}")
 
 
 if __name__ == "__main__":
-    output_file = create_purview_action_plan()
-    print(f"✅ Purview Action Plan created: {output_file}")
+    create_purview_action_plan()

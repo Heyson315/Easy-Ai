@@ -1,0 +1,167 @@
+[
+  {
+    "ControlId": "CIS-EXO-1",
+    "Title": "Ensure modern auth is enabled and basic auth blocked (EXO)",
+    "Severity": "High",
+    "Expected": "OAuth2 on; basic off",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to EXO",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO Auth Policies",
+    "Timestamp": "2025-12-06T04:59:17"
+  },
+  {
+    "ControlId": "CIS-EXO-2",
+    "Title": "Disable external auto-forwarding (TransportConfig)",
+    "Severity": "High",
+    "Expected": "External forwarding disabled",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to EXO",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO TransportConfig",
+    "Timestamp": "2025-12-06T04:59:17"
+  },
+  {
+    "ControlId": "CIS-EXO-3",
+    "Title": "Ensure mailbox auditing is enabled",
+    "Severity": "Medium",
+    "Expected": "Mailbox auditing enabled",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to EXO",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO Auditing",
+    "Timestamp": "2025-12-06T04:59:17"
+  },
+  {
+    "ControlId": "CIS-EXO-4",
+    "Title": "Ensure legacy protocols disabled per mailbox (sample check)",
+    "Severity": "Medium",
+    "Expected": "Legacy protocols disabled",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to EXO",
+    "Reference": "CIS M365 Foundations v3.0 L1; EXO Mailbox Protocols",
+    "Timestamp": "2025-12-06T04:59:17"
+  },
+  {
+    "ControlId": "CIS-SPO-1",
+    "Title": "Restrict SharePoint external sharing (Tenant)",
+    "Severity": "High",
+    "Expected": "Restrictive external sharing",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Microsoft.Online.SharePoint.PowerShell module not found. Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser",
+    "Reference": "CIS M365 Foundations v3.0 L1; SPO Sharing",
+    "Timestamp": "2025-12-06T04:59:17"
+  },
+  {
+    "ControlId": "CIS-AAD-1",
+    "Title": "Limit Global Administrator role assignments",
+    "Severity": "High",
+    "Expected": "Global Admin assignments minimal (<= 2-4)",
+    "Actual": "GlobalAdminCount=3",
+    "Status": "Pass",
+    "Evidence": "\nPrincipalId                          RoleDefinitionId\n-----------                          ----------------\n6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10\n727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10\n2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10\n\n",
+    "Reference": "CIS M365 Foundations v3.0 L1; AAD Roles",
+    "Timestamp": "2025-12-06T04:59:23"
+  },
+  {
+    "ControlId": "CIS-DEF-1",
+    "Title": "Ensure Safe Links policy is enabled",
+    "Severity": "High",
+    "Expected": "Safe Links enabled",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to EXO",
+    "Reference": "CIS M365 Foundations v3.0 L1; Defender for Office",
+    "Timestamp": "2025-12-06T04:59:23"
+  },
+  {
+    "ControlId": "CIS-DEF-2",
+    "Title": "Ensure Safe Attachments policy is enabled",
+    "Severity": "High",
+    "Expected": "Safe Attachments enabled",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to EXO",
+    "Reference": "CIS M365 Foundations v3.0 L1; Defender for Office",
+    "Timestamp": "2025-12-06T04:59:23"
+  },
+  {
+    "ControlId": "CIS-CA-1",
+    "Title": "Ensure Conditional Access MFA policy exists for all users",
+    "Severity": "High",
+    "Expected": "At least one enabled CA policy requiring MFA for all users",
+    "Actual": "MFAPolicies=7",
+    "Status": "Pass",
+    "Evidence": "\nDisplayName                                               State\n-----------                                               -----\nRequire multifactor authentication for guest access       enabled\nRequire multifactor authentication for all users          enabled\nconditional access 1`                                     enabled\nRequire multifactor authentication for ‎Azure‎ management enabled\nRequire multifactor authentication for Azure management   enabled\nBlock Risky Sign-Ins (High/Medium Risk)                   enabled\nRequire Password Change for High Risk Users               enabled\n\n",
+    "Reference": "CIS M365 Foundations v3.0 L1; Conditional Access",
+    "Timestamp": "2025-12-06T04:59:25"
+  },
+  {
+    "ControlId": "CIS-PURVIEW-1",
+    "Title": "Ensure DLP policies are enabled for data protection",
+    "Severity": "High",
+    "Expected": "DLP policies enabled",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to Purview or DLP cmdlets unavailable",
+    "Reference": "CIS M365 Foundations v3.0 L1; Purview DLP",
+    "Timestamp": "2025-12-06T04:59:25"
+  },
+  {
+    "ControlId": "CIS-AAD-2",
+    "Title": "Ensure Azure AD Identity Protection risk policies are configured",
+    "Severity": "High",
+    "Expected": "At least one risk-based CA policy enabled (user or sign-in risk)",
+    "Actual": "RiskBasedPolicies=2",
+    "Status": "Pass",
+    "Evidence": "\nDisplayName                                 State\n-----------                                 -----\nBlock Risky Sign-Ins (High/Medium Risk)     enabled\nRequire Password Change for High Risk Users enabled\n\n",
+    "Reference": "CIS M365 Foundations v3.0 L1; AAD Identity Protection",
+    "Timestamp": "2025-12-06T04:59:26"
+  },
+  {
+    "ControlId": "CIS-INTUNE-1",
+    "Title": "Ensure Intune device compliance policies exist and are enforced",
+    "Severity": "Medium",
+    "Expected": "Compliance policies configured",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Intune cmdlets unavailable or insufficient permissions",
+    "Reference": "CIS M365 Foundations v3.0 L1; Intune MDM",
+    "Timestamp": "2025-12-06T04:59:28"
+  },
+  {
+    "ControlId": "CIS-AAD-3",
+    "Title": "Ensure guest user access restrictions are configured",
+    "Severity": "Medium",
+    "Expected": "Guest user role is restrictive (not Member role)",
+    "Actual": "GuestUserRoleId=10dae51f-b6af-4016-8d66-8c2a99b929b3",
+    "Status": "Pass",
+    "Evidence": "\nDeletedDateTime Description                                                       DisplayName          Id\n--------------- -----------                                                       -----------          --               \n                Used to manage authorization related settings across the company. Authorization Policy authorizationPol…\n\n",
+    "Reference": "CIS M365 Foundations v3.0 L1; AAD Guest Access",
+    "Timestamp": "2025-12-06T04:59:28"
+  },
+  {
+    "ControlId": "CIS-PURVIEW-2",
+    "Title": "Ensure audit logs are retained for compliance (90+ days recommended)",
+    "Severity": "Medium",
+    "Expected": "Audit log retention 90+ days",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to Purview or audit cmdlets unavailable",
+    "Reference": "CIS M365 Foundations v3.0 L1; Purview Auditing",
+    "Timestamp": "2025-12-06T04:59:28"
+  },
+  {
+    "ControlId": "CIS-PURVIEW-3",
+    "Title": "Ensure sensitivity labels are published and enforced",
+    "Severity": "Medium",
+    "Expected": "Sensitivity labels published",
+    "Actual": "Unknown",
+    "Status": "Manual",
+    "Evidence": "Not connected to Purview or label cmdlets unavailable",
+    "Reference": "CIS M365 Foundations v3.0 L1; Purview Information Protection",
+    "Timestamp": "2025-12-06T04:59:28"
+  }
+]
