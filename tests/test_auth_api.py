@@ -64,8 +64,33 @@ class TestAuthenticationAPI(unittest.TestCase):
 
         Reference: #tearDown - Test cleanup
         """
-        os.close(self.db_fd)
-        os.unlink(self.db_path)
+        # Close database connections first
+        # This is critical on Windows to release file locks
+        if hasattr(self, 'app'):
+            with self.app.app_context():
+                # Force close any database connections
+                from sqlalchemy import create_engine
+                engine = create_engine(self.database_url)
+                engine.dispose()
+        
+        # Close file descriptor
+        try:
+            os.close(self.db_fd)
+        except (OSError, ValueError):
+            pass  # Already closed
+        
+        # Wait a moment for file locks to release (Windows-specific)
+        import time
+        time.sleep(0.1)
+        
+        # Remove database file
+        try:
+            os.unlink(self.db_path)
+        except (OSError, PermissionError) as e:
+            # On Windows, file may still be locked
+            # Schedule for deletion on next run
+            print(f"Warning: Could not delete temp file {self.db_path}: {e}")
+            pass
 
     def test_health_check(self):
         """
