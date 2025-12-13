@@ -1,25 +1,22 @@
 #!/usr/bin/env python3
 """
-Demo MCP Server for qwe Integration
+All-in-One Demo Server
 
-Quick demo server that simulates the Easy-Ai MCP server responses
-for testing the qwe integration without needing full M365 access.
+Serves both the MCP API and the HTML dashboard.
+No CORS issues, no multiple servers needed!
 
 Usage:
-    python scripts/demo_mcp_server.py
+    python scripts/demo_server_allinone.py
     
-Then access: http://localhost:8080/health
+Then open: http://localhost:8080
 """
 
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask, jsonify, send_file
 from datetime import datetime
 import random
+import os
 
 app = Flask(__name__)
-
-# Enable CORS for all routes (allows access from file:// URLs)
-CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Sample data
 SAMPLE_ALERTS = [
@@ -70,12 +67,22 @@ RECENT_ACTIVITIES = [
 ]
 
 
+# === Serve the HTML Dashboard ===
+
+@app.route('/')
+def index():
+    """Serve the dashboard HTML"""
+    return send_file('demo_dashboard.html')
+
+
+# === API Endpoints ===
+
 @app.route('/health')
 def health():
     """Health check endpoint"""
     return jsonify({
         "status": "healthy",
-        "service": "Easy-Ai MCP Server (Demo)",
+        "service": "Easy-Ai MCP Server (Demo - All-in-One)",
         "version": "1.0.0-demo",
         "timestamp": datetime.utcnow().isoformat()
     })
@@ -173,16 +180,15 @@ def trigger_audit():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("🚀 Easy-Ai MCP Demo Server")
+    print("🚀 Easy-Ai All-in-One Demo Server")
     print("=" * 60)
     print()
-    print("📍 Server URL: http://localhost:8080")
+    print("📍 Dashboard: http://localhost:8080")
     print("🔧 Health Check: http://localhost:8080/health")
-    print("📊 Dashboard: http://localhost:8080/api/security/dashboard")
-    print("🚨 Alerts: http://localhost:8080/api/security/alerts")
+    print("📊 API: http://localhost:8080/api/security/*")
     print()
-    print("This is a DEMO server with sample data.")
-    print("Use for testing qwe integration without M365 access.")
+    print("✅ No CORS issues - everything on same server!")
+    print("✅ Just open http://localhost:8080 in your browser")
     print()
     print("Press Ctrl+C to stop")
     print("=" * 60)
